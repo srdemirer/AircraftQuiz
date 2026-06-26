@@ -91,6 +91,11 @@
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
         .admin-table th, .admin-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
         .admin-table th { background-color: #f7fafc; }
+
+        /* Yapım Aşamasında Bölümü */
+        .construction-panel { text-align: center; padding: 30px 10px; }
+        .construction-title { font-size: 1.4rem; font-weight: bold; color: #c53030; margin-bottom: 15px; }
+        .construction-text { color: #4a5568; font-size: 1rem; margin-bottom: 25px; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -103,6 +108,7 @@
     
     <div class="progress-bar" id="progress-bar-container"><div class="progress-fill" id="progress-fill"></div></div>
 
+    <!-- 1. ADIM: İsim Giriş Ekranı -->
     <div id="login-screen" style="display: none;">
         <div class="input-group">
             <label style="font-weight: 600; color: #4a5568;">Lütfen Adınızı ve Soyadınızı Girin:</label>
@@ -111,6 +117,7 @@
         </div>
     </div>
 
+    <!-- 2. ADIM: Uçak Seçim Ekranı -->
     <div id="aircraft-selector" style="display: none;">
         <div id="welcome-msg" class="user-welcome"></div>
         <div class="options">
@@ -126,6 +133,14 @@
         </div>
     </div>
 
+    <!-- 2.5 ADIM: Yapım Aşamasında Ekranı -->
+    <div id="construction-body" class="construction-panel" style="display: none;">
+        <div class="construction-title">Yapım Aşamasındadır 🛠️</div>
+        <div class="construction-text">Seçtiğiniz uçak tipine ait soru havuzu güncellenmektedir. Lütfen daha sonra tekrar deneyiniz.</div>
+        <button class="restart-btn" onclick="backToMenu()">Ana Menüye Dön</button>
+    </div>
+
+    <!-- 3. ADIM: Quiz Gövdesi -->
     <div id="quiz-body" style="display: none;">
         <div class="question" id="question-text"></div>
         <div id="options-area">
@@ -134,20 +149,24 @@
         
         <div class="explanation" id="explanation-box"></div>
         
+        <!-- İleri / Geri / Pas Kontrolleri -->
         <div class="nav-controls">
             <button class="nav-btn prev-style" id="prev-btn" onclick="prevQuestion()">Önceki</button>
             <button class="nav-btn pas-style" id="pas-btn" onclick="pasQuestion()">PAS</button>
             <button class="nav-btn next-style" id="next-btn" onclick="handleNextOrFinish()">Sonraki</button>
         </div>
 
+        <!-- Soru Navigasyon Matrisi -->
         <div class="matrix-container" id="matrix-container"></div>
     </div>
 
+    <!-- 4. ADIM: Sonuç Ekranı -->
     <div id="result-body" class="score-container" style="display: none;">
         <div class="score-title">Test Tamamlandı! 🎉</div>
         <div class="score-number"><span id="score">0</span> / <span id="total">0</span></div>
         <div id="user-score-msg" style="font-weight: 600; color: #4a5568; margin-bottom: 10px;"></div>
         
+        <!-- Pasta Grafik Alanı -->
         <div style="margin: 20px 0;">
             <canvas id="pie-canvas" width="300" height="200" style="max-width:300px; margin:0 auto;"></canvas>
         </div>
@@ -178,7 +197,7 @@
     </table>
 </div>
 
-<script>
+<script {
     const allQuizzes = {
         da40: [
             { soru: "VFE Landing Flap Sürati Nedir?", secenekler: ["98 KIAS", "110 KIAS", "130 KIAS", "88 KIAS"], cevap: "98 KIAS", aciklama: "Landing flapları tam açıkken yapısal sınır 98 KIAS'tır." },
@@ -234,72 +253,9 @@
             { soru: "1080 - 1180 KG Kalkış Ağırlığı İçin Manevra Sürati Kaçtır?", secenekler: ["101 KIAS", "108 KIAS", "113 KIAS", "105 KIAS"], cevap: "108 KIAS", aciklama: "Orta ağırlık bandında manevra sürati Va 108 KIAS'tır." },
             { soru: "1180+ KG Kalkış Ağırlığı İçin Manevra Sürati Kaçtır?", secenekler: ["101 KIAS", "108 KIAS", "113 KIAS", "120 KIAS"], cevap: "113 KIAS", aciklama: "Tam yüklü ağır uçakta en yüksek Va limiti 113 KIAS'tır." }
         ],
-        a211: [
-            { soru: "VFE Landing veya Take-off konumunda Maksimum Flap Açma Sürati Nedir?", secenekler: ["84 kts", "90 kts", "112 kts", "78 kts"], cevap: "90 kts", aciklama: "Aquila A211 için Vfe hız limiti 90 knot'tır. Bu süratin üzerinde flap mekanizması hasar görebilir." },
-            { soru: "VNO (Maximum Structural Cruise Speed) Sürati Nedir?", secenekler: ["112 kts", "130 kts", "147 kts", "120 kts"], cevap: "130 kts", aciklama: "Maksimum yapısal seyir sürati 130 knot'tır." },
-            { soru: "VNE (Never Exceed Speed) Sürati Nedir?", secenekler: ["130 kts", "147 kts", "165 kts", "155 kts"], cevap: "147 kts", aciklama: "Asla aşılmaması gereken hız (Vne) 147 knot'tır." },
-            { soru: "VA (Maneuvering Speed) Manevra Sürati Nedir?", secenekler: ["90 kts", "112 kts", "130 kts", "115 kts"], cevap: "112 kts", aciklama: "Manevra sürati (Va) 112 knot'tır." },
-            { soru: "Flaplar UP (Kapalı) konumdayken En İyi Süzülüş Oranı Sürati (Best Glide Speed) Nedir?", secenekler: ["78 kts", "73 kts", "65 kts", "70 kts"], cevap: "78 kts", aciklama: "Flaplar kapalıyken (UP) en iyi süzülüş oranını veren sürat 78 knot'tır." },
-            { soru: "Flaplar T/O (Kalkış) konumdayken En İyi Süzülüş Oranı Sürati Nedir?", secenekler: ["78 kts", "73 kts", "60 kts", "65 kts"], cevap: "73 kts", aciklama: "Kalkış flap ayarında (T/O) motor arızası sonrası süzülüş sürati 73 knot'tır." },
-            { soru: "Engine Failure (Motor Arızası) Durumunda LDG (İniş) Flap ile Precautionary Landing Yaklaşma Sürati Nedir?", secenekler: ["65 kts", "60 kts", "70 kts", "57 kts"], cevap: "60 kts", aciklama: "İniş flapları (LDG) tam açıkken emniyetli yaklaşma sürati 60 knot'tır." },
-            { soru: "Engine Failure Sonrası Motorsuz İnişte Flaplar T/O Konumunda İdeal Yaklaşma Sürati Nedir?", secenekler: ["70 kts", "65 kts", "60 kts", "78 kts"], cevap: "65 kts", aciklama: "Motor arızası sonrası T/O flap yaklaşma sürati 65 knot'tır." },
-            { soru: "Engine Failure Sonrası Motorsuz İnişte Flaplar UP Konumunda İdeal Yaklaşma Sürati Nedir?", secenekler: ["78 kts", "73 kts", "70 kts", "65 kts"], cevap: "70 kts", aciklama: "Temiz konfigürasyonda (Flaps UP) motor arızası sonrası iniş yaklaşma sürati 70 knot'tır." },
-            { soru: "Pervane Çapı Tam Olarak Nedir?", secenekler: ["160 CM", "170 CM", "190 CM", "175 CM"], cevap: "170 CM", aciklama: "MTV-21 pervanesinin çapı 170 CM değerindedir." },
-            { soru: "Rotax 912 S3 Motoru İçin Minimum Yağ Basıncı Nedir?", secenekler: ["11.6 psi (0.8 bar)", "29 psi (2.0 bar)", "72.5 psi (5.0 bar)", "15 psi (1.0 bar)"], cevap: "11.6 psi (0.8 bar)", aciklama: "Minimum yağ basıncı 11.6 psi (0.8 bar)'dır." },
-            { soru: "Normal Çalışma Şartlarında Motor Yağ Basıncı Hangi Aralıkta Olmalıdır? (Green Arc)", secenekler: ["11.6 - 29 psi", "29 - 72.5 psi (2.0-5.0 bar)", "72.5 - 101.5 psi", "15 - 50 psi"], cevap: "29 - 72.5 psi (2.0-5.0 bar)", aciklama: "Normal uçuş şartlarında yağ basıncı 29 ile 72.5 psi arasında bulunmalıdır." },
-            { soru: "Soğuk Motor Çalıştırma Esnasında Kısa Süreliğine İzin Verilen Maksimum Yağ Basıncı Nedir?", secenekler: ["72.5 psi", "101.5 psi (7.0 bar)", "115 psi", "85 psi"], cevap: "101.5 psi (7.0 bar)", aciklama: "Maksimum 101.5 psi (7.0 bar) yağ basıncına müsaade edilir." },
-            { soru: "Maksimum İzin Verilen Motor Yağ Sıcaklığı Nedir? (Red Line)", secenekler: ["248 F (120 C)", "266 F (130 C)", "230 F (110 C)", "284 F (140 C)"], cevap: "266 F (130 C)", aciklama: "Motor yağ sıcaklığı üst limiti 266°F (130°C) olarak belirlenmiştir." },
-            { soru: "Motoru Isınmış Kabul Edip Kalkış Yapabilmek İçin Gerekli Minimum Yağ Sıcaklığı Nedir?", secenekler: ["100 F (38 C)", "122 F (50 C)", "140 F (60 C)", "90 F (32 C)"], cevap: "122 F (50 C)", aciklama: "Gerekli minimum yağ sıcaklığı 122°F (50°C)'dir." },
-            { soru: "Maksimum Silindir Kapak Sıcaklığı (CHT) Yeni Tip Silindir Kafalarında Nedir?", secenekler: ["248 F (120 C)", "264 F (129 C)", "266 F (130 C)", "212 F (100 C)"], cevap: "248 F (120 C)", aciklama: "Yeni tip silindir kapaklarında maksimum CHT limiti 248°F (120°C)'dir." },
-            { soru: "Ön Isıtma (Preheating) Yapılmadan Motorun Çalıştırılabileceği Minimum Dış Hava Sıcaklığı Nedir?", secenekler: ["-4 F (-20 C)", "-13 F (-25 C)", "32 F (0 C)", "14 F (-10 C)"], cevap: "-13 F (-25 C)", aciklama: "Ön ısıtma sınırı -13°F (-25°C)'dir." },
-            { soru: "Voltmetre Üzerinde Normal Çalışma Aralığını Gösteren Yeşil Sektör Hangi Voltaj Değerleridir?", secenekler: ["11 - 12 V", "12 - 15 V", "13 - 14 V", "14 - 16 V"], cevap: "12 - 15 V", aciklama: "Normal yeşil sektör çalışma aralığı 12 ile 15 Volt arasıdır." },
-            { soru: "Uçağın Sol ve Sağ Kanadındaki Yakıt Depolarının Tek Bir Tanesinin TOPLAM (Total) Kapasitesi Kaç Galondur?", secenekler: ["14.48 US gal", "15.85 US gal (60.0 Litre)", "13.7 US gal", "20.5 US gal"], cevap: "15.85 US gal (60.0 Litre)", aciklama: "Toplam depo hacmi 15.85 US galondur (60.0 Litre)." },
-            { soru: "Tek Bir Kanat Deposunun KULLANILABİLİR (Usable) Yakıt Miktar Limiti Nedir?", secenekler: ["15.85 US gal", "14.48 US gal (54.8 Litre)", "13.11 US gal", "12.0 US gal"], cevap: "14.48 US gal (54.8 Litre)", aciklama: "Kullanılabilir yakıt miktarı 14.48 US galondur." },
-            { soru: "Tek Bir Kanat Deposunda Kalan ve Süzülemeyen KULLANILAMAYAN (Unusable) Yakıt Miktarı Nedir?", secenekler: ["1.0 US gal", "1.37 US gal (5.2 Litre)", "0.5 US gal", "2.0 US gal"], cevap: "1.37 US gal (5.2 Litre)", aciklama: "Artık yakıt miktarı 1.37 US galondur." },
-            { soru: "Uçuş Esnasında Sol ve Sağ Depoların Dengeli Boşalması İçin En Geç Kaç Dakikada Bir Yakıt Seçici Değiştirilmelidir?", secenekler: ["30 Dakika", "60 Dakika", "45 Dakika", "90 Dakika"], cevap: "60 Dakika", aciklama: "En geç her 60 dakikada bir yakıt deposunun değiştirilmesi önerilir." },
-            { soru: "Maksimum Kalkış Ağırlığı (MTOW) Kaç Kilogramdır?", secenekler: ["650 KG", "750 KG", "800 KG", "940 KG"], cevap: "750 KG", aciklama: "Maksimum kalkış ağırlığı 750 kg'dır." },
-            { soru: "Maksimum İniş Ağırlığı (MLW) Kaç Kilogramdır?", secenekler: ["720 KG", "750_KG", "650 KG", "800 KG"], cevap: "750_KG", aciklama: "Maksimum İniş Ağırlığı 750 kg değerindedir." },
-            { soru: "Baggage Compartment (Bagaj Bölmesi) İçin İzin Verilen Maksimum Yük Ağırlığı Nedir?", secenekler: ["20 KG", "40 KG (88.2 lbs)", "30 KG", "15 KG"], cevap: "40 KG (88.2 lbs)", aciklama: "Maksimum bagaj ağırlığı 40 kg'dır." },
-            { soru: "Flaplar Tamamen Kapalı (UP) İkonundayken İzin Verilen Maksimum Pozitif G Faktörü Nedir?", secenekler: ["2.0 G", "4.0 G", "3.8 G", "4.4 G"], cevap: "4.0 G", aciklama: "Flaps UP yük limiti +4.0 G'dir." },
-            { soru: "Flaplar Herhangi Bir Derece Açıkken (T/O veya LDG) İzin Verilen Maksimum Pozitif G Faktörü Kaçtır?", secenekler: ["4.0 G", "2.0 G", "0.0 G", "2.5 G"], cevap: "2.0 G", aciklama: "Flaplar açıkken pozitif yük faktörü +2.0 G ile sınırlandırılır." },
-            { soru: "Flaplar Tamamen Kapalı (UP) İkonundayken İzin Verilen Maksimum Negatif G Sınırı Nedir?", secenekler: ["0.0 G", "-2.0 G", "-1.52 G", "-1.0 G"], cevap: "-2.0 G", aciklama: "Flaps UP maksimum negatif yük faktörü -2.0 G değerindedir." },
-            { soru: "Flaplar Açık Konumdayken (T/O veya LDG) İzin Verilen Maksimum Negatif G Faktörü Nedir?", secenekler: ["-1.0 G", "0 G", "-2.0 G", "-0.5 G"], cevap: "0 G", aciklama: "Flaplar açıkken negatif yüklemeye izin verilmez (0 G)." },
-            { soru: "Kalkış Flap Konumunda (T/O) En İyi Tırmanış Açısı Sürati (Vx) Nedir?", secenekler: ["57 kts", "52 kts", "65 kts", "60 kts"], cevap: "52 kts", aciklama: "En iyi tırmanış açısı sürati (Vx) 52 knot'tır." },
-            { soru: "Flaplar Toplu (UP) Konumdayken En İyi Tırmanış Oranı Sürati (Vy) Nedir?", secenekler: ["52 kts", "65 kts", "60 kts", "72 kts"], cevap: "65 kts", aciklama: "Vy sürati Flaps UP konumunda 65 knot'tır." },
-            { soru: "Kalkış Koşusunda Flaplar T/O Konumundayken Lövyeyi Geriye Çekme (Rotate - Vr) Sürati Nedir?", secenekler: ["45 kts", "50 kts", "55 kts", "57 kts"], cevap: "50 kts", aciklama: "Rotasyon (Vr) sürati 50 knot'tır." },
-            { soru: "50 Feet Mania Üzerinden Geçerken Korunması Gereken Emniyetli Tırmanış Normal Sürati Nedir?", secenekler: ["50 kts", "57 kts", "65 kts", "52 kts"], cevap: "57 kts", aciklama: "50 feet bariyerini geçerken korunması gereken sürat 57 knot'tır." },
-            { soru: "Uçağın Sertifikalandırıldığı Maksimum Operasyonel İrtifa Tavanı (Service Ceiling) Nedir?", secenekler: ["10,000 ft", "14,500 ft", "16,400 ft", "12,500 ft"], cevap: "14,500 ft", aciklama: "Maksimum operasyonel tavan yüksekliği 14,500 feet'tir." },
-            { soru: "İniş Takımı ve Tekerlek Boyut Sınıfı Nedir?", secenekler: ["6.00-6", "5.00-5", "4.00-4", "15x6.00"], cevap: "5.00-5", aciklama: "Lastik ölçü standardı 5.00-5'tir." },
-            { soru: "Uçağın Sertifikasyon Kategori Sınıfı Nedir?", secenekler: ["Utility", "Normal", "Acrobatic", "Commuter"], cevap: "Normal", aciklama: "Normal kategoride tip sertifikası almıştır." },
-            { soru: "Düz Uçuşta Motor Gücünü Azaltmak İçin Gaz-Pervane Kolları Kumanda Sırası Nasıl Olmalıdır?", secenekler: ["Önce Pervane sonra Gaz", "Önce Gaz (Throttle) sonra Pervane RPM", "İkisi aynı onda hızlıca", "Pervane koluna dokunulmaz"], cevap: "Önce Gaz (Throttle) sonra Pervane RPM", aciklama: "Güç azaltırken önce gaz kolu çekilir, sonra pervane devri (RPM) düşürülür." },
-            { soru: "Düz Uçuşta Motor Gücünü Artırmak İçin Gaz-Pervane Kolları Kumanda Sırası Nasıl Olmalıdır?", secenekler: ["Önce Gaz sonra Pervane", "Önce Pervane RPM sonra Gaz (Throttle)", "Fark etmez", "Sadece gaz kolu itilir"], cevap: "Önce Pervane RPM sonra Gaz (Throttle)", aciklama: "Güç artırılacağı zaman önce pervane devri artırılır, ardından gaz açılır." },
-            { soru: "Motor Sürat Göstergesi (Tachometer) Üzerinde Kırmızı Çizgi Maksimum RPM Değeri Nedir?", secenekler: ["2260 RPM", "2385 RPM", "5800 RPM", "2500 RPM"], cevap: "2385 RPM", aciklama: "Maksimum kalkış pervane sürati 2385 RPM'dir." },
-            { soru: "Maksimum Sürekli Güç (Max Continuous Power) Durumunda Müsaade Edilen Maksimum Pervane Devri Nedir?", secenekler: ["2385 RPM", "2260 RPM", "2000 RPM", "2140 RPM"], cevap: "2260 RPM", aciklama: "Maksimum sürekli devir 2260 RPM'dir." },
-            { soru: "Rotax 912 S3 Motorunda Dişli Kutusu (Reduction Gearbox) Çevrim Oranı Nedir?", secenekler: ["1:1", "2.43 : 1", "1.95 : 1", "3.00 : 1"], cevap: "2.43 : 1", aciklama: "Redüksiyon dişli kutusu oranı 2.43:1'dir." },
-            { soru: "Yakıt Basıncı Kritik Sınır Olan Kaç PSI Değerinin Altına Düşerse Kırmızı FUEL Işığı Yanar?", secenekler: ["1.5 PSI", "2.2 PSI (0.15 bar)", "5.0 PSI", "0.8 PSI"], cevap: "2.2 PSI (0.15 bar)", aciklama: "2.2 PSI (0.15 bar) altına indiğinde FUEL uyarı lambası yanar." },
-            { soru: "Düşük Yakıt Basıncı (Kırmızı FUEL) Uyarısı Alındığında Pilot İlk Olarak Hangi Kumandayı Vermelidir?", secenekler: ["Yakıt vanasını kapatmalı", "Fuel Pump switch ON", "Gazı tamamen kesmeli", "Alternatörü kapatmalı"], cevap: "Fuel Pump switch ON", aciklama: "Hemen elektrikli yakıt pompası (Fuel Pump) açılmalıdır." },
-            { soru: "Uçuş Esnasında Kaç Feet Basınç İrtifasının Üzerinde Yakıt Buharlaşma Riskine Karşı Yakıt Basıncı Çok Sıkı Takip Edilmelidir?", secenekler: ["3000 ft", "6000 ft", "10,000 ft", "8000 ft"], cevap: "6000 ft", aciklama: "6000 feet basınç irtifasının üzerinde yakından izlenmelidir." },
-            { soru: "Gövde Ağırlık Merkezi Hesaplamalarında Referans Hattı (Reference Datum) Neresidir?", secenekler: ["Gövde burun ucu", "Kanat hücum kenarı kök birleşim yeri (BE)", "Pervane spinner önü", "Ana iniş takımı merkezi"], cevap: "Kanat hücum kenarı kök birleşim yeri (BE)", aciklama: "Sıfır noktası (Datum), kanat hücum kenarının kök hattıdır." },
-            { soru: "Uçağın Sertifikasyon Sınırlarına Göre Müsaade Edilen En Ön Ağırlık Merkezi (Forward C.G.) Limiti Nedir?", secenekler: ["12.8 inç", "16.8 in.", "20.6 inç", "17.34 inç"], cevap: "16.8 in.", aciklama: "C.G. en ön sınırı referans hattının 16.8 inç arkasıdır." },
-            { soru: "Uçağın Sertifikasyon Sınırlarına Göre Müsaade Edilen En Arka Ağırlık Merkezi (Rearward C.G.) Limiti Nedir?", secenekler: ["16.8 inç", "20.6 in.", "22.8 inç", "19.1 inç"], cevap: "20.6 in.", aciklama: "En arka C.G. sınırı referans noktasının 20.6 inç arkasıdır." },
-            { soru: "Sözlü Sınavlarda Sıkça Sorulan: Akrobasi veya Kaç Dereceden Fazla Yatış Açısı (Bank Angle) Gerektiren Manevralar Yasaktır?", secenekler: ["45 Derece", "60 Derece", "30 Derece", "90 Derece"], cevap: "60 Derece", aciklama: "60 derece yatış açısını aşan tüm manevralar yasaktır." },
-            { soru: "Kabin İçi Hava Akışını Keserek Dışarıdan Duman Girişini Engellemek İçin İlgili Kumanda Nedir?", secenekler: ["Choke kolunu çekmek", "Cabin Heat control PUSH (OFF)", "Carburetor Heat çekmek", "Avionics switch OFF yapmak"], cevap: "Cabin Heat control PUSH (OFF)", aciklama: "Cabin Heat kapatılarak (PUSH OFF) hava akışı kesilir." },
-            { soru: "Dış Hava Sıcaklığı Kaç Derecenin Üzerine Çıktığında Pitot Isıtma Sistemi (P/S Heat) Kapatılmalıdır?", secenekler: ["32 F (0 C)", "59 F (+15 C)", "68 F (20 C)", "104 F (40 C)"], cevap: "59 F (+15 C)", aciklama: "Dış hava sıcaklığı +15°C (59°F) üzerine çıktığında kapatılmalıdır." },
-            { soru: "Tekerlek Paçalıkları (Wheel Fairings) Olmadan veya Çamurluklarla Uçulduğunda Performans Kaybı Yaklaşık Yüzde Kaçtır?", secenekler: ["%2", "%10", "%5", "%15"], cevap: "%10", aciklama: "Seyir ve tırmanma performansını %10'a kadar düşürebilir." },
-            { soru: "Sertifikasyona Göre Aquila A211 Uçağında İzin Verilen Maksimum Kişi Sayısı Sınırı Nedir?", secenekler: ["1", "2", "3", "4"], cevap: "2", aciklama: "Maksimum 2 kişilik bir eğitim uçağıdır." }
-        ],
-        da20: [
-            { soru: "Diamond DA20 Eclipse (Katana) uçağının asla aşılmaması gereken hızı (Vne) kaç KIAS'tır?", secenekler: ["130 KIAS", "164 KIAS", "172 KIAS", "140 KIAS"], cevap: "164 KIAS", aciklama: "DA20 uçağının Vne sürati 164 KIAS'tır." },
-            { soru: "DA20 Eclipse modelinin Maksimum Kalkış Ağırlığı kaç kg / lbs'tir?", secenekler: ["750 kg / 1653 lbs", "800 kg / 1764 lbs", "940 kg / 2072 lbs", "1150 kg / 2535 lbs"], cevap: "800 kg / 1764 lbs", aciklama: "Maksimum kalkış ağırlığı 800 kg (1764 lbs) olarak belirlenmiştir." },
-            { soru: "DA20 uçağında en iyi tırmanış oranı sürati (Vy) kaç KIAS'tır?", secenekler: ["68 KIAS", "75 KIAS", "83 KIAS", "60 KIAS"], cevap: "75 KIAS", aciklama: "En iyi tırmanış oranı sürati (Vy) 75 KIAS'tır." },
-            { soru: "DA20 elektrik sisteminde alternator kaç Amper akım sağlar?", secenekler: ["40 A", "70 A", "60 A", "50 A"], cevap: "40 A", aciklama: "Alternatör maksimum 40 Amper yük sağlar." }
-        ],
-        da42: [
-            { soru: "DA42 NG uçağının Asla Aşılmaması Gereken Sürati (Vne) kaç KIAS'tır?", secenekler: ["172 KIAS", "188 KIAS", "197 KIAS", "155 KIAS"], cevap: "188 KIAS", aciklama: "DA42 NG modelinde Vne sürati 188 KIAS'tır." },
-            { soru: "DA42'de tek motorun emniyetle kumanda edilebileceği minimum sürat (Vmc) kaç KIAS'tır?", secenekler: ["68 KIAS", "71 KIAS", "76 KIAS", "85 KIAS"], cevap: "71 KIAS", aciklama: "Asgari kritik sürat (Vmc) 71 KIAS'tır." },
-            { soru: "DA42 NG için Maksimum Kalkış Ağırlığı (MTOM) kaç kg'dır?", secenekler: ["1310 kg", "1785 kg", "1999 kg", "1900 kg"], cevap: "1999 kg", aciklama: "Maksimum kalkış ağırlığı tam sınır olan 1999 kg'dır." },
-            { soru: "DA42'de iniş takımlarını açabileceğiniz maksimum sürat (Vloe) kaç KIAS'tır?", secenekler: ["110 KIAS", "130 KIAS", "188 KIAS", "152 KIAS"], cevap: "188 KIAS", aciklama: "İniş takımını açma hızı 188 KIAS'tır." }
-        ]
+        a211: [],
+        da20: [],
+        da42: []
     };
 
     let activeQuestions = [];
@@ -307,12 +263,11 @@
     let currentUser = "";
     let selectedAircraft = "";
     let signatureClickCount = 0;
-    
-    // Kullanıcı durum kayıt matrisi: { status: 'unanswered' | 'correct' | 'wrong' | 'pas', userA: '' }
     let questionStates = []; 
 
     const loginScreen = document.getElementById('login-screen');
     const aircraftSelector = document.getElementById('aircraft-selector');
+    const constructionBody = document.getElementById('construction-body');
     const quizBody = document.getElementById('quiz-body');
     const resultBody = document.getElementById('result-body');
     const questionText = document.getElementById('question-text');
@@ -348,6 +303,7 @@
         loginScreen.style.display = 'block';
         aircraftSelector.style.display = 'none';
         quizBody.style.display = 'none';
+        constructionBody.style.display = 'none';
     }
 
     function saveUser() {
@@ -365,6 +321,7 @@
         loginScreen.style.display = 'none';
         quizBody.style.display = 'none';
         resultBody.style.display = 'none';
+        constructionBody.style.display = 'none';
         progressBarContainer.style.display = 'none';
         
         mainTitle.innerText = "Uçak Limitleri Testi ✈️";
@@ -380,27 +337,32 @@
 
     function startQuiz(aircraftType) {
         selectedAircraft = aircraftType;
+        
+        // Başlık Ayarlama
+        if(aircraftType === 'da40') mainTitle.innerText = "Diamond DA40 NG";
+        if(aircraftType === 'a211') mainTitle.innerText = "Aquila A211";
+        if(aircraftType === 'da20') mainTitle.innerText = "Diamond DA20 Eclipse";
+        if(aircraftType === 'da42') mainTitle.innerText = "Diamond DA42 Twin Star";
+
+        // Eğer boş bir havuz seçildiyse (DA40 dışındakiler) yapım aşaması ekranını göster
+        if (allQuizzes[aircraftType].length === 0) {
+            aircraftSelector.style.display = 'none';
+            adminPanel.style.display = 'none';
+            questionCounter.style.display = 'none';
+            constructionBody.style.display = 'block';
+            return;
+        }
+
         let rawQuestions = allQuizzes[aircraftType];
-        
-        // Havuzdaki tüm soruları karıştırıyoruz
         let shuffledPool = [...rawQuestions].sort(() => Math.random() - 0.5);
-        
-        // Belirlenen 10 soruyu klavyeli tip yapacağız (Açık Uçlu)
-        // Eğer havuzda 10'dan az soru varsa hepsini veya bir kısmını dönüştürür.
         let textQuestionCount = Math.min(10, shuffledPool.length);
         
         activeQuestions = shuffledPool.map((q, index) => {
-            let isTextType = index < textQuestionCount; // İlk 10 soru açık uçlu test formatına alınır
-            return {
-                ...q,
-                isText: isTextType
-            };
+            let isTextType = index < textQuestionCount;
+            return { ...q, isText: isTextType };
         });
 
-        // Test sırasını tamamen tekrar homojen dağıtmak için son bir kez daha karıştırıyoruz
         activeQuestions.sort(() => Math.random() - 0.5);
-
-        // Durum matrisini sıfırlıyoruz
         questionStates = activeQuestions.map(() => ({ status: 'unanswered', userA: '' }));
         
         currentQuestionIndex = 0;
@@ -409,11 +371,7 @@
         signatureClickCount = 0;
         quizBody.style.display = 'block';
         progressBarContainer.style.display = 'block';
-
-        if(aircraftType === 'da40') mainTitle.innerText = "Diamond DA40 NG";
-        if(aircraftType === 'a211') mainTitle.innerText = "Aquila A211";
-        if(aircraftType === 'da20') mainTitle.innerText = "Diamond DA20 Eclipse";
-        if(aircraftType === 'da42') mainTitle.innerText = "Diamond DA42 Twin Star";
+        questionCounter.style.display = 'block';
 
         buildMatrix();
         loadQuestion();
@@ -466,10 +424,8 @@
         const progressPercent = (answeredCount / activeQuestions.length) * 100;
         progressFill.style.width = `${progressPercent}%`;
 
-        // Soru Metni Başlığı
         questionText.innerHTML = currentQuestion.soru + (currentQuestion.isText ? " <br><small style='color:#328cc1;'>(Lütfen cevabı klavyeyle yazın)</small>" : "");
         
-        // Eğer soru tipi boşluk doldurma (Text) ise:
         if (currentQuestion.isText) {
             const container = document.createElement('div');
             container.classList.add('text-input-container');
@@ -502,7 +458,6 @@
                 showExplanationStatic(state.status === 'correct', currentQuestion.cevap, currentQuestion.aciklama);
             }
         } 
-        // Normal Şıklı Soru Düzeni ise:
         else {
             currentQuestion.secenekler.forEach(option => {
                 const button = document.createElement('button');
@@ -528,7 +483,6 @@
             }
         }
 
-        // Buton Yonetimi
         prevBtn.disabled = (currentQuestionIndex === 0);
         
         if (currentQuestionIndex === activeQuestions.length - 1) {
@@ -605,7 +559,6 @@
 
     function pasQuestion() {
         let state = questionStates[currentQuestionIndex];
-        // Sadece daha önce dokunulmadıysa PAS durumuna geçebilir
         if(state.status === 'unanswered') {
             state.status = 'pas';
             state.userA = '';
@@ -640,7 +593,6 @@
         
         userScoreMsg.innerText = `Pilot ${currentUser}, Bu Testteki Başarı Oranınız: %${percentage}`;
         
-        // Pasta Grafiği Çizdirme Tetikleyicisi
         setTimeout(() => {
             renderPieChart(correctCount, wrongCount, pasCount);
         }, 150);
@@ -663,7 +615,6 @@
         let radius = 75;
         let startAngle = 0;
 
-        // Dilimleri Çiz
         for (let i = 0; i < data.length; i++) {
             if(data[i] === 0) continue;
             let sliceAngle = (data[i] / total) * 2 * Math.PI;
@@ -678,7 +629,6 @@
             startAngle += sliceAngle;
         }
 
-        // Gösterge Paneli (Legend Panel)
         ctx.font = '12px Arial';
         let legendX = 200;
         let legendY = 50;
