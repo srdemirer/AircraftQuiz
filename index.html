@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uçuş Okulu Limit Sınav Portalı</title>
+    <title>Uçak Limitleri Testi</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -62,7 +62,7 @@
 
 <div class="quiz-container">
     <div class="header">
-        <h1 id="main-title">Uçuş Öncesi Limit Portalı ✈️</h1>
+        <h1 id="main-title">Uçak Limitleri Testi ✈️</h1>
         <p id="question-counter">Sistem Başlatılıyor...</p>
     </div>
     
@@ -79,9 +79,9 @@
     <div id="aircraft-selector" style="display: none;">
         <div id="welcome-msg" class="user-welcome"></div>
         <div class="options">
-            <button class="btn aircraft-btn" onclick="startQuiz('da40')">Diamond DA40 NG</button>
             <button class="btn aircraft-btn" onclick="startQuiz('a211')">Aquila A211</button>
             <button class="btn aircraft-btn" onclick="startQuiz('da20')">Diamond DA20 Eclipse</button>
+            <button class="btn aircraft-btn" onclick="startQuiz('da40')">Diamond DA40 NG</button>
             <button class="btn aircraft-btn" onclick="startQuiz('da42')">Diamond DA42 Twin Star</button>
         </div>
         
@@ -217,7 +217,7 @@
     };
 
     function showLoginScreen() {
-        mainTitle.innerText = "Uçuş Sınav Portalı ✈️";
+        mainTitle.innerText = "Uçak Limitleri Testi ✈️";
         questionCounter.innerText = "Kullanıcı Kaydı Gerekli";
         loginScreen.style.display = 'block';
         aircraftSelector.style.display = 'none';
@@ -241,11 +241,11 @@
         resultBody.style.display = 'none';
         progressBarContainer.style.display = 'none';
         
-        mainTitle.innerText = "Uçuş Öncesi Limit Portalı ✈️";
-        questionCounter.innerText = "Lütfen uçacağınız uçak tipini seçin";
+        mainTitle.innerText = "Uçak Limitleri Testi ✈️";
+        questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
         questionCounter.style.display = 'block';
         
-        welcomeMsg.innerText = `Kaptan Pilot: ${currentUser} 👩‍✈️👨‍✈️`;
+        welcomeMsg.innerText = `Pilot: ${currentUser} 👩‍✈️👨‍✈️`;
         aircraftSelector.style.display = 'block';
         
         drawChart(); // Grafik Çizdir
@@ -344,7 +344,7 @@
         document.getElementById('score').innerText = score;
         document.getElementById('total').innerText = activeQuestions.length;
         
-        userScoreMsg.innerText = `Sayın Kaptan ${currentUser}, bu testteki başarı oranınız: %${percentage}`;
+        userScoreMsg.innerText = `Pilot ${currentUser}, Bu Testteki Başarı Oranınınız: %${percentage}`;
     }
 
     function backToMenu() {
