@@ -11,6 +11,7 @@
             background-color: #f0f4f8;
             color: #1a202c;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -48,7 +49,6 @@
         .score-number { font-size: 3rem; font-weight: 800; color: #328cc1; margin-bottom: 20px; }
         .restart-btn { background-color: #328cc1; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 15px;}
         
-        /* Yeni Eklenen Alan Tasarımları */
         .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
         .input-control { padding: 14px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 1rem; }
         .input-btn { background-color: #0b3c5d; color: white; border: none; font-weight: bold; cursor: pointer; }
@@ -56,6 +56,16 @@
         .stats-title { font-weight: bold; color: #4a5568; margin-bottom: 10px; font-size: 1.1rem; }
         #stats-canvas { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; width: 100%; margin-top: 10px; }
         .user-welcome { font-size: 0.95rem; color: #4a5568; margin-bottom: 15px; font-weight: 600; text-align: center; }
+        
+        /* İstediğin Yeni Tasarım Alanları */
+        .question { font-size: 1.15rem; font-weight: 600; margin-bottom: 24px; padding-bottom: 12px; } /* Soru ve şıklar arası boşluk */
+        .footer-signature { font-size: 0.75rem; color: #a0aec0; margin-top: 25px; text-align: center; user-select: none; cursor: pointer; }
+        
+        /* Gizli Admin Paneli Stili */
+        .admin-panel { background: white; border-radius: 12px; padding: 15px; margin-top: 15px; width: 100%; max-width: 550px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: none; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+        .admin-table th, .admin-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
+        .admin-table th { background-color: #f7fafc; }
     </style>
 </head>
 <body>
@@ -104,6 +114,29 @@
         <div id="user-score-msg" style="font-weight: 600; color: #4a5568; margin-bottom: 10px;"></div>
         <button class="restart-btn" onclick="backToMenu()">Ana Menüye Dön</button>
     </div>
+</div>
+
+<div class="footer-signature" onclick="handleSignatureClick()">
+    Created by <span style="font-weight: 600; color: #718096;">S.R.Demirer</span>
+</div>
+
+<div id="admin-panel" class="admin-panel">
+    <div style="font-weight: bold; color: #2d3748; display: flex; justify-content: space-between;">
+        <span>📋 Cihaz Sınav Geçmişi (Admin)</span>
+        <button onclick="clearAdminLogs()" style="font-size: 0.75rem; cursor: pointer; background: #fed7d7; border: 1px solid #f56565; color: #c53030; border-radius: 4px; padding: 2px 6px;">Temizle</button>
+    </div>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Pilot Adı</th>
+                <th>A/C</th>
+                <th>Skor</th>
+                <th>Tarih</th>
+            </tr>
+        </thead>
+        <tbody id="admin-table-body">
+            </tbody>
+    </table>
 </div>
 
 <script>
@@ -179,7 +212,7 @@
             { soru: "DA42 NG uçağının Asla Aşılmaması Gereken Sürati (Vne) kaç KIAS'tır?", secenekler: ["172 KIAS", "188 KIAS", "197 KIAS", "155 KIAS"], cevap: "188 KIAS", aciklama: "Çift motorlu DA42 NG modelinde Vne sürati 188 KIAS'tır." },
             { soru: "DA42'de tek motorun emniyetle kumanda edilebileceği minimum sürat (Vmc) kaç KIAS'tır?", secenekler: ["68 KIAS", "71 KIAS", "76 KIAS", "85 KIAS"], cevap: "71 KIAS", aciklama: "Tek motor arızasında aerodinamik kumandayı yitirmemek için düşmemeniz gereken asgari kritik sürat (Vmc) 71 KIAS'tır." },
             { soru: "DA42 NG için Maksimum Kalkış Ağırlığı (MTOM) kaç kg'dır?", secenekler: ["1310 kg", "1785 kg", "1999 kg", "1900 kg"], cevap: "1999 kg", aciklama: "DA42 NG modelinin maksimum kalkış ağırlığı tam sınır olan 1999 kg'dır." },
-            { soru: "DA42'de iniş takımlarını açabileceğiniz maksimum sürat (Vloe) kaç KIAS'tır?", secenekler: ["110 KIAS", "130 KIAS", "188 KIAS", "152 KIAS"], cevap: "188 KIAS", aciklama: "DA42'de iniş takımını dışarıda tutma ve açma yapısal hız sınırı (Vlo) oldukça yüksektir ve 188 KIAS'tır." }
+            { soru: "DA42'de iniş takımlarını açabileceğiniz maksimum sürat (Vloe) kaç KIAS'tır?", secenekler: ["110 KIAS", "130 KIAS", "188 KIAS", "152 KIAS"], cevap: "188 KIAS", aciklama: "DA42'de iniş takımını dışarıda tutma ve açma yapısal hız sınırı (Vlo) oldukça yüksektir und 188 KIAS'tır." }
         ]
     };
 
@@ -188,8 +221,8 @@
     let score = 0;
     let currentUser = "";
     let selectedAircraft = "";
+    let signatureClickCount = 0;
 
-    // DOM Elementleri
     const loginScreen = document.getElementById('login-screen');
     const aircraftSelector = document.getElementById('aircraft-selector');
     const quizBody = document.getElementById('quiz-body');
@@ -204,8 +237,9 @@
     const mainTitle = document.getElementById('main-title');
     const welcomeMsg = document.getElementById('welcome-msg');
     const userScoreMsg = document.getElementById('user-score-msg');
+    const adminPanel = document.getElementById('admin-panel');
+    const adminTableBody = document.getElementById('admin-table-body');
 
-    // Sistem Açılış Kontrolü (Kullanıcı Var mı?)
     window.onload = function() {
         const storedUser = localStorage.getItem('pilot_name');
         if (storedUser) {
@@ -248,16 +282,23 @@
         welcomeMsg.innerText = `Pilot: ${currentUser} 👩‍✈️👨‍✈️`;
         aircraftSelector.style.display = 'block';
         
-        drawChart(); // Grafik Çizdir
+        drawChart();
+        updateAdminTable();
     }
 
     function startQuiz(aircraftType) {
         selectedAircraft = aircraftType;
-        activeQuestions = allQuizzes[aircraftType];
+        
+        // CRITICAL UPDATE: Ana soru listesini tamamen rastgele karıştırıyoruz
+        let rawQuestions = allQuizzes[aircraftType];
+        activeQuestions = [...rawQuestions].sort(() => Math.random() - 0.5);
+        
         currentQuestionIndex = 0;
         score = 0;
 
         aircraftSelector.style.display = 'none';
+        adminPanel.style.display = 'none'; // Test esnasında admin panelini kapat
+        signatureClickCount = 0;
         quizBody.style.display = 'block';
         progressBarContainer.style.display = 'block';
 
@@ -279,7 +320,7 @@
 
         questionText.innerText = currentQuestion.soru;
         
-        // Şıkları karıştırarak ekleme (Her defasında farklı dizilim)
+        // Şıkları kendi içinde karıştırarak ekleme
         let optionsShuffled = [...currentQuestion.secenekler].sort(() => Math.random() - 0.5);
 
         optionsShuffled.forEach(option => {
@@ -336,7 +377,6 @@
         progressBarContainer.style.display = 'none';
         questionCounter.style.display = 'none';
         
-        // Skoru kaydet
         const percentage = Math.round((score / activeQuestions.length) * 100);
         saveHistory(selectedAircraft, percentage);
 
@@ -351,18 +391,62 @@
         showMainMenu();
     }
 
-    // İSTATİSTİK VE SKOR TAKİP FONKSİYONLARI (Local Storage)
     function saveHistory(aircraft, pct) {
         let history = JSON.parse(localStorage.getItem('quiz_history')) || [];
         const newRecord = {
+            pilot: currentUser, // Hangi ismin çözdüğünü loglara ekliyoruz
             aircraft: aircraft.toUpperCase(),
             score: pct,
             date: new Date().toLocaleDateString('tr-TR', {hour: '2-digit', minute:'2-digit'})
         };
         history.push(newRecord);
-        // Son 5 kaydı tutalım grafik alanı için
-        if (history.length > 5) history.shift();
         localStorage.setItem('quiz_history', JSON.stringify(history));
+    }
+
+    // GİZLİ ADMİN PANELİ TETİKLEYİCİSİ (3 Tıklama)
+    function handleSignatureClick() {
+        signatureClickCount++;
+        if (signatureClickCount === 3) {
+            if (adminPanel.style.display === 'none' || adminPanel.style.display === '') {
+                updateAdminTable();
+                adminPanel.style.display = 'block';
+                // Sayfayı admin paneline doğru kaydır
+                adminPanel.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                adminPanel.style.display = 'none';
+            }
+            signatureClickCount = 0;
+        }
+    }
+
+    function updateAdminTable() {
+        const history = JSON.parse(localStorage.getItem('quiz_history')) || [];
+        adminTableBody.innerHTML = '';
+        
+        if(history.length === 0) {
+            adminTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#a0aec0;">Henüz sınav kaydı bulunmuyor.</td></tr>`;
+            return;
+        }
+
+        // En yeni çözümleri üstte göstermek için ters çeviriyoruz
+        [...history].reverse().forEach(log => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="font-weight:600;">${log.pilot || 'Bilinmeyen'}</td>
+                <td>${log.aircraft}</td>
+                <td style="font-weight:bold; color:${log.score >= 75 ? '#2f855a' : '#c53030'}">%${log.score}</td>
+                <td>${log.date}</td>
+            `;
+            adminTableBody.appendChild(row);
+        });
+    }
+
+    function clearAdminLogs() {
+        if(confirm("Tüm kullanıcı sınav geçmişini silmek istediğinize emin misiniz?")) {
+            localStorage.removeItem('quiz_history');
+            updateAdminTable();
+            drawChart();
+        }
     }
 
     function drawChart() {
@@ -379,12 +463,10 @@
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Grafik Ölçü Tanımlamaları
         const padding = 30;
         const chartWidth = canvas.width - padding * 2;
         const chartHeight = canvas.height - padding * 2;
         
-        // Eksen Çizgileri
         ctx.beginPath();
         ctx.strokeStyle = '#cbd5e0';
         ctx.lineWidth = 1;
@@ -393,18 +475,17 @@
         ctx.lineTo(canvas.width - padding, canvas.height - padding);
         ctx.stroke();
 
-        // Nokta koordinat hesaplamaları
         const points = [];
-        const stepX = history.length > 1 ? chartWidth / (history.length - 1) : chartWidth;
+        // Sadece son 5 testi grafiğe dök (Kullanıcı kalabalıklaşsa bile grafik taşmasın)
+        const displayHistory = history.slice(-5);
+        const stepX = displayHistory.length > 1 ? chartWidth / (displayHistory.length - 1) : chartWidth;
 
-        history.forEach((data, index) => {
+        displayHistory.forEach((data, index) => {
             const x = padding + (index * stepX);
-            // Y ekseni ters çalıştığı için 100% yukarıda, 0% aşağıda olacak şekilde formül:
             const y = (canvas.height - padding) - (data.score / 100 * chartHeight);
             points.push({x, y, label: data.aircraft, score: data.score});
         });
 
-        // Çizgi Çizimi
         if (points.length > 0) {
             ctx.beginPath();
             ctx.strokeStyle = '#328cc1';
@@ -416,14 +497,12 @@
             ctx.stroke();
         }
 
-        // Noktaları ve Etiketleri Basma
         points.forEach(p => {
             ctx.beginPath();
             ctx.fillStyle = '#0b3c5d';
             ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
             ctx.fill();
 
-            // Metin ve skor yazısı
             ctx.font = 'bold 9px Arial';
             ctx.fillStyle = '#4a5568';
             ctx.fillText(`%${p.score}`, p.x - 8, p.y - 10);
