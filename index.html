@@ -7,7 +7,6 @@
     <style>
         * { box-sizing: border-box; }
         
-        /* Tema Değişkenleri */
         :root {
             --bg-color: #f0f4f8;
             --container-bg: #ffffff;
@@ -19,7 +18,6 @@
             --btn-text: #4a5568;
         }
 
-        /* SHGM / EASA Sınav Teması (Öneri 6) */
         [data-theme="exam"] {
             --bg-color: #1a202c;
             --container-bg: #2d3748;
@@ -54,7 +52,6 @@
             position: relative;
         }
         
-        /* Tema Değiştirici Buton */
         .theme-switch {
             position: absolute;
             top: 15px;
@@ -67,6 +64,24 @@
             font-size: 0.75rem;
             cursor: pointer;
             font-weight: bold;
+        }
+
+        /* Sayaç Tasarımı (Öneri 1) */
+        .timer-badge {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #e53e3e;
+            background: #fff5f5;
+            padding: 4px 12px;
+            border-radius: 8px;
+            border: 2px solid #fed7d7;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        [data-theme="exam"] .timer-badge {
+            background: #742a2a;
+            border-color: #e53e3e;
+            color: #fff5f5;
         }
 
         .header { text-align: center; margin-bottom: 20px; padding-top: 10px; }
@@ -108,6 +123,8 @@
         .prev-style:disabled { opacity: 0.5; cursor: not-allowed; }
         .pas-style { background-color: #a0aec0; color: white; }
         .pas-style:hover { background-color: #718096; }
+        .flag-style { background-color: #ed8936; color: white; } /* Bayrak Butonu Stili */
+        .flag-style:hover { background-color: #dd6b20; }
         .next-style { background-color: var(--primary-color); color: white; box-shadow: 0 4px 6px rgba(11, 60, 93, 0.2); }
         [data-theme="exam"] .next-style { color: #1a202c; }
         .finish-style { background-color: #2f855a; color: white; }
@@ -118,6 +135,7 @@
         .matrix-box.m-correct { background-color: #48bb78; color: white; border-color: #38a169; }
         .matrix-box.m-wrong { background-color: #f56565; color: white; border-color: #e53e3e; }
         .matrix-box.m-pas { background-color: #a0aec0; color: white; border-color: #718096; }
+        .matrix-box.m-flag { background-color: #ed8936; color: white; border-color: #dd6b20; } /* Matris Bayrak Rengi (Öneri 2) */
 
         .score-container { text-align: center; padding: 10px 0; }
         .score-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
@@ -125,15 +143,17 @@
         .restart-btn { background-color: var(--accent-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 15px; width: 100%;}
         .review-btn { background-color: #ed8936; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; }
 
-        /* Kategori Analiz Listesi (Öneri 3) */
         .category-breakdown { margin-top: 20px; padding: 15px; background: #f7fafc; border-radius: 10px; text-align: left; border: 1px solid #e2e8f0; }
         [data-theme="exam"] .category-breakdown { background: #4a5568; border-color: #718096; }
         .category-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 500; }
         
-        /* İnceleme Modu Alanı (Öneri 5) */
         .review-list { max-height: 300px; overflow-y: auto; text-align: left; margin-top: 15px; padding: 10px; background: #fffaf0; border-radius: 8px; border: 1px dashed #dd6b20; }
         [data-theme="exam"] .review-list { background: #2d3748; color: #edf2f7; }
         .review-item { padding: 10px 0; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
+
+        /* Akıllı Tavsiye Paneli Tasarımı (Öneri 4) */
+        .insight-badge { background: #fffaf0; border: 1px solid #feebc8; color: #c05621; padding: 12px; border-radius: 10px; margin-top: 15px; font-size: 0.85rem; line-height: 1.4; font-weight: 500; display: none; }
+        [data-theme="exam"] .insight-badge { background: #7b341e; border-color: #c05621; color: #fffaf0; }
 
         .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
         .input-control { padding: 14px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 1rem; }
@@ -163,6 +183,7 @@
     <div class="header">
         <h1 id="main-title">Uçak Limitleri Testi ✈️</h1>
         <p id="question-counter">Sistem Başlatılıyor...</p>
+        <div id="quiz-timer" class="timer-badge" style="display: none;">15:00</div>
     </div>
     
     <div class="progress-bar" id="progress-bar-container"><div class="progress-fill" id="progress-fill"></div></div>
@@ -184,6 +205,8 @@
             <button class="btn aircraft-btn" disabled title="Yapım Aşamasındadır">Diamond DA42 Twin Star (Yapım Aşamasında)</button>
         </div>
         
+        <div class="insight-badge" id="weakness-insight-box"></div>
+
         <div class="stats-panel" id="stats-panel" style="display: none;">
             <div class="stats-title">📊 Son 5 Test Performans Grafiğiniz (%)</div>
             <canvas id="stats-canvas" height="150"></canvas>
@@ -201,7 +224,7 @@
         <div class="nav-controls">
             <button class="nav-btn prev-style" id="prev-btn" onclick="prevQuestion()">Önceki</button>
             <button class="nav-btn pas-style" id="pas-btn" onclick="pasQuestion()">PAS</button>
-            <button class="nav-btn next-style" id="next-btn" onclick="handleNextOrFinish()">Sonraki</button>
+            <button class="nav-btn flag-style" id="flag-btn" onclick="flagQuestion()">FLA 🚩</button> <button class="nav-btn next-style" id="next-btn" onclick="handleNextOrFinish()">Sonraki</button>
         </div>
 
         <div class="matrix-container" id="matrix-container"></div>
@@ -248,7 +271,6 @@
 </div>
 
 <script>
-    // Sorulara kategori etiketleri eklendi (Öneri 3)
     const allQuizzes = {
         da40: [
             { soru: "VFE Landing Flap Sürati Nedir?", secenekler: ["98 KIAS", "110 KIAS", "130 KIAS", "88 KIAS"], cevap: "98 KIAS", aciklama: "Landing flapları tam açıkken yapısal sınır 98 KIAS'tır.", cat: "Hız Limitleri" },
@@ -316,6 +338,27 @@
     let signatureClickCount = 0;
     let questionStates = []; 
 
+    // Süreç Değişkenleri (Öneri 1)
+    let quizTimerInterval = null;
+    let timeLeft = 900; // 15 Dakika (Saniye cinsinden)
+
+    // Ses Sentezleyici Motoru (Öneri 5)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq, type, duration) {
+        try {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        } catch(e) { console.log("Ses motoru başlatılamadı."); }
+    }
+
     const loginScreen = document.getElementById('login-screen');
     const aircraftSelector = document.getElementById('aircraft-selector');
     const quizBody = document.getElementById('quiz-body');
@@ -334,6 +377,8 @@
     const matrixContainer = document.getElementById('matrix-container');
     const categoryBreakdownBox = document.getElementById('category-breakdown-box');
     const reviewListBox = document.getElementById('review-list-box');
+    const quizTimerView = document.getElementById('quiz-timer');
+    const weaknessInsightBox = document.getElementById('weakness-insight-box');
     
     const prevBtn = document.getElementById('prev-btn');
     const pasBtn = document.getElementById('pas-btn');
@@ -349,7 +394,6 @@
         }
     };
 
-    // Tema Değiştirme Fonksiyonu (Öneri 6)
     function toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const btn = document.getElementById('theme-toggle-btn');
@@ -387,6 +431,8 @@
         resultBody.style.display = 'none';
         progressBarContainer.style.display = 'none';
         reviewListBox.style.display = 'none';
+        quizTimerView.style.display = 'none';
+        clearInterval(quizTimerInterval);
         
         mainTitle.innerText = "Uçak Limitleri Testi ✈️";
         questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
@@ -395,8 +441,68 @@
         welcomeMsg.innerText = `Pilot: ${currentUser} 👩‍✈️👨‍✈️`;
         aircraftSelector.style.display = 'block';
         
+        // Akıllı İstatistik Çıkarımı Çalıştır (Öneri 4)
+        generateWeaknessInsight();
         drawChart();
         updateAdminTable();
+    }
+
+    // Akıllı Kategori Hata Analiz Motoru (Öneri 4)
+    function generateWeaknessInsight() {
+        const history = JSON.parse(localStorage.getItem('quiz_history')) || [];
+        if (history.length === 0 || !localStorage.getItem('cat_errors')) {
+            weaknessInsightBox.style.display = 'none';
+            return;
+        }
+        
+        const errors = JSON.parse(localStorage.getItem('cat_errors')) || {};
+        let worstCategory = "";
+        let maxErrors = 0;
+
+        for (const [cat, count] of Object.entries(errors)) {
+            if (count > maxErrors) {
+                maxErrors = count;
+                worstCategory = cat;
+            }
+        }
+
+        if (maxErrors > 1) {
+            weaknessInsightBox.innerHTML = `⚠️ <strong>Uçuş Emniyet Notu:</strong> Yapılan son test analizlerine göre <strong>"${worstCategory}"</strong> konusundaki limitlerde hata oranınız yüksek çıkmıştır. Uçuş öncesi bu bölüme ağırlık vermeniz önerilir.`;
+            weaknessInsightBox.style.display = 'block';
+        } else {
+            weaknessInsightBox.style.display = 'none';
+        }
+    }
+
+    // Zamanlayıcı Sayaç Döngüsü (Öneri 1)
+    function startTimer() {
+        timeLeft = 900; // 15 Dakika
+        quizTimerView.style.display = 'inline-block';
+        updateTimerDisplay();
+        
+        quizTimerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+            
+            if (timeLeft <= 30 && timeLeft % 2 === 0) {
+                // Son 30 saniye kokpit ikaz sesi
+                playBeep(880, 'sine', 0.1);
+            }
+
+            if (timeLeft <= 0) {
+                clearInterval(quizTimerInterval);
+                // Master Caution Sesi
+                playBeep(440, 'sawtooth', 0.8);
+                alert("Süre Sınırı Doldu! Sınavınız Otomatik Kilitleniyor.");
+                showResult();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        quizTimerView.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 
     function startQuiz(aircraftType) {
@@ -418,6 +524,7 @@
 
         buildMatrix();
         loadQuestion();
+        startTimer(); // Sayacı Başlat
     }
 
     function buildMatrix() {
@@ -434,7 +541,7 @@
     function updateMatrixUI() {
         const boxes = matrixContainer.querySelectorAll('.matrix-box');
         boxes.forEach((box, idx) => {
-            box.classList.remove('active', 'm-correct', 'm-wrong', 'm-pas');
+            box.classList.remove('active', 'm-correct', 'm-wrong', 'm-pas', 'm-flag');
             
             if (idx === currentQuestionIndex) {
                 box.classList.add('active');
@@ -446,6 +553,8 @@
                 box.classList.add('m-wrong');
             } else if (questionStates[idx].status === 'pas') {
                 box.classList.add('m-pas');
+            } else if (questionStates[idx].status === 'flagged') {
+                box.classList.add('m-flag');
             }
         });
     }
@@ -463,13 +572,12 @@
         let state = questionStates[currentQuestionIndex];
         
         questionCounter.innerText = `Soru ${currentQuestionIndex + 1} / ${activeQuestions.length}`;
-        const answeredCount = questionStates.filter(s => s.status !== 'unanswered').length;
+        const answeredCount = questionStates.filter(s => s.status !== 'unanswered' && s.status !== 'flagged').length;
         const progressPercent = (answeredCount / activeQuestions.length) * 100;
         progressFill.style.width = `${progressPercent}%`;
 
         questionText.innerHTML = currentQuestion.soru;
         
-        // Şıkları Rastgele Karıştırma Algoritması (Öneri 2)
         let randomizedOptions = [...currentQuestion.secenekler].sort(() => Math.random() - 0.5);
 
         randomizedOptions.forEach(option => {
@@ -477,7 +585,7 @@
             button.innerText = option;
             button.classList.add('btn');
             
-            if (state.status === 'unanswered') {
+            if (state.status === 'unanswered' || state.status === 'flagged') {
                 button.addEventListener('click', () => checkMultipleChoice(button, option, currentQuestion.cevap, currentQuestion.aciklama));
             } else {
                 button.disabled = true;
@@ -491,7 +599,7 @@
             optionsContainer.appendChild(button);
         });
 
-        if(state.status !== 'unanswered') {
+        if(state.status !== 'unanswered' && state.status !== 'flagged') {
             showExplanationStatic(state.status === 'correct', currentQuestion.cevap, currentQuestion.aciklama);
         }
 
@@ -510,6 +618,7 @@
 
     function checkMultipleChoice(selectedBtn, selectedOption, correctAnswer, aciklama) {
         let state = questionStates[currentQuestionIndex];
+        let currentQuestion = activeQuestions[currentQuestionIndex];
         state.userA = selectedOption;
         
         const buttons = optionsContainer.querySelectorAll('.btn');
@@ -518,16 +627,39 @@
         if (selectedOption === correctAnswer) {
             state.status = 'correct';
             selectedBtn.classList.add('correct');
+            playBeep(1200, 'sine', 0.15); // Doğru Bildirim Sesi (Öneri 5)
         } else {
             state.status = 'wrong';
             selectedBtn.classList.add('wrong');
             buttons.forEach(btn => {
                 if(btn.innerText === correctAnswer) btn.classList.add('correct');
             });
+            playBeep(250, 'square', 0.3); // Yanlış İkaz Sesi (Öneri 5)
+            
+            // Kategori Hata Sayacını Güncelle (Öneri 4)
+            logCategoryError(currentQuestion.cat);
         }
 
         showExplanationStatic(state.status === 'correct', correctAnswer, aciklama);
         updateMatrixUI();
+    }
+
+    // Soruyu Bayraklama Modülü Fonksiyonu (Öneri 2)
+    function flagQuestion() {
+        let state = questionStates[currentQuestionIndex];
+        if (state.status === 'unanswered') {
+            state.status = 'flagged';
+        } else if (state.status === 'flagged') {
+            state.status = 'unanswered';
+        }
+        updateMatrixUI();
+        handleNextOrFinish();
+    }
+
+    function logCategoryError(category) {
+        let errors = JSON.parse(localStorage.getItem('cat_errors')) || {};
+        errors[category] = (errors[category] || 0) + 1;
+        localStorage.setItem('cat_errors', JSON.stringify(errors));
     }
 
     function showExplanationStatic(isCorrect, rightAnswer, text) {
@@ -544,7 +676,7 @@
 
     function pasQuestion() {
         let state = questionStates[currentQuestionIndex];
-        if(state.status === 'unanswered') {
+        if(state.status === 'unanswered' || state.status === 'flagged') {
             state.status = 'pas';
             state.userA = '';
         }
@@ -561,13 +693,15 @@
     }
 
     function showResult() {
+        clearInterval(quizTimerInterval); // Sayacı durdur
+        quizTimerView.style.display = 'none';
         quizBody.style.display = 'none';
         progressBarContainer.style.display = 'none';
         questionCounter.style.display = 'none';
         
         let correctCount = questionStates.filter(s => s.status === 'correct').length;
         let wrongCount = questionStates.filter(s => s.status === 'wrong').length;
-        let pasCount = questionStates.filter(s => s.status === 'pas' || s.status === 'unanswered').length;
+        let pasCount = questionStates.filter(s => s.status === 'pas' || s.status === 'unanswered' || s.status === 'flagged').length;
         
         const percentage = Math.round((correctCount / activeQuestions.length) * 100);
         saveHistory(selectedAircraft, percentage);
@@ -578,10 +712,7 @@
         
         userScoreMsg.innerText = `Pilot ${currentUser}, Bu Testteki Başarı Oranınız: %${percentage}`;
         
-        // Kategori Analizini Hesapla ve Yazdır (Öneri 3)
         calculateCategoryMetrics();
-
-        // İnceleme Listesini Temizle ve Hazırla (Öneri 5)
         buildReviewList();
 
         setTimeout(() => {
@@ -589,7 +720,6 @@
         }, 150);
     }
 
-    // Kategori Başarı Hesaplama Modülü (Öneri 3)
     function calculateCategoryMetrics() {
         const catData = {};
         activeQuestions.forEach((q, idx) => {
@@ -616,7 +746,6 @@
         categoryBreakdownBox.innerHTML = html;
     }
 
-    // Yanlış Yapılan Soruları İnceleme Listesi Üretici (Öneri 5)
     function buildReviewList() {
         reviewListBox.innerHTML = '';
         let wrongQuestions = activeQuestions.filter((_, idx) => questionStates[idx].status === 'wrong');
@@ -661,7 +790,7 @@
 
         const data = [correct, wrong, pas];
         const colors = ['#48bb78', '#f56565', '#a0aec0']; 
-        const labels = ['Doğru', 'Yanlış', 'Boş/Pas'];
+        const labels = ['Doğru', 'Yanlış', 'Boş/Pas/Flag'];
 
         let centerX = 100;
         let centerY = 100;
@@ -749,6 +878,7 @@
     function clearAdminLogs() {
         if(confirm("Tüm kullanıcı sınav geçmişini silmek istediğinize emin misiniz?")) {
             localStorage.removeItem('quiz_history');
+            localStorage.removeItem('cat_errors'); // Hata analizini de sıfırla
             updateAdminTable();
             drawChart();
         }
