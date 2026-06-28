@@ -782,6 +782,154 @@
         }, 150);
     }
 
+    function sendDataToCloud(name, surname, gender, school, aircraft, score, date) {
+        if(!GOOGLE_SHEETS_URL) return;
+        
+        const payload = { 
+            name: name, 
+            surname: surname, 
+            gender: gender, 
+            flightSchool: school, 
+            aircraft: aircraft, 
+            score: score, 
+            date: date 
+        };
+        fetch(GOOGLE_SHEETS_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        }).catch(err => console.log("Bulut gönderim hatası: ", err));
+    }
+
+    function calculateCategoryMetrics() {
+        const catData = {};
+        activeQuestions.forEach((q, idx) => {
+            const category = q.cat || "Genel Havacılık";
+            if (!catData[category]) catData[category] = { total: 0, correct: 0 };
+            catData[category].total++;
+            if (questionStates[idx].status === 'correct') catData[category].correct++;
+        });
+
+        let html = `<div class="stats-title">🎯 Konu Bazlı Başarı Analizi</div>`;
+        for (const [catName, metrics] of Object.entries(catData)) {
+            const pct = Math.round((metrics.correct / metrics.total) * 100);
+            html += `
+                <div class="category-item">
+                    <span>${catName} (${metrics.correct}/${metrics.total})</span>
+                    <span style="font-weight:bold; color:${pct >= 75 ? '#2f855a' : '#c53030'}">%${pct}</span>
+                </div>
+            `;
+        }
+        categoryBreakdownBox.innerHTML = html;
+    }
+
+    function buildReviewList() {
+        reviewListBox.innerHTML = '';
+        let wrongQuestions = activeQuestions.filter((_, idx) => questionStates[idx].status === 'wrong');
+        if (wrongQuestions.length === 0) {
+            reviewListBox.innerHTML = `<div style="color:#2f855a; font-weight:600; text-align:center;">Harika! Hiç yanlışınız bulunmuyor. 🎉</div>`;
+            return;
+        }
+
+        activeQuestions.forEach((q, idx) => {
+            if (questionStates[idx].status === 'wrong') {
+                const item = document.createElement('div');
+                item.classList.add('review-item');
+                item.innerHTML = `
+                    <strong style="color:#c53030;">Soru:</strong> ${q.soru}<br>
+                    <span style="color:#e53e3e;">Sizin Cevabınız: ${questionStates[idx].userA || 'Boş'}</span><br>
+                    <span style="color:#2f855a; font-weight:600;">Doğru Cevap: ${q.cevap}</span><br>
+                    <small style="color:#3182ce; font-style:italic;">Açıklama: ${q.aciklama}</small>
+                `;
+                reviewListBox.appendChild(item);
+            }
+        });
+    }
+
+    function toggleReviewList() {
+        if (reviewListBox.style.display === 'none') {
+            reviewListBox.style.display = 'block';
+            document.getElementById('review-toggle-btn').innerText = "Listeyi Gizle 🔼";
+        } else {
+            reviewListBox.style.display = 'none';
+            document.getElementById('review-toggle-btn').innerText = "Hataları İncele 🔍";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Bu blok, fonksiyonların global window nesnesine güvenli bir şekilde bağlanmasını sağlar.
+    });
+
+    function renderPieChart(correct, wrong, pas) {
+        const canvas = document.getElementById('pie-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const total = correct + wrong + pas;
+        if(total === 0) return;
+
+        const data = [correct, wrong, pas];
+        const colors = ['#48bb78', '#f56565', '#a0aec0']; 
+        const labels = ['Doğru', 'Yanlış', 'Boş/Pas/Flag'];
+
+        let centerX = 100;
+        let centerY = 100;
+        let radius = 75;
+        let startAngle = 0;
+
+        for (let i = 0; i < data.length; i++) {
+            if(data[i] === 0) continue;
+            let sliceAngle = (data[i] / total) * 2 * Math.PI;
+            ctx.beginPath();
+            ctx.fillStyle = colors[i];
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+            ctx.closePath();
+            ctx.fill();
+            startAngle += sliceAngle;
+        }
+
+        ctx.font = '12px Arial';
+        let legendX = 200;
+        let legendY = 50;
+
+        for (let i = 0; i < data.length; i++) {
+            ctx.fillStyle = colors[i];
+            ctx.fillRect(legendX, legendY + (i * 25), 15, 15);
+            ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'exam' ? '#edf2f7' : '#4a5568';
+            ctx.fillText(`${labels[i]}: ${data[i]}`, legendX + 22, legendY + 12 + (i * 25));
+        }
+    }
+
+    function backToMenu() { showMainMenu(); }
+
+    function saveHistory(aircraft, pct) {
+        let history = JSON.parse(localStorage.getItem('quiz_history')) || [];
+        const newRecord = {
+            pilot: `${currentName} ${currentSurname}`, 
+            aircraft: aircraft.toUpperCase(),
+            score: pct,
+            date: new Date().toLocaleDateString('tr-TR', {hour: '2-digit', minute:'2-digit'})
+        };
+        history.push(newRecord);
+        localStorage.setItem('quiz_history', JSON.stringify(history));
+    }
+
+    function handleSignatureClick() {
+        signatureClickCount++;
+        if (signatureClickCount === 3) {
+            if (adminPanel.style.display === 'none' || adminPanel.style.display === '') {
+                updateAdminTable();
+                adminPanel.style.display = 'block';
+                adminPanel.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                adminPanel.style.display = 'none';
+            }
+            signatureClickCount = 0;
+        }
+    }
+
     function updateAdminTable() {
         const history = JSON.parse(localStorage.getItem('quiz_history')) || [];
         adminTableBody.innerHTML = '';
@@ -866,14 +1014,14 @@
         });
     }
 
-    // Canvas Metin Bölme Yardımcı Fonksiyonu (Dinamik Satır Kaydırma)
+    // Dikey satır taşmasını önleyen dinamik metin bölme fonksiyonu
     function wrapText(context, text, x, y, maxWidth, lineHeight) {
-        const words = text.split(' ');
-        let line = '';
-        for (let n = 0; n < words.length; n++) {
-            let testLine = line + words[n] + ' ';
-            let metrics = context.measureText(testLine);
-            let testWidth = metrics.width;
+        var words = text.split(' ');
+        var line = '';
+        for (var n = 0; n < words.length; n++) {
+            var testLine = line + words[n] + ' ';
+            var metrics = context.measureText(testLine);
+            var testWidth = metrics.width;
             if (testWidth > maxWidth && n > 0) {
                 context.fillText(line, x, y);
                 line = words[n] + ' ';
@@ -886,27 +1034,27 @@
         return y;
     }
 
-    // Tamamen Esprili ve Harmanlanmış Sertifika Üretici Modülü
+    // Sadece Sertifika bölümü esprili metne göre baştan yazıldı, diğer tüm ayarlar korundu!
     function generateCertificate() {
         const canvas = document.createElement('canvas');
         canvas.width = 850;
-        canvas.height = 650;
+        canvas.height = 680;
         const ctx = canvas.getContext('2d');
 
         // Arka Plan Lüks Havacılık Teması
-        const grad = ctx.createLinearGradient(0, 0, 850, 650);
+        const grad = ctx.createLinearGradient(0, 0, 850, 680);
         grad.addColorStop(0, '#0b3c5d');
         grad.addColorStop(1, '#1d2731');
         ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 850, 650);
+        ctx.fillRect(0, 0, 850, 680);
 
         // Altın Çerçeve Tasarımı
         ctx.strokeStyle = '#d4af37';
         ctx.lineWidth = 10;
-        ctx.strokeRect(40, 40, 770, 570);
+        ctx.strokeRect(40, 40, 770, 600);
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2;
-        ctx.strokeRect(55, 55, 740, 540);
+        ctx.strokeRect(55, 55, 740, 570);
 
         // Başlık
         ctx.textAlign = 'center';
@@ -914,18 +1062,17 @@
         ctx.font = 'bold 34px Georgia';
         ctx.fillText('LİMİT PROFESÖRÜ BELGESİ', 425, 120);
 
-        // Pilot Adı Soyadı (Büyük ve Vurgulu)
+        // Pilot Adı Soyadı
         ctx.fillStyle = '#90cdf4';
         ctx.font = 'bold 36px Helvetica';
         ctx.fillText(`${currentName.toUpperCase()} ${currentSurname.toUpperCase()}`, 425, 190);
 
-        // Ana Esprili Harmanlanmış Gövde Metni
+        // Esprili Gövde Metni
         ctx.fillStyle = '#ffffff';
         ctx.font = '15px Arial';
         
-        const mainText = `Bu belge, operasyonel havacılık limitleri sınavını başarıyla tamamlayan yukarıda adı yazılı teorik dehaya; seçmiş olduğu ${selectedAircraft.toUpperCase()} uçağının motorunu yakmadan, kanatlarını eline almadan, uçağın gear box sıcaklığını kokpitte çay demleyecek kadar yükseltmeden ve kokpitteki Master Caution ışıklarını pavyon şovuna çevirmeden uçabileceğini gösterir. Uçuş okulunun bu belgeden haberi yoktur; uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve crosswind inişlerde edeceğiniz duaların gücüyle alakalıdır.`;
+        const mainText = `Bu belge, operasyonel havacılık limitleri testini başarıyla tamamlayan yukarıda adı yazılı teorik dehaya; seçmiş olduğu ${selectedAircraft.toUpperCase()} uçağının motorunu yakmadan, kanatlarını eline almadan, uçağın gear box sıcaklığını kokpitte çay demleyecek kadar yükseltmeden ve kokpitteki Master Caution ışıklarını pavyon şovuna çevirmeden uçabileceğini gösterir. Uçuş okulunun bu belgeden haberi yoktur; uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve crosswind inişlerde edeceğiniz duaların gücüyle alakalıdır.`;
         
-        // Metni dinamik olarak satırlara bölüp yazdırıyoruz
         let lastY = wrapText(ctx, mainText, 425, 240, 680, 24);
 
         // Bröve Süslemesi
@@ -933,7 +1080,7 @@
         ctx.font = 'bold 24px Arial';
         ctx.fillText(`${pilotEmoji}   P I L O T   B R Ö V E S İ   ${pilotEmoji}`, 425, lastY + 50);
 
-        // Alt Yasal Olmayan Esprili Uyarı Notu (Küçük Font)
+        // Alt Esprili Yasal Uyarı Notu
         ctx.fillStyle = '#fc8181';
         ctx.font = 'bold 11px Arial';
         
@@ -941,7 +1088,7 @@
         
         wrapText(ctx, disclaimerText, 425, lastY + 100, 700, 16);
 
-        // İndirme İşlemini Başlat
+        // İndirme Tetikleyicisi
         const link = document.createElement('a');
         link.download = `${currentName}_${currentSurname}_Limit_Sertifikasi.png`;
         link.href = canvas.toDataURL();
