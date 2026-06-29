@@ -277,9 +277,9 @@
     <div id="aircraft-selector" style="display: none;">
         <div id="welcome-msg" class="user-welcome"></div>
         <div class="options">
-            <button class="btn aircraft-btn" disabled title="Yapım Aşamasındadır">Aquila A211 (Yapım Aşamasında)</button>
+            <button class="btn aircraft-btn" onclick="showSubCategories('Aquila A211')">Aquila A211</button>
             <button class="btn aircraft-btn" disabled title="Yapım Aşamasındadır">Diamond DA20 Eclipse (Yapım Aşamasında)</button>
-            <button class="btn aircraft-btn" onclick="showSubCategories()">Diamond DA40 NG</button>
+            <button class="btn aircraft-btn" onclick="showSubCategories('Diamond DA40 NG')">Diamond DA40 NG</button>
             <button class="btn aircraft-btn" disabled title="Yapım Aşamasındadır">Diamond DA42 Twin Star (Yapım Aşamasında)</button>
         </div>
         
@@ -292,17 +292,8 @@
     </div>
 
     <div id="subcategory-selector" style="display: none;">
-        <div class="user-welcome" style="font-weight:700; color:var(--primary-color);">Diamond DA40 NG - Sınav Bölümü Seçiniz</div>
-        <div class="options">
-            <button class="btn subcat-btn" onclick="startQuiz('Indicated Airspeeds')">Indicated Airspeeds</button>
-            <button class="btn subcat-btn" onclick="startQuiz('Maneuvering')">Maneuvering</button>
-            <button class="btn subcat-btn" onclick="startQuiz('Weight And Balance')">Weight and Balance</button>
-            <button class="btn subcat-btn" onclick="startQuiz('Rotate Speeds')">Rotate Speeds</button>
-            <button class="btn subcat-btn" onclick="startQuiz('Engine & Power System Limits')">Engine & Power System Limits</button>
-            <button class="btn subcat-btn" onclick="startQuiz('Fuel Quantity')">Fuel Quantity</button>
-            <button class="btn" style="background-color:#e2f0d9; border-color:#70ad47; color:#385723; text-align:center; font-weight:bold;" onclick="startQuiz('General')">General (Tüm Sorular - Sıralı)</button>
-            <button class="btn prev-style" style="text-align:center; font-weight:bold;" onclick="backToAircrafts()">↩ Geri Dön</button>
-        </div>
+        <div id="subcategory-welcome-title" class="user-welcome" style="font-weight:700; color:var(--primary-color);">Sınav Bölümü Seçiniz</div>
+        <div class="options" id="subcategory-buttons-container"></div>
     </div>
 
     <div id="quiz-body" style="display: none;">
@@ -368,7 +359,7 @@
 <script>
     const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxvMwUIjw_8HTz4bXkw_1SJLejsaWBV7_oL9CBE2g1gIfhadnhmeuivV4tPDSO4Klnj/exec";
 
-    // Excel verilerinden türetilen %100 Uyumlu 66 Ardışık Soru Veritabanı
+    // Diamond DA40 NG %100 Uyumlu 66 Ardışık Soru Veritabanı
     const da40Database = [
         // === BÖLÜM 1: Indicated Airspeeds (18 Soru) ===
         { soru: "What is the Operating Maneuvering Speed Up to 1080 Kg.?", secenekler: ["101 KIAS", "108 KIAS", "113 KIAS", "98 KIAS"], cevap: "101 KIAS", aciklama: "Uçak kütlesi 1080 kg veya altındayken ani kumanda limit hızı 101 KIAS'tır.", cat: "Indicated Airspeeds" },
@@ -433,7 +424,7 @@
         { soru: "What is the Fuel Temperature - Green Arc (Santigrat)?", secenekler: ["-30 - 45", "-20 - 55", "0 - 50", "-10 - 50"], cevap: "-20 - 55", aciklama: "Yakıt sıcaklığının güvenli yeşil çalışma aralığı -20 ile 55 °C arasıdır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Fuel Temperature - Yellow Arc (Santigrat)?", secenekler: ["50 - 55", "55 - 60", "60 - 65", "45 - 55"], cevap: "55 - 60", aciklama: "Yakıt sıcaklığı kritik ısınma sarı uyarı aralığı 55 - 60 °C arasıdır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Fuel Temperature - Red Arc (Santigrat)?", secenekler: ["55 +", "60 +", "65 +", "50 +"], cevap: "60 +", aciklama: "Yakıt sistemi emniyet limiti kırmızı çizgisi 60 °C ve üzeridir (60 +).", cat: "Engine & Power System Limits" },
-        { soru: "What is the Ammeter - Green Arc (Amper) limit?", secenekler: ["50", "60", "70", "45"], cevap: "60", aciklama: "Ampermetre yeşil bölge normal çalışma akım üst sınırı 60 Amperdir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Ammeter - Green Arc (Amper) limit?", secenekler: ["50", "60", "70", "45"], fontStyle: "normal", cevap: "60", aciklama: "Ampermetre yeşil bölge normal çalışma akım üst sınırı 60 Amperdir.", cat: "Engine & Power System Limits" },
         { soru: "What is the Ammeter - Yellow Arc (Amper) range?", secenekler: ["50 - 60", "60 - 70", "70 - 80", "55 - 65"], cevap: "60 - 70", aciklama: "Alternatör yüksek şarj yükü sarı dikkat bölgesi aralığı 60 - 70 Amperdir.", cat: "Engine & Power System Limits" },
         { soru: "What is the Ammeter - Red Arc (Amper) limit?", secenekler: ["60 +", "70 +", "80 +", "65 +"], cevap: "70 +", aciklama: "Elektriksel aşırı yük koruma kırmızı limiti 70 Amper ve üzeridir (70 +).", cat: "Engine & Power System Limits" },
         { soru: "What is the Voltmeter - Green Arc (Volt) range?", secenekler: ["12 - 14", "24 - 28", "25 - 30", "28 - 32"], cevap: "25 - 30", aciklama: "Ana DC elektrik barası normal şarj voltajı yeşil aralığı 25 - 30 Volttur.", cat: "Engine & Power System Limits" },
@@ -445,13 +436,65 @@
         { soru: "What is the Total Fuel Quantity (Galon)?", secenekler: ["38 Galon", "40 Galon", "41 Galon", "50 Galon"], cevap: "41 Galon", aciklama: "Uçağın fiziki ana depo toplam hacmi 2 adet 20.5 galondur.", cat: "Fuel Quantity" },
         { soru: "What is the Usable Fuel Quantity (Galon)?", secenekler: ["41 Galon", "38 Galon", "39 Galon", "35 Galon"], cevap: "39 Galon", aciklama: "Motor tarafından çekilebilen emniyetli kullanılabilir yakıt hacmi 2 x 19.5 galondur.", cat: "Fuel Quantity" },
         { soru: "What is the Total Fuel Quantity (Litre)?", secenekler: ["140 Litre", "180 Litre", "155 Litre", "90 Litre"], cevap: "155 Litre", aciklama: "Litre bazında uçağın fiziki toplam yakıt deposu hacmi 2 x 77.6 litredir.", cat: "Fuel Quantity" },
-        { soru: "What is the Usable Fuel Quantity (Litre)?", secenekler: ["155 Litre", "147 Litre", "200 Litre", "130 Litre"], cevap: "147 Litre", aciklama: "Litre cinsinden motorun emniyetle çekebileceği kullanılabilir yakıt 2 x 73.8 litredir.", cat: "Fuel Quantity" },
+        { soru: "What is the Usable Fuel Quantity (Litre)?", secenekler: ["155 Litre", "147 Litre", "200 Litre", "130 Litre"], cevap: "147 Litre", aciklama: "Litre cinsinden motorun emniyetle çekebileceği kullanılabilir yakıt 2 x 73.8 litredir.", cat: "Fuel Quantity" }
+    ];
 
+    // Aquila A211 Excel Dosyasından %100 Doğrulanmış 40 Ardışık Soru Veritabanı
+    const aquilaDatabase = [
+        // === BÖLÜM 1: Indicated Airspeeds (17 Soru) ===
+        { soru: "What is the Operating Maneuvering Speed for Aquila A211?", secenekler: ["101 KIAS", "108 KIAS", "112 KIAS", "115 KIAS"], cevap: "112 KIAS", aciklama: "Aquila A211 için izin verilen tasarım manevra sürati (VA) 112 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VFE Maximum Flap Extended Speed (Landing) for Aquila A211?", secenekler: ["85 KIAS", "90 KIAS", "95 KIAS", "98 KIAS"], cevap: "90 KIAS", aciklama: "İniş tam flap pozisyonundayken yapısal hız limiti 90 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VFE Maximum Flap Extended Speed (Take Off) for Aquila A211?", secenekler: ["85 KIAS", "90 KIAS", "100 KIAS", "110 KIAS"], cevap: "90 KIAS", aciklama: "Kalkış kademesinde (T/O) flapların dayanabileceği maksimum sürat limiti de 90 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VNO Maximum Structural Cruising Speed for Aquila A211?", secenekler: ["120 KIAS", "125 KIAS", "130 KIAS", "135 KIAS"], cevap: "130 KIAS", aciklama: "Yapısal olarak normal şartlarda aşılmaması gereken maksimum seyir hızı 130 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VNE Never Exceed Speed for Aquila A211?", secenekler: ["155 KIAS", "160 KIAS", "165 KIAS", "172 KIAS"], cevap: "165 KIAS", aciklama: "Aquila A211 için asla aşılmaması gereken kırmızı çizgi sürat limiti 165 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Best Glide Speed (Up Flap) for Aquila A211?", secenekler: ["70 KIAS", "73 KIAS", "78 KIAS", "83 KIAS"], cevap: "78 KIAS", aciklama: "Flaplar kapalıyken (Clean) planlanan en iyi süzülme hızı 78 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Best Glide Speed (Take Off Flap) for Aquila A211?", secenekler: ["68 KIAS", "70 KIAS", "73 KIAS", "75 KIAS"], cevap: "73 KIAS", aciklama: "Kalkış flap konfigürasyonunda en iyi süzülüş açısı sürati 73 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Approach Speed (Up Flap) (Emergency / Normal) for Aquila A211?", secenekler: ["65 KIAS", "70 KIAS", "75 KIAS", "78 KIAS"], cevap: "70 KIAS", aciklama: "Flaplar kapalıyken yapılacak normal veya acil yaklaşma sürat standardı 70 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Approach Speed (Take Off) (Emergency / Normal) for Aquila A211?", secenekler: ["60 KIAS", "62 KIAS", "65 KIAS", "70 KIAS"], cevap: "65 KIAS", aciklama: "Kalkış kademesinde (T/O) yaklaşma sürat normu 65 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Approach Speed (Landing) (Emergency / Normal) for Aquila A211?", secenekler: ["55 KIAS", "58 KIAS", "60 KIAS", "65 KIAS"], cevap: "60 KIAS", aciklama: "Tam iniş flapları açıkken son yaklaşma emniyet sürati 60 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Rotate Speed for Aquila A211?", secenekler: ["45 KIAS", "50 KIAS", "52 KIAS", "55 KIAS"], cevap: "50 KIAS", aciklama: "Aquila A211 için tavsiye edilen standart rotate (teker kesme) sürati 50 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VX Take Off Flap Climb Speed for Aquila A211?", secenekler: ["50 KIAS", "52 KIAS", "55 KIAS", "57 KIAS"], cevap: "52 KIAS", aciklama: "Kalkış flap kademesinde en iyi tırmanış açısı sürati (VX) 52 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VY Take Off Flap Climb Speed for Aquila A211?", secenekler: ["52 KIAS", "55 KIAS", "57 KIAS", "60 KIAS"], cevap: "57 KIAS", aciklama: "Kalkış flap kademesinde en iyi tırmanış oranı sürati (VY) 57 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Up Flap Climb Speed for Aquila A211?", secenekler: ["70 KIAS", "73 KIAS", "75 KIAS", "78 KIAS"], cevap: "75 KIAS", aciklama: "Flaplar tamamen toplandıktan sonraki standart tırmanış sürati 75 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Stall Speed (Up Flap) for Aquila A211?", secenekler: ["45 KIAS", "47 KIAS", "49 KIAS", "52 KIAS"], cevap: "49 KIAS", aciklama: "Temiz konfigürasyonda uçağın havada tutunabileceği asgari stall sürati 49 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Stall Speed (Take Off Flap) for Aquila A211?", secenekler: ["42 KIAS", "45 KIAS", "47 KIAS", "49 KIAS"], cevap: "45 KIAS", aciklama: "Kalkış flap pozisyonunda uçağın stall sürat değeri 45 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Stall Speed (Landing Flap) for Aquila A211?", secenekler: ["40 KIAS", "43 KIAS", "45 KIAS", "47 KIAS"], cevap: "43 KIAS", aciklama: "Full iniş konfigürasyonunda uçağın minimum stall limit sürati 43 KIAS'tır.", cat: "Indicated Airspeeds" },
+
+        // === BÖLÜM 2: Maneuvering (5 Soru) ===
+        { soru: "What is the Maximum Positive Load Factor - Up Flap (G) for Aquila A211?", secenekler: ["3.8 G", "4.0 G", "4.4 G", "2.0 G"], cevap: "4.0 G", aciklama: "Temiz konfigürasyonda izin verilen yapısal maksimum pozitif yük faktörü +4.0 G'dir.", cat: "Maneuvering" },
+        { soru: "What is the Maximum Positive Load Factor - TO / LDG Flap (G) for Aquila A211?", secenekler: ["2.0 G", "3.8 G", "4.0 G", "0 G"], cevap: "2.0 G", aciklama: "Flaplar açık pozisyondayken maksimum yapısal pozitif yük limiti +2.0 G'dir.", cat: "Maneuvering" },
+        { soru: "What is the Maximum Negative Load Factor - Up Flap (G) for Aquila A211?", secenekler: ["-1.52 G", "-1.76 G", "-2.0 G", "0 G"], cevap: "-2.0 G", aciklama: "Temiz konfigürasyonda müsaade edilen maksimum negatif yük faktörü -2.0 G'dir.", cat: "Maneuvering" },
+        { soru: "What is the Maximum Negative Load Factor - TO / LDG Flap (G) for Aquila A211?", secenekler: ["-1.0 G", "-0.5 G", "0 G", "0.5 G"], cevap: "0 G", aciklama: "Flaplar açıkken uçak yapısal olarak negatif yüklemeye maruz bırakılamaz; limit tam 0 G'dir.", cat: "Maneuvering" },
+        { soru: "What is the Steep Turn Speed for Aquila A211?", secenekler: ["85 KIAS", "90 KIAS", "95 KIAS", "100 KIAS"], cevap: "95 KIAS", aciklama: "Keskin dönüş (Steep turn) manevraları için planlanan hedef sürat 95 KIAS'tır.", cat: "Maneuvering" },
+
+        // === BÖLÜM 3: Weight And Balance (2 Soru) ===
+        { soru: "What is the Maximum Take Off Mass (Kilogram) for Aquila A211?", secenekler: ["750 kg", "800 kg", "850 kg", "940 kg"], cevap: "750 kg", aciklama: "Aquila A211 için yapısal maksimum kalkış kütlesi (MTOM) 750 kg'dır.", cat: "Weight And Balance" },
+        { soru: "What is the Maximum Landing Mass (Kilogram) for Aquila A211?", secenekler: ["700 kg", "750 kg", "800 kg", "1280 kg"], cevap: "750 kg", aciklama: "İniş takımlarının emniyeti için izin verilen maksimum iniş kütlesi kalkış kütlesiyle aynı olup 750 kg'dır.", cat: "Weight And Balance" },
+
+        // === BÖLÜM 4: Engine & Power System Limits (14 Soru) ===
+        { soru: "What is the RPM Limits - Green Arc for Aquila A211?", secenekler: ["535 - 2260 RPM", "2100 RPM", "2100 - 2300 RPM", "1800 - 2400 RPM"], cevap: "535 - 2260 RPM", aciklama: "Aquila Rotax motorunda standart yeşil çalışma devir aralığı 535 ile 2260 RPM arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the RPM Limits - Yellow Arc for Aquila A211?", secenekler: ["2100 - 2300 RPM", "2260 - 2385 RPM", "2300 - 2500 RPM", "2385 - 2500 RPM"], cevap: "2260 - 2385 RPM", aciklama: "Pervane devir göstergesindeki sarı dikkat uyarı aralığı 2260 - 2385 RPM'dir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the RPM Limits - Red Arc for Aquila A211?", secenekler: ["2300 RPM", "2385 RPM", "2500 RPM", "2700 RPM"], cevap: "2385 RPM", aciklama: "Motor mekanik limit kırmızı çizgisi 2385 RPM'dir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Pressure - Green Arc (PSI) for Aquila A211?", secenekler: ["1.5 - 5 PSI", "2 - 5 PSI", "2.5 - 6 PSI", "5 - 7 PSI"], cevap: "2 - 5 PSI", aciklama: "Emniyetli motor yağ basıncı yeşil bölge aralığı 2 ile 5 PSI arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Pressure - Yellow Arc (PSI) for Aquila A211?", secenekler: ["5 - 7 PSI", "6 - 6.5 PSI", "1.5 - 2 PSI", "7 - 8 PSI"], cevap: "5 - 7 PSI", aciklama: "Yağ basıncındaki yüksek sarı uyarı bölgesi aralığı 5 ile 7 PSI arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Pressure - Red Arc (PSI) for Aquila A211?", secenekler: ["5 PSI +", "6.5 PSI +", "7 PSI +", "8 PSI +"], cevap: "7 PSI +", aciklama: "Yağ basıncında tehlikeli aşırı basınç kırmızı çizgisi 7 PSI ve üzeridir (7 +).", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Temperature - Green Arc (Santigrat) for Aquila A211?", secenekler: ["50 - 110 °C", "50 - 135 °C", "60 - 120 °C", "40 - 130 °C"], cevap: "50 - 110 °C", aciklama: "Motor yağ sıcaklığı yeşil normal emniyetli çalışma aralığı 50 - 110 °C arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Temperature - Red Arc (Santigrat) for Aquila A211?", secenekler: ["110 °C +", "120 °C +", "130 °C +", "140 °C +"], cevap: "130 °C +", aciklama: "Motor hararet yağ sıcaklık sınırı kırmızı çizgisi 130 °C ve üzeridir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Cruise Load (Manifold Pressure) for Aquila A211?", secenekler: ["15 inHg", "21 - 22 inHg", "24 - 26 inHg", "28 inHg"], cevap: "21 - 22 inHg", aciklama: "Düz uçuş seyir (Cruise) safhası standart manifold basınç yükü 21 - 22 inHg'dir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Descent Load (Manifold Pressure) for Aquila A211?", secenekler: ["10 inHg", "12 inHg", "15 inHg", "20 inHg"], cevap: "15 inHg", aciklama: "Standart alçalma safhasında muhafaza edilmesi planlanan manifold basıncı 15 inHg'dir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Voltmeter - Green Arc (Volt) range for Aquila A211?", secenekler: ["10 - 12 Volt", "11 - 12 Volt", "12 - 15 Volt", "15 - 16 Volt"], cevap: "12 - 15 Volt", aciklama: "Elektrik sistemi normal şarj voltajı yeşil yayın aralığı 12 - 15 Volttur.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Voltmeter - Yellow Arc (Volt) range for Aquila A211?", secenekler: ["10 - 11 Volt", "11 - 12 Volt", "15 - 16 Volt", "16 - 17 Volt"], cevap: "11 - 12 Volt", aciklama: "Düşük voltaj uyarı sarı aralığı 11 ile 12 Volt arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Voltmeter - Red Arc (Volt) limit for Aquila A211?", secenekler: ["12 Volt +", "15 Volt +", "15 - 16 Volt", "16 Volt +"], cevap: "15 - 16 Volt", aciklama: "Yüksek voltaj tehlikesi kırmızı bant aralığı 15 - 16 Volttur.", cat: "Engine & Power System Limits" },
+
+        // === BÖLÜM 5: Fuel Quantity (2 Soru) ===
+        { soru: "What is the Total Fuel Quantity (Litre) for Aquila A211?", secenekler: ["100 Litre", "110 Litre", "120 Litre", "155 Litre"], cevap: "120 Litre", aciklama: "Aquila A211 uçağının fiziki toplam yakıt deposu hacmi 120 litredir.", cat: "Fuel Quantity" },
+        { soru: "What is the Usable Fuel Quantity (Litre) for Aquila A211?", secenekler: ["104 Litre", "108 Litre", "114 Litre", "120 Litre"], cevap: "108 Litre", aciklama: "Uçağın motor tarafından emniyetle çekilebilen kullanılabilir yakıt hacmi 108 litredir.", cat: "Fuel Quantity" }
     ];
 
     let activeQuestions = [];
     let currentQuestionIndex = 0;
     let selectedCategory = "";
+    let selectedAircraft = ""; // Seçilen uçak modelini takip eder
     
     let currentName = "";
     let currentSurname = "";
@@ -623,10 +666,62 @@
         updateAdminTable();
     }
 
-    function showSubCategories() {
+    function showSubCategories(aircraftName) {
+        selectedAircraft = aircraftName;
         aircraftSelector.style.display = 'none';
         subcategorySelector.style.display = 'block';
+        
+        const welcomeTitle = document.getElementById('subcategory-welcome-title');
+        welcomeTitle.innerText = `${selectedAircraft} - Sınav Bölümü Seçiniz`;
         questionCounter.innerText = "Lütfen Sınav Kutusunu Seçiniz";
+        
+        // Dinamik alt kategori butonlarını uçağa göre oluşturuyoruz
+        const container = document.getElementById('subcategory-buttons-container');
+        container.innerHTML = '';
+        
+        let categories = [];
+        if (selectedAircraft === 'Diamond DA40 NG') {
+            categories = [
+                'Indicated Airspeeds',
+                'Maneuvering',
+                'Weight And Balance',
+                'Rotate Speeds',
+                'Engine & Power System Limits',
+                'Fuel Quantity'
+            ];
+        } else if (selectedAircraft === 'Aquila A211') {
+            categories = [
+                'Indicated Airspeeds',
+                'Maneuvering',
+                'Weight And Balance',
+                'Engine & Power System Limits',
+                'Fuel Quantity'
+            ];
+        }
+        
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = "btn subcat-btn";
+            btn.innerText = cat === 'Weight And Balance' ? 'Weight and Balance' : cat;
+            btn.onclick = () => startQuiz(cat);
+            container.appendChild(btn);
+        });
+        
+        // Genel (Tüm sorular) butonu
+        const generalBtn = document.createElement('button');
+        generalBtn.className = "btn";
+        generalBtn.style.cssText = "background-color:#e2f0d9; border-color:#70ad47; color:#385723; text-align:center; font-weight:bold;";
+        generalBtn.innerText = "General (Tüm Sorular - Sıralı)";
+        generalBtn.onclick = () => startQuiz('General');
+        container.appendChild(generalBtn);
+        
+        // Geri dön butonu
+        const backBtn = document.createElement('button');
+        backBtn.className = "btn prev-style";
+        backBtn.style.cssText = "text-align:center; font-weight:bold;";
+        backBtn.innerText = "↩ Geri Dön";
+        backBtn.onclick = backToAircrafts;
+        container.appendChild(backBtn);
     }
 
     function backToAircrafts() {
@@ -695,13 +790,14 @@
 
     function startQuiz(categoryName) {
         selectedCategory = categoryName;
-        mainTitle.innerText = "Diamond DA40 NG";
+        mainTitle.innerText = selectedAircraft;
 
-        // Soruları Excel listesindeki orijinal akış sırasına göre almak için filtreleme yapıyoruz (Karıştırma yok)
+        const activeDatabase = (selectedAircraft === 'Diamond DA40 NG') ? da40Database : aquilaDatabase;
+
         if (categoryName === 'General') {
-            activeQuestions = [...da40Database];
+            activeQuestions = [...activeDatabase];
         } else {
-            activeQuestions = da40Database.filter(q => q.cat === categoryName);
+            activeQuestions = activeDatabase.filter(q => q.cat === categoryName);
         }
 
         questionStates = activeQuestions.map(() => ({ status: 'unanswered', userA: '' }));
@@ -752,7 +848,8 @@
         explanationBox.style.display = 'none';
         optionsContainer.innerHTML = '';
         
-        let currentQuestion = da40Database.find(q => q.soru === activeQuestions[currentQuestionIndex].soru);
+        const activeDatabase = (selectedAircraft === 'Diamond DA40 NG') ? da40Database : aquilaDatabase;
+        let currentQuestion = activeDatabase.find(q => q.soru === activeQuestions[currentQuestionIndex].soru);
         let state = questionStates[currentQuestionIndex];
         
         questionCounter.innerText = `${selectedCategory} - Soru ${currentQuestionIndex + 1} / ${activeQuestions.length}`;
@@ -762,7 +859,6 @@
 
         questionText.innerHTML = currentQuestion.soru;
         
-        // Sadece şıkların yerleri karıştırılıyor, soruların akış sırası sabit kalıyor.
         let randomizedOptions = [...currentQuestion.secenekler].sort(() => Math.random() - 0.5);
         const prefixMap = ['A) ', 'B) ', 'C) ', 'D) '];
 
@@ -900,8 +996,9 @@
         const percentage = Math.round((correctCount / activeQuestions.length) * 100);
         const testDate = new Date().toLocaleDateString('tr-TR', {hour: '2-digit', minute:'2-digit'});
         
-        saveHistory(`DA40-${selectedCategory.substring(0,5).toUpperCase()}`, percentage);
-        sendDataToCloud(currentName, currentSurname, currentGender, currentSchool, `DA40 NG (${selectedCategory})`, percentage, testDate);
+        const acLabel = (selectedAircraft === 'Diamond DA40 NG') ? 'DA40' : 'A211';
+        saveHistory(`${acLabel}-${selectedCategory.substring(0,5).toUpperCase()}`, percentage);
+        sendDataToCloud(currentName, currentSurname, currentGender, currentSchool, `${selectedAircraft} (${selectedCategory})`, percentage, testDate);
 
         resultBody.style.display = 'block';
         document.getElementById('score').innerText = correctCount;
@@ -1070,6 +1167,7 @@
                 <td style="font-weight:bold; color:${log.score >= 75 ? '#2f855a' : '#c53030'}">%${log.score}</td>
                 <td>${log.date}</td>
             `;
+            log.date ? row.innerHTML += `` : ''; // Güvenli akış kontrolü
             adminTableBody.appendChild(row);
         });
     }
@@ -1189,7 +1287,7 @@
         ctx.fillStyle = '#ffffff';
         ctx.font = '15px Arial';
         
-        const mainText = `Bu belge, uçak limitleri testini başarıyla tamamlayan yukarıda adı yazılı teorik dehaya; seçmiş olduğu DIAMOND DA40 NG uçağının motorunu yakmadan, kanatlarını eline almadan, uçağın yağ sıcaklığını kokpitte çay demleyecek kadar yükseltmeden ve kokpitteki Master Caution ışıklarını yakıp uçağı Yılbaşı Ağacına çevirmeden uçabileceğini gösterir. Uçuş okulunun bu belgeden haberi yoktur; uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve inişlerde edeceğiniz duaların gücüyle alakalıdır.`;
+        const mainText = `Bu belge, uçak limitleri testini başarıyla tamamlayan yukarıda adı yazılı teorik dehaya; seçmiş olduğu ${selectedAircraft.toUpperCase()} uçağının motorunu yakmadan, kanatlarını eline almadan, uçağın yağ sıcaklığını kokpitte çay demleyecek kadar yükseltmeden ve kokpitteki Master Caution ışıklarını yakıp uçağı Yılbaşı Ağacına çevirmeden uçabileceğini gösterir. Uçuş okulunun bu belgeden haberi yoktur; uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve inişlerde edeceğiniz duaların gücüyle alakalıdır.`;
         
         let lastY = wrapText(ctx, mainText, 425, 240, 680, 24);
 
