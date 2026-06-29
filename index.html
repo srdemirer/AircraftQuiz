@@ -52,18 +52,32 @@
             position: relative;
         }
         
-        .theme-switch {
+        .top-buttons {
             position: absolute;
             top: 15px;
             right: 15px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .theme-switch, .share-btn {
             background: var(--accent-color);
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
             cursor: pointer;
             font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        
+        .share-btn {
+            background: #2f855a;
+        }
+
+        .theme-switch:hover, .share-btn:hover {
+            opacity: 0.9;
         }
 
         .timer-badge {
@@ -83,7 +97,7 @@
             color: #fff5f5;
         }
 
-        .header { text-align: center; margin-bottom: 20px; padding-top: 10px; }
+        .header { text-align: center; margin-bottom: 20px; padding-top: 15px; }
         .header h1 { color: var(--primary-color); font-size: 1.5rem; margin: 0 0 5px 0; }
         .header p { color: #718096; margin: 0; font-size: 0.9rem; }
         .progress-bar { height: 6px; background-color: #e2e8f0; border-radius: 3px; margin-bottom: 25px; overflow: hidden; display: none;}
@@ -178,7 +192,10 @@
 <body>
 
 <div class="quiz-container">
-    <button class="theme-switch" onclick="toggleTheme()" id="theme-toggle-btn">Sınav Modu ⏱️</button>
+    <div class="top-buttons">
+        <button class="share-btn" onclick="shareSystem()">Paylaş 🔗</button>
+        <button class="theme-switch" onclick="toggleTheme()" id="theme-toggle-btn">Sınav Modu ⏱️</button>
+    </div>
 
     <div class="header">
         <h1 id="main-title">Uçak Limitleri Sınav Merkezi ✈️</h1>
@@ -479,6 +496,24 @@
         }
     }
 
+    function shareSystem() {
+        const shareData = {
+            title: 'Uçak Limitleri Sınav Merkezi',
+            text: 'Pilotlar için özel geliştirilmiş uçak limitleri sınav sistemini incele ve kendini test et!',
+            url: window.location.href
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData).catch(err => console.log('Paylaşım hatası:', err));
+        } else {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('Sınav merkezi linki panoya kopyalandı! Arkadaşlarınızla paylaşabilirsiniz.');
+            }).catch(err => {
+                console.error('Kopyalanamadı:', err);
+            });
+        }
+    }
+
     function showLoginScreen() {
         mainTitle.innerText = "Uçak Limitleri Sınav Merkezi ✈️";
         questionCounter.innerText = "Kullanıcı Kaydı Gerekli";
@@ -647,10 +682,13 @@
 
         questionText.innerHTML = currentQuestion.soru;
         let randomizedOptions = [...currentQuestion.secenekler].sort(() => Math.random() - 0.5);
+        
+        const prefixMap = ['A) ', 'B) ', 'C) ', 'D) '];
 
-        randomizedOptions.forEach(option => {
+        randomizedOptions.forEach((option, oIdx) => {
             const button = document.createElement('button');
-            button.innerText = option;
+            const prefix = prefixMap[oIdx] || '';
+            button.innerText = prefix + option;
             button.classList.add('btn');
             
             if (state.status === 'unanswered' || state.status === 'flagged') {
@@ -694,7 +732,9 @@
             state.status = 'wrong';
             selectedBtn.classList.add('wrong');
             buttons.forEach(btn => {
-                if(btn.innerText === correctAnswer) btn.classList.add('correct');
+                // Şıkların önündeki "A) " kısmını ayıklayarak doğru şıkkı bulur
+                const optionTextWithoutPrefix = btn.innerText.substring(3);
+                if(optionTextWithoutPrefix === correctAnswer) btn.classList.add('correct');
             });
             playBeep(250, 'square', 0.3);
             logCategoryError(currentQuestion.cat);
@@ -858,7 +898,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-        // Bu blok, fonksiyonların global window nesnesine güvenli bir şekilde bağlanmasını sağlar.
+        // Fonksiyonların bağlanma güvencesi
     });
 
     function renderPieChart(correct, wrong, pas) {
@@ -1014,7 +1054,6 @@
         });
     }
 
-    // Dikey satır taşmasını önleyen dinamik metin bölme fonksiyonu
     function wrapText(context, text, x, y, maxWidth, lineHeight) {
         var words = text.split(' ');
         var line = '';
@@ -1034,21 +1073,18 @@
         return y;
     }
 
-    // Sadece Sertifika bölümü esprili metne göre baştan yazıldı, diğer tüm ayarlar korundu!
     function generateCertificate() {
         const canvas = document.createElement('canvas');
         canvas.width = 850;
         canvas.height = 680;
         const ctx = canvas.getContext('2d');
 
-        // Arka Plan Lüks Havacılık Teması
         const grad = ctx.createLinearGradient(0, 0, 850, 680);
         grad.addColorStop(0, '#0b3c5d');
         grad.addColorStop(1, '#1d2731');
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, 850, 680);
 
-        // Altın Çerçeve Tasarımı
         ctx.strokeStyle = '#d4af37';
         ctx.lineWidth = 10;
         ctx.strokeRect(40, 40, 770, 600);
@@ -1056,18 +1092,15 @@
         ctx.lineWidth = 2;
         ctx.strokeRect(55, 55, 740, 570);
 
-        // Başlık
         ctx.textAlign = 'center';
         ctx.fillStyle = '#d4af37';
         ctx.font = 'bold 34px Georgia';
         ctx.fillText('LİMİT PROFESÖRÜ BELGESİ', 425, 120);
 
-        // Pilot Adı Soyadı
         ctx.fillStyle = '#90cdf4';
         ctx.font = 'bold 36px Helvetica';
         ctx.fillText(`${currentName.toUpperCase()} ${currentSurname.toUpperCase()}`, 425, 190);
 
-        // Esprili Gövde Metni
         ctx.fillStyle = '#ffffff';
         ctx.font = '15px Arial';
         
@@ -1075,12 +1108,10 @@
         
         let lastY = wrapText(ctx, mainText, 425, 240, 680, 24);
 
-        // Bröve Süslemesi
         ctx.fillStyle = '#d4af37';
         ctx.font = 'bold 24px Arial';
         ctx.fillText(`${pilotEmoji}   P I L O T   B R Ö V E S İ   ${pilotEmoji}`, 425, lastY + 50);
 
-        // Alt Esprili Yasal Uyarı Notu
         ctx.fillStyle = '#fc8181';
         ctx.font = 'bold 11px Arial';
         
@@ -1088,7 +1119,6 @@
         
         wrapText(ctx, disclaimerText, 425, lastY + 100, 700, 16);
 
-        // İndirme Tetikleyicisi
         const link = document.createElement('a');
         link.download = `${currentName}_${currentSurname}_Limit_Sertifikasi.png`;
         link.href = canvas.toDataURL();
