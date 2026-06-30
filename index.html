@@ -502,7 +502,7 @@
 
     // Diamond DA20 Eclipse Excel Dosyasından %100 Doğrulanmış 73 Soru Veritabanı
     const da20Database = [
-        // === BÖLÜM 1: Indicated Airspeeds (17 Soru) ===
+        // === BÖLÜM 1: Indicated Airspeeds (18 Soru) ===
         { soru: "What is the Forced Landing Final Approach Speed (Landing) for DA20?", secenekler: ["50 KIAS", "55 KIAS", "60 KIAS", "64 KIAS"], cevap: "55 KIAS", aciklama: "Mecburi iniş son yaklaşmada tam iniş flap konfigürasyonu hızı 55 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the Minimum Engine-Out Airspeed to Sustain Windmilling Propeller?", secenekler: ["55 KIAS", "60 KIAS", "65 KIAS", "70 KIAS"], cevap: "60 KIAS", aciklama: "Motor durduğunda pervanenin rüzgar değirmeni etkisiyle (windmilling) dönmeye devam etmesi için asgari sürat 60 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the Forced Landing Final Approach Speed (Take Off) for DA20?", secenekler: ["55 KIAS", "60 KIAS", "65 KIAS", "73 KIAS"], cevap: "60 KIAS", aciklama: "Mecburi inişte kalkış (T/O) kademesi yaklaşma sürati 60 KIAS'tır.", cat: "Indicated Airspeeds" },
@@ -517,10 +517,11 @@
         { soru: "What is the recommended Rotate Speed (VR) for DA20?", secenekler: ["40 KIAS", "44 KIAS", "50 KIAS", "55 KIAS"], cevap: "44 KIAS", aciklama: "Tavsiye edilen standart rotate (tekerlek kesme) sürati 44 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the Take Off Flap Climb Speed for DA20?", secenekler: ["60 KIAS", "65 KIAS", "70 KIAS", "75 KIAS"], cevap: "65 KIAS", aciklama: "Kalkış flap kademesinde tırmanış esnasında korunması gereken sürat 65 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the Up Flap Climb Speed for DA20?", secenekler: ["65 KIAS", "70 KIAS", "75 KIAS", "80 KIAS"], cevap: "75 KIAS", aciklama: "Flaplar toplandıktan (UP) sonraki standart tırmanış sürati 75 KIAS'tır.", cat: "Indicated Airspeeds" },
-        { soru: "What is the Stall Speed (Up Flap) for DA20?", secenekler: ["45 KIAS", "50 KIAS", "52 KIAS", "57 KIAS"], cevap: "52 KIAS", aciklama: "Temiz konfigürasyonda (Flaps UP) uçağın perdahlama (stall) sürati 52 KIAS'tır.", cat: "Indicated Airspeeds" },
-        { soru: "What is the Stall Speed (Take Off Flap) for DA20?", secenekler: ["45 KIAS", "48 KIAS", "50 KIAS", "52 KIAS"], cevap: "50 KIAS", aciklama: "Kalkış (T/O) flap pozisyonunda uçağın stall sürat değeri 50 KIAS'tır.", cat: "Indicated Airspeeds" },
-        { soru: "What is the Stall Speed (Landing Flap) for DA20?", secenekler: ["40 KIAS", "44 KIAS", "47 KIAS", "50 KIAS"], cevap: "47 KIAS", aciklama: "Full iniş konfigürasyonunda (LDG) uçağın minimum stall emniyet sürati 47 KIAS'tır.", cat: "Indicated Airspeeds" },
-
+        { soru: "What is the Stall Speed (Up Flap) for DA20?", secenekler: ["45 KIAS", "50 KIAS", "52 KIAS", "44 KIAS"], cevap: "44 KIAS", aciklama: "Temiz konfigürasyonda (Flaps UP) uçağın perdahlama (stall) sürati 44 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Stall Speed (Take Off Flap) for DA20?", secenekler: ["45 KIAS", "48 KIAS", "50 KIAS", "40 KIAS"], cevap: "40 KIAS", aciklama: "Kalkış (T/O) flap pozisyonunda uçağın stall sürat değeri 40 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Stall Speed (Landing Flap) for DA20?", secenekler: ["40 KIAS", "44 KIAS", "47 KIAS", "36 KIAS"], cevap: "36 KIAS", aciklama: "Full iniş konfigürasyonunda (LDG) uçağın minimum stall emniyet sürati 36 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Steep Turn Speed for DA20?", secenekler: ["70 KIAS", "80 KIAS", "90 KIAS", "60 KIAS"], cevap: "90 KIAS", aciklama: "Keskin dönüş sürati 90 KIAS'tır.", cat: "Indicated Airspeeds" },
+        
         // === BÖLÜM 2: Maneuvering (5 Soru) ===
         { soru: "What is the Maximum Positive Load Factor - Up Flap (G) for DA20?", secenekler: ["3.8 G", "4.0 G", "4.4 G", "2.0 G"], cevap: "4.4 G", aciklama: "Utility kategorisindeki DA20 temiz konfigürasyonda maksimum +4.4 G yüke dayanır.", cat: "Maneuvering" },
         { soru: "What is the Maximum Positive Load Factor - TO / LDG Flap (G) for DA20?", secenekler: ["2.0 G", "3.8 G", "4.4 G", "0 G"], cevap: "2.0 G", aciklama: "Flaplar açık pozisyondayken maksimum yapısal pozitif yük limiti +2.0 G'dir.", cat: "Maneuvering" },
@@ -540,14 +541,14 @@
         { soru: "What is the Voltmeter Normal Limit (Green Arc) in Volts?", secenekler: ["11 - 12.5 V", "12.5 - 16 V", "16.1 V", "15 - 16 V"], cevap: "12.5 - 16 V", aciklama: "Sistemin normal emniyetli şarj yeşil çalışma voltaj aralığı 12.5 - 16 Volttur.", cat: "Voltmeter" },
         { soru: "What is the Voltmeter Upper Limit (Red Arc) in Volts?", secenekler: ["15 V", "16 V", "16.1 V", "17 V"], cevap: "16.1 V", aciklama: "Aşırı voltaj koruma üst sınır kırmızı çizgisi tam 16.1 Volttur.", cat: "Voltmeter" },
 
-        // === BÖLÜM 5: Miscellaneous (4 Soru) ===
+        // === BÖLÜM 5: Miscellaneous (5 Soru) ===
         { soru: "What is the Maximum Structural Temperature (Santigrat) for DA20?", secenekler: ["45 °C", "50 °C", "55 °C", "60 °C"], cevap: "55 °C", aciklama: "Kompozit yapıyı korumak adına izin verilen maksimum yapısal sıcaklık 55 °C'dir.", cat: "Miscellaneous" },
-        { soru: "What is the Propeller Approx. Minimum Ground Clearance (CM)?", secenekler: ["15 cm", "18 cm", "20 cm", "25 cm"], cevap: "18 cm", aciklama: "Pervane ucunun yere olan tahmini asgari emniyet mesafesi clearance değeri 18 cm'dir.", cat: "Miscellaneous" },
+        { soru: "What is the Propeller Approx. Minimum Ground Clearance (CM)?", secenekler: ["15 cm", "18 cm", "20 cm", "25 cm"], cevap: "25 cm", aciklama: "Pervane ucunun yere olan tahmini asgari emniyet mesafesi clearance değeri 25 cm'dir.", cat: "Miscellaneous" },
         { soru: "What is the Main Landing Gear Tire Pressure (PSI)?", secenekler: ["21 PSI", "26 PSI", "33 PSI", "40 PSI"], cevap: "33 PSI", aciklama: "Ana iniş takımı lastiklerinin standart hava basınç değeri 33 PSI'dır.", cat: "Miscellaneous" },
         { soru: "What is the Nose Gear Tire Pressure (PSI)?", secenekler: ["21 PSI", "26 PSI", "33 PSI", "35 PSI"], cevap: "26 PSI", aciklama: "Burun iniş takımı lastiğinin standart muhafaza basınç değeri 26 PSI'dır.", cat: "Miscellaneous" },
-        { soru: "What is the Minimum OAT at which Cabin Heat must NOT be full ON?", secenekler: ["-10 °C", "-5 °C", "0 °C", "5 °C"], cevap: "-5 °C", aciklama: "Kabin ısıtıcısının tam açık (Full ON) pozisyonda kullanılmaması gereken asgari dış hava sıcaklığı -5 °C'dir.", cat: "Miscellaneous" },
+        { soru: "What is the Minimum OAT Cabin Heat not Req. for 10 Minutes Before Take Off?", secenekler: ["-10 °C", "-5 °C", "0 °C", "-20 °C"], cevap: "-20 °C", aciklama: "Kabin ısıtıcısının tam açık (Full ON) pozisyonda kullanılmaması gereken asgari dış hava sıcaklığı -20 °C'dir.", cat: "Miscellaneous" },
 
-        // === BÖLÜM 6: Engine & Power System Limits (29 Soru) ===
+        // === BÖLÜM 6: Engine & Power System Limits (32 Soru) ===
         { soru: "What is the Minimum Idle Mixture Rise Leaned to Peak?", secenekler: ["25 RPM", "50 RPM", "75 RPM", "100 RPM"], cevap: "50 RPM", aciklama: "Rölanti karışım kontrolü peak fakirleştirmede minimum devir artış değeri 50 RPM olmalıdır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Minimum RPM During Engine Runup Idle Check?", secenekler: ["900 RPM", "975 RPM", "1000 RPM", "1100 RPM"], cevap: "975 RPM", aciklama: "Runup motor rölanti kontrol testinde aranacak asgari devir limit değeri 975 RPM'dir.", cat: "Engine & Power System Limits" },
         { soru: "What is the Minimum RPM for In-Flight Idle Beyond Gliding Range of a Runway?", secenekler: ["1000 RPM", "1200 RPM", "1400 RPM", "1500 RPM"], cevap: "1400 RPM", aciklama: "Pist süzülme mesafesi dışındaki uçuş safhalarında havada tutulacak asgari rölanti devri 1400 RPM'dir.", cat: "Engine & Power System Limits" },
@@ -561,11 +562,13 @@
         { soru: "What is the Minimum Oil Pressure parameter in PSI?", secenekler: ["10 PSI", "20 PSI", "30 PSI", "60 PSI"], cevap: "10 PSI", aciklama: "Motor yatak emniyeti için asgari kritik yağ basınç sınırı 10 PSI'dır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Oil Pressure Normal Operating Range (PSI)?", secenekler: ["10 - 30 PSI", "30 - 60 PSI", "60 - 100 PSI", "30 - 75 PSI"], cevap: "30 - 60 PSI", aciklama: "Normal motor uçuş safhası yağ basıncı yeşil bandı 30 - 60 PSI arasıdır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Maximum Time for Oil Pressure to Reach 10 PSI After Start (Second)?", secenekler: ["15 sn", "30 sn", "45 sn", "60 sn"], cevap: "30 sn", aciklama: "Motor ilk çalıştırıldığında yağ basıncının 10 PSI'a ulaşması için tanınan azami süre 30 saniyedir.", cat: "Engine & Power System Limits" },
-        { soru: "What is the Maximum Oil Pressure for Full Power Operation if OAT < 0 C (PSI)?", secenekler: ["75 PSI", "85 PSI", "100 PSI", "110 PSI"], cevap: "100 PSI", aciklama: "Dış hava sıfırın altındayken tam güçte izin verilen maksimum anlık yağ basıncı 100 PSI'dır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Maximum Oil Pressure for Full Power Operation if OAT < 0 C (PSI)?", secenekler: ["70 PSI", "85 PSI", "100 PSI", "110 PSI"], cevap: "70 PSI", aciklama: "Dış hava sıfırın altındayken tam güçte izin verilen maksimum anlık yağ basıncı 70 PSI'dır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Maximum Oil Pressure limit under normal conditions (PSI)?", secenekler: ["60 PSI", "80 PSI", "100 PSI", "110 PSI"], cevap: "100 PSI", aciklama: "Yağlama sistemi genel maksimum emniyet basınç sınırı kırmızı çizgisi 100 PSI'dır.", cat: "Engine & Power System Limits" },
-        { soru: "What is the Minimum Oil Temperature parameter in Fahrenheit?", secenekler: ["75 °F", "100 °F", "120 °F", "240 °F"], cevap: "100 °F", aciklama: "Motor güç açılmadan önce yağ sıcaklığının görmesi gereken asgari değer 100 °F'tır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Minimum Oil Temperature parameter in Fahrenheit?", secenekler: ["75 °F", "100 °F", "120 °F", "240 °F"], cevap: "75 °F", aciklama: "Motor güç açılmadan önce yağ sıcaklığının görmesi gereken asgari değer 75 °F'tır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Maximum RPM After Start Until Oil Temperature Indication Registers?", secenekler: ["1000 RPM", "1200 RPM", "1400 RPM", "1500 RPM"], cevap: "1000 RPM", aciklama: "Yağ sıcaklık ibresi kımıldayana kadar motorun çalıştırılacağı azami rölanti devri 1000 RPM'dir.", cat: "Engine & Power System Limits" },
-        { soru: "What is the Maximum RPM for Full Power Operation If Oil Pressure is above 60 PSI but under 100 F?", secenekler: ["2000 RPM", "2200 RPM", "2500 RPM", "2800 RPM"], cevap: "2500 RPM", aciklama: "Yağ basıncı 60'ın üstünde ancak sıcaklık 100 F altındayken uygulanabilecek maksimum sınır devri 2500 RPM'dir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Temperature Normal Operation Range (F)?", secenekler: ["140-180 °F", "170-220 °F", "190-210 °F", "210-240 °F"], cevap: "170-220 °F", aciklama: "170-220 °F", cat: "Engine & Power System Limits" },
+        { soru: "What is the Minimum Oil Temperature to Begin an Area SFL at Area Idle (F)?", secenekler: ["180 °F", "170 °F", "190 °F", "210 °F"], cevap: "170 °F", aciklama: "170 °F", cat: "Engine & Power System Limits" },
+        { soru: "What is the Minimum Oil Temperature for Full Power Operation If Oil Pressure 100 PSI?", secenekler: ["75 °F", "70 °F", "90 °F", "10 °F"], cevap: "75°F", aciklama: "75 °F", cat: "Engine & Power System Limits" },
         { soru: "What is the Maximum Oil Temperature limit in Fahrenheit?", secenekler: ["200 °F", "220 °F", "240 °F", "260 °F"], cevap: "240 °F", aciklama: "Motor yağının ulaşabileceği yapısal en yüksek hararet sınırı kırmızı çizgisi 240 °F'tır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Minimum Oil Quantity allowed (US QTS)?", secenekler: ["3.5 QTS", "4 QTS", "5 QTS", "6 QTS"], cevap: "4 QTS", aciklama: "DA20 Eclipse karter motor uçuş emniyeti asgari yağ miktarı limit tabanı 4 kuarttır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Maximum Oil Quantity allowed (US QTS)?", secenekler: ["5 QTS", "6 QTS", "7 QTS", "8 QTS"], cevap: "6 QTS", aciklama: "Motor yağ haznesinin fiziki tam kapasite maksimum limit doluluk hacmi 6 kuarttır.", cat: "Engine & Power System Limits" },
@@ -586,7 +589,7 @@
 
         // === BÖLÜM 8: Take Off & Landing (2 Soru) ===
         { soru: "What is the Maximum Demonstrated Crosswind Component (KTS)?", secenekler: ["15 KTS", "20 KTS", "22 KTS", "25 KTS"], cevap: "20 KTS", aciklama: "Test uçuşlarında demonstre edilmiş maksimum yan rüzgar (crosswind) limiti 20 Knottur.", cat: "Take Off & Landing" },
-        { soru: "What is the Maximum Tailwind Component (KTS) allowed for DA20?", secenekler: ["5 KTS", "10 KTS", "12 KTS", "15 KTS"], cevap: "10 KTS", aciklama: "Kalkış ve inişlerde emniyet sınırı olarak izin verilen maksimum arka rüzgar (tailwind) bileşeni 10 Knottur.", cat: "Take Off & Landing" }
+        { soru: "What is the Maximum Tailwind Component (KTS) allowed for DA20?", secenekler: ["5 KTS", "10 KTS", "12 KTS", "15 KTS"], cevap: "5 KTS", aciklama: "Kalkış ve inişlerde emniyet sınırı olarak izin verilen maksimum arka rüzgar (tailwind) bileşeni 5 Knottur.", cat: "Take Off & Landing" }
     ];
 
     let activeQuestions = [];
