@@ -928,9 +928,9 @@
             consecutiveWrong++;
             
             if (consecutiveWrong === 2) {
-                openTrollModal("⚠️ KOKPİT İKAZI ⚠️", "Arka Arkaya 2 Yanlış! Unutma Hugo'nun bile 3 Hakkı vardı! Sanırım Stall'a mı giriyoruz kaptan? ✈️");
+                openTrollModal("⚠️ KOKPİT İKAZI ⚠️", "Arka Arkaya 2 Yanlış! Sanırım Stall'a giriyorsun kaptan? ✈️");
             } else if (consecutiveWrong === 3) {
-                openTrollModal("🚨 MASTER CAUTION 🚨", "Maşallah Soluksuz 3 Yanlış! Kuleyle irtibat kesildi! SHGM dosyana bakıyor şu an. Lütfen acilen SOP'a geri dön! 🚨");
+                openTrollModal("🚨 MASTER CAUTION 🚨", "Maşallah Soluksuz 3 Yanlış! SOP'yi Hiç Okumamışsın! 🚨");
             }
         }
         showExplanationStatic(state.status === 'correct', correctAnswer, aciklama);
@@ -1279,7 +1279,7 @@
         ctx.textAlign = 'center';
         ctx.fillStyle = '#d4af37';
         ctx.font = 'bold 34px Georgia';
-        ctx.fillText('LİMİT PROFESÖRÜ BELGESİ', 425, 120);
+        ctx.fillText('Limit Proseförü', 425, 120);
 
         ctx.fillStyle = '#90cdf4';
         ctx.font = 'bold 36px Helvetica';
@@ -1288,18 +1288,18 @@
         ctx.fillStyle = '#ffffff';
         ctx.font = '15px Arial';
         
-        const mainText = `Bu belge, uçak limitleri testini başarıyla tamamlayan yukarıda adı yazılı teorik dehaya; seçmiş olduğu ${selectedAircraft.toUpperCase()} uçağının motorunu yakmadan, kanatlarını eline almadan, uçağın yağ sıcaklığını kokpitte çay demleyecek kadar yükseltmeden ve kokpitteki Master Caution ışıklarını yakıp uçağı Yılbaşı Ağacına çevirmeden uçabileceğini gösterir. Uçuş okulunun bu belgeden haberi yoktur; uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve inişlerde edeceğiniz duaların gücüyle alakalıdır.`;
+        const mainText = `Bu belge, seçmiş olduğu ${selectedAircraft.toUpperCase()} uçağının motorunu yakmadan, kanatlarını eline almadan, kokpitteki Master Caution ışıklarını yakıp uçağı ''Gece Kulübüne'' çevirmeden uçabileceğini gösterir. Uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve edeceğiniz duaların gücüyle alakalıdır.`;
         
         let lastY = wrapText(ctx, mainText, 425, 240, 680, 24);
 
         ctx.fillStyle = '#d4af37';
         ctx.font = 'bold 24px Arial';
-        ctx.fillText(`${pilotEmoji}   BAŞARI BELGESİ   ${pilotEmoji}`, 425, lastY + 50);
+        ctx.fillText(`${pilotEmoji}   Başarı Belgesi   ${pilotEmoji}`, 425, lastY + 50);
 
         ctx.fillStyle = '#fc8181';
         ctx.font = 'bold 11px Arial';
         
-        const disclaimerText = `⚠️ YASAL UYARI: Bu belge tamamen eğlence ve ego tatmini amacıyla üretilmiştir. Kulenin veya Öğretmenlerinizin önünde beklerken sallamanız durumunda lisansınızın askıya alınması, hava sahasından men edilmeniz veya en hafifinden "Yazık KAFANA" bakışlarına maruz kalmanız tamamen kendi sorumluluğunuzdadır. Resmi hiçbir geçerliliği olmayıp sadece WhatsApp gruplarında hava atmaya yarar.`;
+        const disclaimerText = `⚠️ Yasal Uyarı: Bu belge tamamen eğlence amacıyla üretilmiştir. Öğretmenlerinize göstermeniz durumunda lisansınızın askıya alınması, meydandan kovulmanıza veya en hafifinden " Senden Pilot Olmaz !! " bakışlarına maruz kalmanıza sebep olur. `;
         
         wrapText(ctx, disclaimerText, 425, lastY + 100, 700, 16);
 
