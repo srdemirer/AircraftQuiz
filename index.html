@@ -441,7 +441,7 @@
 
     // Aquila A211 Excel Dosyasından %100 Doğrulanmış 40 Ardışık Soru Veritabanı
     const aquilaDatabase = [
-        // === BÖLÜM 1: Indicated Airspeeds (17 Soru) ===
+        // === BÖLÜM 1: Indicated Airspeeds (18 Soru) ===
         { soru: "What is the Operating Maneuvering Speed for Aquila A211?", secenekler: ["101 KIAS", "108 KIAS", "112 KIAS", "115 KIAS"], cevap: "112 KIAS", aciklama: "Aquila A211 için izin verilen tasarım manevra sürati (VA) 112 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the VFE Maximum Flap Extended Speed (Landing) for Aquila A211?", secenekler: ["85 KIAS", "90 KIAS", "95 KIAS", "98 KIAS"], cevap: "90 KIAS", aciklama: "İniş tam flap pozisyonundayken yapısal hız limiti 90 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the VFE Maximum Flap Extended Speed (Take Off) for Aquila A211?", secenekler: ["85 KIAS", "90 KIAS", "100 KIAS", "110 KIAS"], cevap: "90 KIAS", aciklama: "Kalkış kademesinde (T/O) flapların dayanabileceği maksimum sürat limiti de 90 KIAS'tır.", cat: "Indicated Airspeeds" },
@@ -459,7 +459,8 @@
         { soru: "What is the Stall Speed (Up Flap) for Aquila A211?", secenekler: ["45 KIAS", "47 KIAS", "49 KIAS", "52 KIAS"], cevap: "49 KIAS", aciklama: "Temiz konfigürasyonda uçağın havada tutunabileceği asgari stall sürati 49 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the Stall Speed (Take Off Flap) for Aquila A211?", secenekler: ["42 KIAS", "45 KIAS", "47 KIAS", "49 KIAS"], cevap: "45 KIAS", aciklama: "Kalkış flap pozisyonunda uçağın stall sürat değeri 45 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the Stall Speed (Landing Flap) for Aquila A211?", secenekler: ["40 KIAS", "39 KIAS", "45 KIAS", "47 KIAS"], cevap: "39 KIAS", aciklama: "Full iniş konfigürasyonunda uçağın minimum stall limit sürati 39 KIAS'tır.", cat: "Indicated Airspeeds" },
-
+        { soru: "What is the Steep Turn Speed for Aquila A211?", secenekler: ["70 KIAS", "80 KIAS", "90 KIAS", "60 KIAS"], cevap: "90 KIAS", aciklama: "Keskin dönüş sürati 90 KIAS'tır.", cat: "Indicated Airspeeds" },
+      
         // === BÖLÜM 2: Maneuvering (5 Soru) ===
         { soru: "What is the Maximum Positive Load Factor - Up Flap (G) for Aquila A211?", secenekler: ["3.8 G", "4.0 G", "4.4 G", "2.0 G"], cevap: "4.0 G", aciklama: "Temiz konfigürasyonda izin verilen yapısal maksimum pozitif yük faktörü +4.0 G'dir.", cat: "Maneuvering" },
         { soru: "What is the Maximum Positive Load Factor - TO / LDG Flap (G) for Aquila A211?", secenekler: ["2.0 G", "3.8 G", "4.0 G", "0 G"], cevap: "2.0 G", aciklama: "Flaplar açık pozisyondayken maksimum yapısal pozitif yük limiti +2.0 G'dir.", cat: "Maneuvering" },
@@ -471,7 +472,7 @@
         { soru: "What is the Maximum Take Off Mass (Kilogram) for Aquila A211?", secenekler: ["750 kg", "800 kg", "850 kg", "940 kg"], cevap: "750 kg", aciklama: "Aquila A211 için yapısal maksimum kalkış kütlesi (MTOM) 750 kg'dır.", cat: "Weight And Balance" },
         { soru: "What is the Maximum Landing Mass (Kilogram) for Aquila A211?", secenekler: ["700 kg", "750 kg", "800 kg", "1280 kg"], cevap: "750 kg", aciklama: "İniş takımlarının emniyeti için izin verilen maksimum iniş kütlesi kalkış kütlesiyle aynı olup 750 kg'dır.", cat: "Weight And Balance" },
 
-        // === BÖLÜM 4: Engine & Power System Limits (14 Soru) ===
+        // === BÖLÜM 4: Engine & Power System Limits (13 Soru) ===
         { soru: "What is the RPM Limits - Green Arc for Aquila A211?", secenekler: ["535 - 2260 RPM", "2100 RPM", "2100 - 2300 RPM", "1800 - 2400 RPM"], cevap: "535 - 2260 RPM", aciklama: "Aquila Rotax motorunda standart yeşil çalışma devir aralığı 535 ile 2260 RPM arasıdır.", cat: "Engine & Power System Limits" },
         { soru: "What is the RPM Limits - Yellow Arc for Aquila A211?", secenekler: ["2100 - 2300 RPM", "2260 - 2385 RPM", "2300 - 2500 RPM", "2385 - 2500 RPM"], cevap: "2260 - 2385 RPM", aciklama: "Pervane devir göstergesindeki sarı dikkat uyarı aralığı 2260 - 2385 RPM'dir.", cat: "Engine & Power System Limits" },
         { soru: "What is the RPM Limits - Red Arc for Aquila A211?", secenekler: ["2300 RPM", "2385 RPM", "2500 RPM", "2700 RPM"], cevap: "2385 RPM", aciklama: "Motor mekanik limit kırmızı çizgisi 2385 RPM'dir.", cat: "Engine & Power System Limits" },
@@ -480,8 +481,8 @@
         { soru: "What is the Oil Pressure - Red Arc (PSI) for Aquila A211?", secenekler: ["5 PSI +", "6.5 PSI +", "7 PSI +", "8 PSI +"], cevap: "7 PSI +", aciklama: "Yağ basıncında tehlikeli aşırı basınç kırmızı çizgisi 7 PSI ve üzeridir (7 +).", cat: "Engine & Power System Limits" },
         { soru: "What is the Oil Temperature - Green Arc (Santigrat) for Aquila A211?", secenekler: ["50 - 110 °C", "50 - 135 °C", "60 - 120 °C", "40 - 130 °C"], cevap: "50 - 110 °C", aciklama: "Motor yağ sıcaklığı yeşil normal emniyetli çalışma aralığı 50 - 110 °C arasıdır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Oil Temperature - Red Arc (Santigrat) for Aquila A211?", secenekler: ["110 °C +", "120 °C +", "130 °C +", "140 °C +"], cevap: "130 °C +", aciklama: "Motor hararet yağ sıcaklık sınırı kırmızı çizgisi 130 °C ve üzeridir.", cat: "Engine & Power System Limits" },
-        { soru: "What is the Cruise Load (Manifold Pressure) for Aquila A211?", secenekler: ["15 inHg", "21 - 22 inHg", "24 - 26 inHg", "28 inHg"], cevap: "21 - 22 inHg", aciklama: "Düz uçuş seyir (Cruise) safhası standart manifold basınç yükü 21 - 22 inHg'dir.", cat: "Engine & Power System Limits" },
-        { soru: "What is the Descent Load (Manifold Pressure) for Aquila A211?", secenekler: ["10 inHg", "12 inHg", "15 inHg", "20 inHg"], cevap: "15 inHg", aciklama: "Standart alçalma safhasında muhafaza edilmesi planlanan manifold basıncı 15 inHg'dir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Cruise Load (Manifold Pressure) for Aquila A211?", secenekler: ["15", "21 - 22", "24 - 26", "28"], cevap: "21 - 22", aciklama: "Düz uçuş seyir (Cruise) safhası standart manifold basınç yükü 21 - 22'dir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Descent Load (Manifold Pressure) for Aquila A211?", secenekler: ["10", "12", "15", "20"], cevap: "15", aciklama: "Standart alçalma safhasında muhafaza edilmesi planlanan manifold basıncı 15'dir.", cat: "Engine & Power System Limits" },
         { soru: "What is the Voltmeter - Green Arc (Volt) range for Aquila A211?", secenekler: ["10 - 12 Volt", "11 - 12 Volt", "12 - 15 Volt", "15 - 16 Volt"], cevap: "12 - 15 Volt", aciklama: "Elektrik sistemi normal şarj voltajı yeşil yayın aralığı 12 - 15 Volttur.", cat: "Engine & Power System Limits" },
         { soru: "What is the Voltmeter - Yellow Arc (Volt) range for Aquila A211?", secenekler: ["10 - 11 Volt", "11 - 12 Volt", "15 - 16 Volt", "16 - 17 Volt"], cevap: "11 - 12 Volt", aciklama: "Düşük voltaj uyarı sarı aralığı 11 ile 12 Volt arasıdır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Voltmeter - Red Arc (Volt) limit for Aquila A211?", secenekler: ["12 Volt +", "15 Volt +", "15 - 16 Volt", "16 Volt +"], cevap: "15 - 16 Volt", aciklama: "Yüksek voltaj tehlikesi kırmızı bant aralığı 15 - 16 Volttur.", cat: "Engine & Power System Limits" },
