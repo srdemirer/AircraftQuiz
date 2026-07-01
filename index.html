@@ -288,7 +288,7 @@
             <button class="btn aircraft-btn" onclick="showSubCategories('Aquila A211')">Aquila A211</button>
             <button class="btn aircraft-btn" onclick="showSubCategories('Diamond DA20 Eclipse')">Diamond DA20 Eclipse</button>
             <button class="btn aircraft-btn" onclick="showSubCategories('Diamond DA40 NG')">Diamond DA40 NG</button>
-            <button class="btn aircraft-btn" disabled title="Yapım Aşamasındadır">Diamond DA42 Twin Star (Yapım Aşamasında)</button>
+            <button class="btn aircraft-btn" onclick="showSubCategories('Diamond DA42 NG')">Diamond DA42 NG</button>
         </div>
         
         <div class="insight-badge" id="weakness-insight-box"></div>
@@ -416,7 +416,7 @@
         { soru: "What is the Oil Pressure - Yellow Arc (PSI)?", secenekler: ["2.0 - 2.5", "6 - 6.5", "5.5 - 6.0", "6.5 - 7.0"], cevap: "6 - 6.5", aciklama: "Yüksek yağ basıncı sarı dikkat bölgesi aralığı 6 ile 6.5 PSI arasıdır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Oil Pressure - Red Arc (PSI)?", secenekler: ["6.0 +", "6.5 +", "7.0 +", "5.5 +"], cevap: "6.5 +", aciklama: "Yağ basıncında tehlikeli kırmızı limit çizgisi 6.5 PSI ve üzeridir (6.5 +).", cat: "Engine & Power System Limits" },
         { soru: "What is the Oil Temperature - Green Arc (Santigrat)?", secenekler: ["40 - 120", "50 - 135", "60 - 130", "50 - 140"], cevap: "50 - 135", aciklama: "Motor yağ sıcaklığının emniyetli yeşil çalışma aralığı 50 - 135 °C arasıdır.", cat: "Engine & Power System Limits" },
-        { soru: "What is the Oil Temperature - Yellow Arc (Santigrat)?", secenekler: ["130 - 135", "135 - 140", "140 - 145", "125 - 135"], font: "50 - 135", cevap: "135 - 140", aciklama: "Yağ harareti sarı dikkat aralığı normu 135 - 140 °C arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Temperature - Yellow Arc (Santigrat)?", secenekler: ["130 - 135", "135 - 140", "140 - 145", "125 - 135"], cevap: "135 - 140", aciklama: "Yağ harareti sarı dikkat aralığı normu 135 - 140 °C arasıdır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Oil Temperature - Red Arc (Santigrat)?", secenekler: ["135 +", "140 +", "145 +", "130 +"], cevap: "140 +", aciklama: "Motor yağ hararetinde kırmızı sınır bölgesi çizgisi 140 °C ve üzeridir.", cat: "Engine & Power System Limits" },
         { soru: "What is the Coolant Temperature - Green Arc (Santigrat)?", secenekler: ["50 - 90", "60 - 90", "60 - 105", "70 - 100"], cevap: "60 - 90", aciklama: "Motor soğutma sıvısı (Coolant) normal yeşil aralığı 60 - 90 °C'dir.", cat: "Engine & Power System Limits" },
         { soru: "What is the Coolant Temperature - Yellow Arc (Santigrat)?", secenekler: ["90 - 105", "95 - 100", "95 - 105", "90 - 100"], cevap: "90 - 105", aciklama: "Soğutma sıvısının sarı dikkat uyarı aralığı 90 - 105 °C arasıdır.", cat: "Engine & Power System Limits" },
@@ -437,7 +437,7 @@
         { soru: "What is the Ammeter - Red Arc (Amper) limit?", secenekler: ["60 +", "70 +", "80 +", "65 +"], cevap: "70 +", aciklama: "Elektriksel aşırı yük koruma kırmızı limiti 70 Amper ve üzeridir (70 +).", cat: "Engine & Power System Limits" },
         { soru: "What is the Voltmeter - Green Arc (Volt) range?", secenekler: ["12 - 14", "24 - 28", "25 - 30", "28 - 32"], cevap: "25 - 30", aciklama: "Ana DC elektrik barası normal şarj voltajı yeşil aralığı 25 - 30 Volttur.", cat: "Engine & Power System Limits" },
         { soru: "What is the Voltmeter - Yellow Arc (Volt) range?", secenekler: ["22 - 25", "30 - 32", "32 - 34", "24 - 26"], cevap: "30 - 32", aciklama: "Yüksek voltaj uyarı sarı aralığı 30 ile 32 Volt arasıdır.", cat: "Engine & Power System Limits" },
-        { soru: "What is the Voltmeter - Red Arc (Volt) limit?", secenekler: ["30 +", "32 +", "34 +", "28 +"], cevap: "32 +", aciklama: "Sistem koruma aşırı voltaj kırmızı çizgisi 32 Volt ve üzeridir (32 +).", cat: "Engine & Power System Limits" },
+        { soru: "What is the Voltmeter - Red Arc (Volt) limit?", secenekler: ["30 +", "32 +", "34 +", "28 +"], cevap: "32 +", aciklama: "Sınav koruma aşırı voltaj kırmızı çizgisi 32 Volt ve üzeridir (32 +).", cat: "Engine & Power System Limits" },
         { soru: "What is the Minimum GearBox Temperature for ECU Test?", secenekler: ["35", "38", "45", "50"], cevap: "38", aciklama: "Motor testleri öncesi dişli kutusunun (Gearbox) asgari 38 °C sıcaklığa ulaşması şarttır.", cat: "Engine & Power System Limits" },
 
         // === BÖLÜM 6: Fuel Quantity (4 Soru) ===
@@ -463,12 +463,12 @@
         { soru: "What is the Rotate Speed for Aquila A211?", secenekler: ["45 KIAS", "50 KIAS", "52 KIAS", "55 KIAS"], cevap: "50 KIAS", aciklama: "Aquila A211 için tavsiye edilen standart rotate (teker kesme) sürati 50 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the VX Take Off Flap Climb Speed for Aquila A211?", secenekler: ["50 KIAS", "52 KIAS", "55 KIAS", "57 KIAS"], cevap: "52 KIAS", aciklama: "Kalkış flap kademesinde en iyi tırmanış açısı sürati (VX) 52 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the VY Take Off Flap Climb Speed for Aquila A211?", secenekler: ["52 KIAS", "55 KIAS", "57 KIAS", "60 KIAS"], cevap: "57 KIAS", aciklama: "Kalkış flap kademesinde en iyi tırmanış oranı sürati (VY) 57 KIAS'tır.", cat: "Indicated Airspeeds" },
-        { soru: "What is the Up Flap Climb Speed for Aquila A211?", secenekler: ["70 KIAS", "73 KIAS", "75 KIAS", "78 KIAS"], cevap: "75 KIAS", aciklama: "Flaplar tamamen toplandıktan sonraki standart tırmanış sürati 75 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Up Flap Climb Speed for Aquila A211?", secenekler: ["70 KIAS", "73 KIAS", "75 KIAS", "78 KIAS"], font: "75 KIAS", cevap: "75 KIAS", aciklama: "Flaplar tamamen toplandıktan sonraki standart tırmanış sürati 75 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the Stall Speed (Up Flap) for Aquila A211?", secenekler: ["45 KIAS", "47 KIAS", "49 KIAS", "52 KIAS"], cevap: "49 KIAS", aciklama: "Temiz konfigürasyonda uçağın havada tutunabileceği asgari stall sürati 49 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the Stall Speed (Take Off Flap) for Aquila A211?", secenekler: ["42 KIAS", "45 KIAS", "47 KIAS", "49 KIAS"], cevap: "45 KIAS", aciklama: "Kalkış flap pozisyonunda uçağın stall sürat değeri 45 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the Stall Speed (Landing Flap) for Aquila A211?", secenekler: ["40 KIAS", "39 KIAS", "45 KIAS", "47 KIAS"], cevap: "39 KIAS", aciklama: "Full iniş konfigürasyonunda uçağın minimum stall limit sürati 39 KIAS'tır.", cat: "Indicated Airspeeds" },
         { soru: "What is the Steep Turn Speed for Aquila A211?", secenekler: ["70 KIAS", "80 KIAS", "90 KIAS", "60 KIAS"], cevap: "90 KIAS", aciklama: "Keskin dönüş sürati 90 KIAS'tır.", cat: "Indicated Airspeeds" },
-      
+        
         // === BÖLÜM 2: Maneuvering (5 Soru) ===
         { soru: "What is the Maximum Positive Load Factor - Up Flap (G) for Aquila A211?", secenekler: ["3.8 G", "4.0 G", "4.4 G", "2.0 G"], cevap: "4.0 G", aciklama: "Temiz konfigürasyonda izin verilen yapısal maksimum pozitif yük faktörü +4.0 G'dir.", cat: "Maneuvering" },
         { soru: "What is the Maximum Positive Load Factor - TO / LDG Flap (G) for Aquila A211?", secenekler: ["2.0 G", "3.8 G", "4.0 G", "0 G"], cevap: "2.0 G", aciklama: "Flaplar açık pozisyondayken maksimum yapısal pozitif yük limiti +2.0 G'dir.", cat: "Maneuvering" },
@@ -566,9 +566,9 @@
         { soru: "What is the Maximum Oil Pressure limit under normal conditions (PSI)?", secenekler: ["60 PSI", "80 PSI", "100 PSI", "110 PSI"], cevap: "100 PSI", aciklama: "Yağlama sistemi genel maksimum emniyet basınç sınırı kırmızı çizgisi 100 PSI'dır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Minimum Oil Temperature parameter in Fahrenheit?", secenekler: ["75 °F", "100 °F", "120 °F", "240 °F"], cevap: "75 °F", aciklama: "Motor güç açılmadan önce yağ sıcaklığının görmesi gereken asgari değer 75 °F'tır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Maximum RPM After Start Until Oil Temperature Indication Registers?", secenekler: ["1000 RPM", "1200 RPM", "1400 RPM", "1500 RPM"], cevap: "1000 RPM", aciklama: "Yağ sıcaklık ibresi kımıldayana kadar motorun çalıştırılacağı azami rölanti devri 1000 RPM'dir.", cat: "Engine & Power System Limits" },
-        { soru: "What is the Oil Temperature Normal Operation Range (F)?", secenekler: ["140-180 °F", "170-220 °F", "190-210 °F", "210-240 °F"], cevap: "170-220 °F", aciklama: "170-220 °F", cat: "Engine & Power System Limits" },
-        { soru: "What is the Minimum Oil Temperature to Begin an Area SFL at Area Idle (F)?", secenekler: ["180 °F", "170 °F", "190 °F", "210 °F"], cevap: "170 °F", aciklama: "170 °F", cat: "Engine & Power System Limits" },
-        { soru: "What is the Minimum Oil Temperature for Full Power Operation If Oil Pressure 100 PSI?", secenekler: ["75 °F", "70 °F", "90 °F", "10 °F"], cevap: "75 °F", aciklama: "75 °F", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Temperature Normal Operation Range (F)?", secenekler: ["140-180 °F", "170-220 °F", "190-210 °F", "210-240 °F"], cevap: "170-220 °F", aciklama: "Motorun normal yeşil çalışma yağ sıcaklık bandı 170-220 °F aralığıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Minimum Oil Temperature to Begin an Area SFL at Area Idle (F)?", secenekler: ["180 °F", "170 °F", "190 °F", "210 °F"], cevap: "170 °F", aciklama: "SFL manevrasına başlamadan önce yağ sıcaklığının en az 170 °F olması şarttır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Minimum Oil Temperature for Full Power Operation If Oil Pressure 100 PSI?", secenekler: ["75 °F", "70 °F", "90 °F", "10 °F"], cevap: "75 °F", aciklama: "Yağ basıncı 100 PSI iken tam güç uygulamak için asgari sıcaklık 75 °F'tır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Maximum Oil Temperature limit in Fahrenheit?", secenekler: ["200 °F", "220 °F", "240 °F", "260 °F"], cevap: "240 °F", aciklama: "Motor yağının ulaşabileceği yapısal en yüksek hararet sınırı kırmızı çizgisi 240 °F'tır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Minimum Oil Quantity allowed (US QTS)?", secenekler: ["3.5 QTS", "4 QTS", "5 QTS", "6 QTS"], cevap: "4 QTS", aciklama: "DA20 Eclipse karter motor uçuş emniyeti asgari yağ miktarı limit tabanı 4 kuarttır.", cat: "Engine & Power System Limits" },
         { soru: "What is the Maximum Oil Quantity allowed (US QTS)?", secenekler: ["5 QTS", "6 QTS", "7 QTS", "8 QTS"], cevap: "6 QTS", aciklama: "Motor yağ haznesinin fiziki tam kapasite maksimum limit doluluk hacmi 6 kuarttır.", cat: "Engine & Power System Limits" },
@@ -592,6 +592,76 @@
         { soru: "What is the Maximum Tailwind Component (KTS) allowed for DA20?", secenekler: ["5 KTS", "10 KTS", "12 KTS", "15 KTS"], cevap: "5 KTS", aciklama: "Kalkış ve inişlerde emniyet sınırı olarak izin verilen maksimum arka rüzgar (tailwind) bileşeni 5 Knottur.", cat: "Take Off & Landing" }
     ];
 
+    // === Diamond DA42 NG Excel Verilerinden %100 Doğrulanmış 5 Kategori, 57 Soru Veritabanı ===
+    const da42Database = [
+        // --- 1. Indicated Airspeeds (17 Soru) ---
+        { soru: "What is the Operating Maneuvering Speed Up to 1700 Kg. for DA42 NG?", secenekler: ["112 KIAS", "119 KIAS", "122 KIAS", "126 KIAS"], cevap: "112 KIAS", aciklama: "1700 kg kütleye kadar ani kumanda ve manevra hız limiti 112 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Operating Maneuvering Speed 1700 Kg. to 1800 Kg. for DA42 NG?", secenekler: ["112 KIAS", "119 KIAS", "122 KIAS", "113 KIAS"], cevap: "119 KIAS", aciklama: "1700-1800 kg ağırlık bandındaki tasarımsal manevra sürati 119 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Operating Maneuvering Speed Above 1800 Kg. for DA42 NG?", secenekler: ["119 KIAS", "122 KIAS", "133 KIAS", "151 KIAS"], cevap: "122 KIAS", aciklama: "1800 kg üzerindeki maksimum yüklü manevra sürat tavanı 122 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VFE Maximum Flap Extended Speed (Landing) for DA42 NG?", secenekler: ["113 KIAS", "133 KIAS", "151 KIAS", "188 KIAS"], cevap: "113 KIAS", aciklama: "Full iniş flap pozisyonunda (LDG) uçağın yapısal sürat sınırı 113 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VFE Maximum Flap Extended Speed (Take Off) for DA42 NG?", secenekler: ["113 KIAS", "133 KIAS", "153 KIAS", "151 KIAS"], cevap: "133 KIAS", aciklama: "Kalkış flap kademesinde (T/O) müsaade edilen maksimum hız limiti 133 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VLO Maximum Landing Gear Operating Speed (Extension) for DA42 NG?", secenekler: ["153 KIAS", "188 KIAS", "151 KIAS", "113 KIAS"], cevap: "188 KIAS", aciklama: "İniş takımlarını emniyetle aşağı salma/açma (Extension) hız sınırı 188 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VLO Maximum Landing Gear Operating Speed (Retraction) for DA42 NG?", secenekler: ["133 KIAS", "151 KIAS", "153 KIAS", "188 KIAS"], cevap: "153 KIAS", aciklama: "İniş takımlarını havada toplama/kapatma (Retraction) azami hız limiti 153 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VMCA Minimum Control Speed (Up Flap) for DA42 NG?", secenekler: ["76 KIAS", "73 KIAS", "80 KIAS", "84 KIAS"], cevap: "76 KIAS", aciklama: "Kritik motor durduğunda temiz konfigürasyondaki (Flaps UP) minimum kontrol edilebilirlik sürati 76 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VMCA Minimum Control Speed (Take Off Flap) for DA42 NG?", secenekler: ["76 KIAS", "73 KIAS", "69 KIAS", "66 KIAS"], cevap: "73 KIAS", aciklama: "Kalkış flap kademesinde tek motorlu minimum kontrol sürati (VMCA) 73 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VNO Maximum Structural Cruising Speed for DA42 NG?", secenekler: ["151 KIAS", "188 KIAS", "122 KIAS", "133 KIAS"], cevap: "151 KIAS", aciklama: "Yapısal olarak normal şartlarda aşılmaması gereken maksimum seyir hızı 151 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the VNE Never Exceed Speed for DA42 NG?", secenekler: ["151 KIAS", "188 KIAS", "210 KIAS", "195 KIAS"], cevap: "188 KIAS", aciklama: "DA42 NG için asla aşılmaması gereken kırmızı çizgi yapısal hız limiti 188 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Approach Speed (Up Flap) (Emergency / Normal) for DA42 NG?", secenekler: ["86 KIAS", "84 KIAS", "80 KIAS", "69 KIAS"], cevap: "86 KIAS", aciklama: "Flaplar UP pozisyondayken acil veya normal yaklaşma sürat normu 86 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Approach Speed (Take Off) (Emergency / Normal) for DA42 NG?", secenekler: ["86 KIAS", "84 KIAS", "80 KIAS", "66 KIAS"], cevap: "84 KIAS", aciklama: "Kalkış kademesi flaplarında tavsiye edilen acil/normal yaklaşma hızı 84 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Approach Speed (Landing) (Emergency / Normal) for DA42 NG?", secenekler: ["86 KIAS", "84 KIAS", "76 KIAS", "62 KIAS"], cevap: "84 KIAS", aciklama: "İniş tam flap konfigürasyonunda son yaklaşma muhafaza sürati 84 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Rotate Speed (Recommended) for DA42 NG?", secenekler: ["76 KIAS", "80 KIAS", "84 KIAS", "69 KIAS"], cevap: "80 KIAS", aciklama: "Tavsiye edilen standart rotate (teker kesme) hızı 80 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Stall Speed (Up Flap) for DA42 NG?", secenekler: ["69 KIAS", "66 KIAS", "62 KIAS", "76 KIAS"], cevap: "69 KIAS", aciklama: "Flaplar ve iniş takımları kapalıyken uçağın havada tutunabileceği taban sürat 69 KIAS'tır.", cat: "Indicated Airspeeds" },
+        { soru: "What is the Stall Speed (Take Off Flap) for DA42 NG?", secenekler: ["69 KIAS", "66 KIAS", "62 KIAS", "73 KIAS"], cevap: "66 KIAS", aciklama: "Kalkış flap konfigürasyonunda uçağın stall sürat değeri 66 KIAS'tır.", cat: "Indicated Airspeeds" },
+
+        // --- 2. Maneuvering (4 Soru) ---
+        { soru: "What is the Maximum Positive Load Factor - Up Flap (G) for DA42 NG?", secenekler: ["3.8 G", "2.0 G", "-1.52 G", "4.4 G"], cevap: "3.8 G", aciklama: "Flaplar kapalıyken (Clean) uçağın taşıyabileceği maksimum pozitif yük faktörü +3.8 G'dir.", cat: "Maneuvering" },
+        { soru: "What is the Maximum Positive Load Factor - TO / LDG Flap (G) for DA42 NG?", secenekler: ["3.8 G", "2 G", "0 G", "2.5 G"], cevap: "2 G", aciklama: "Flaplar açık pozisyonda (Take Off veya Landing) maksimum yük sınırı +2 G'dir.", cat: "Maneuvering" },
+        { soru: "What is the Maximum Negative Load Factor - Up Flap (G) for DA42 NG?", secenekler: ["-1.52 G", "0 G", "-2.0 G", "-1.0 G"], cevap: "-1.52 G", aciklama: "Temiz konfigürasyonda uçağın yapısal izin verilen azami negatif yük faktörü -1.52 G'dir.", cat: "Maneuvering" },
+        { soru: "What is the Maximum Negative Load Factor - TO / LDG Flap (G) for DA42 NG?", secenekler: ["-1.52 G", "-1.0 G", "0 G", "-0.5 G"], cevap: "0 G", aciklama: "Flaplar açıkken DA42 NG hiçbir negatif yüklemeye maruz bırakılamaz; limit tam 0 G'dir.", cat: "Maneuvering" },
+
+        // --- 3. Engine & Power System Limits (32 Soru) ---
+        { soru: "What is the RPM Limits - Green Arc for DA42 NG?", secenekler: ["2100", "2300", "1800", "2200"], cevap: "2100", aciklama: "Göstergedeki normal sürekli çalışma yeşil üst sınırı 2100 RPM'dir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the RPM Limits - Yellow Arc for DA42 NG?", secenekler: ["2100 - 2300", "2300 +", "1800 - 2100", "2200 - 2300"], cevap: "2100 - 2300", aciklama: "Takometre üzerindeki sarı dikkat ikaz şeridi aralığı 2100 ile 2300 RPM arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the RPM Limits - Red Arc for DA42 NG?", secenekler: ["2100 +", "2300 +", "2500 +", "2400 +"], cevap: "2300 +", aciklama: "Mekanik hasar sınırı kırmızı çizgisi 2300 RPM ve üzeridir (2300 +).", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Pressure - Green Arc (PSI) for DA42 NG?", secenekler: ["1.5 - 5", "2.5 - 6", "6 - 6.5", "2.0 - 5.5"], cevap: "2.5 - 6", aciklama: "Normal motor yağ basıncı yeşil çalışma aralığı 2.5 ile 6 PSI arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Pressure - Yellow Arc (PSI) for DA42 NG?", secenekler: ["2.0 - 2.5", "6 - 6.5", "6.5 +", "5.0 - 6.0"], cevap: "6 - 6.5", aciklama: "Yüksek yağ basıncı sarı uyarı bölgesi aralığı 6 ile 6.5 PSI arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Pressure - Red Arc (PSI) for DA42 NG?", secenekler: ["6.0 +", "6.5 +", "7.0 +", "5.5 +"], cevap: "6.5 +", aciklama: "Yağlama sistemi maksimum limit kırmızı çizgisi 6.5 PSI ve üzeridir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Temperature - Green Arc (Santigrat) for DA42 NG?", secenekler: ["40 - 120", "50 - 130", "130 - 140", "140 +"], cevap: "50 - 130", aciklama: "Motor yağ hararetinin normal yeşil çalışma aralığı 50 ile 130 °C arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Temperature - Yellow Arc (Santigrat) for DA42 NG?", secenekler: ["130 - 140", "140 +", "40 - 50", "120 - 130"], cevap: "130 - 140", aciklama: "Yüksek yağ harareti sarı uyarı aralığı 130 - 140 °C arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Oil Temperature - Red Arc (Santigrat) for DA42 NG?", secenekler: ["130 +", "140 +", "150 +", "135 +"], cevap: "140 +", aciklama: "Motor blok yağ hararet kırmızı tehlike çizgisi 140 °C ve üzeridir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Coolant Temperature - Green Arc (Santigrat) for DA42 NG?", secenekler: ["50 - 90", "60 - 95", "95 - 105", "105 +"], cevap: "60 - 95", aciklama: "Motor soğutma sıvısı (Coolant) normal yeşil aralığı 60 - 95 °C arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Coolant Temperature - Yellow Arc (Santigrat) for DA42 NG?", secenekler: ["60 - 95", "95 - 105", "105 +", "90 - 100"], cevap: "95 - 105", aciklama: "Soğutma sıvısı hararet uyarı sarı aralığı 95 - 105 °C arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Coolant Temperature - Red Arc (Santigrat) for DA42 NG?", secenekler: ["95 +", "105 +", "110 +", "100 +"], cevap: "105 +", aciklama: "Blok hasar koruması soğutma sıvısı kırmızı çizgisi 105 °C üstüdür (105 +).", cat: "Engine & Power System Limits" },
+        { soru: "What is the Gearbox Temperature - Green Arc (Santigrat) for DA42 NG?", secenekler: ["35 - 115", "115 - 120", "120 +", "30 - 110"], cevap: "35 - 115", aciklama: "Dişli kutusu (Gearbox) normal çalışma yeşil aralığı 35 - 115 °C arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Gearbox Temperature - Yellow Arc (Santigrat) for DA42 NG?", secenekler: ["35 - 115", "115 - 120", "120 +", "110 - 115"], cevap: "115 - 120", aciklama: "Gearbox harareti sarı uyarı bölgesi aralığı 115 - 120 °C arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Gearbox Temperature - Red Arc (Santigrat) for DA42 NG?", secenekler: ["115 +", "120 +", "125 +", "110 +"], cevap: "120 +", aciklama: "Pervane dişli kutusu kritik hararet kırmızı çizgisi 120 °C ve üzeridir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Load - Green Arc (%) for DA42 NG?", secenekler: ["92", "100", "92 - 100", "75"], cevap: "92", aciklama: "Güç göstergesindeki (Load) yeşil yayın emniyetli üst sınırı %92 yüklemedir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Load - Yellow Arc (%) for DA42 NG?", secenekler: ["92", "92 - 100", "100 +", "90 - 95"], cevap: "92 - 100", aciklama: "Güç göstergesi aşırı yüklenme sarı dikkat aralığı %92 ile %100 arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Fuel Temperature - Green Arc (Santigrat) for DA42 NG?", secenekler: ["5 - 55", "55 - 60", "60 +", "-20 - 55"], cevap: "5 - 55", aciklama: "Yakıt sıcaklığı emniyetli yeşil çalışma aralığı 5 ile 55 °C arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Fuel Temperature - Yellow Arc (Santigrat) for DA42 NG?", secenekler: ["5 - 55", "55 - 60", "60 +", "50 - 55"], cevap: "55 - 60", aciklama: "Yakıt sıcaklığı üst kritik sarı ikaz bölgesi 55 - 60 °C arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Fuel Temperature - Red Arc (Santigrat) for DA42 NG?", secenekler: ["55 +", "60 +", "65 +", "50 +"], cevap: "60 +", aciklama: "Yakıt sistemi emniyet limiti kırmızı çizgisi 60 °C ve üzeridir (60 +).", cat: "Engine & Power System Limits" },
+        { soru: "What is the Ammeter - Green Arc (Amper) for DA42 NG?", secenekler: ["60", "60 - 70", "70 +", "50"], cevap: "60", aciklama: "Ampermetre yeşil bölge normal çalışma akım üst sınırı 60 Amperdir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Ammeter - Yellow Arc (Amper) for DA42 NG?", secenekler: ["60", "60 - 70", "70 +", "50 - 60"], cevap: "60 - 70", aciklama: "Alternatör yüksek şarj akımı sarı dikkat bölgesi aralığı 60 - 70 Amperdir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Ammeter - Red Arc (Amper) for DA42 NG?", secenekler: ["60 +", "70 +", "80 +", "65 +"], cevap: "70 +", aciklama: "Elektriksel aşırı yük limit kırmızı çizgisi 70 Amper ve üzeridir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Voltmeter - Green Arc (Volt) for DA42 NG?", secenekler: ["24 - 28", "25 - 30", "30 - 32", "32 +"], cevap: "25 - 30", aciklama: "Ana DC elektrik barası normal şarj voltajı yeşil aralığı 25 - 30 Volttur.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Voltmeter - Yellow Arc (Volt) for DA42 NG?", secenekler: ["25 - 30", "30 - 32", "32 +", "22 - 25"], cevap: "30 - 32", aciklama: "Yüksek voltaj uyarı sarı dikkat aralığı 30 ile 32 Volt arasıdır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Voltmeter - Red Arc (Volt) for DA42 NG?", secenekler: ["30 +", "32 +", "34 +", "28 +"], cevap: "32 +", aciklama: "Sistem koruma aşırı voltaj kırmızı çizgisi 32 Volt ve üzeridir (32 +).", cat: "Engine & Power System Limits" },
+        { soru: "What is the Minimum Landing Gear Tire Pressure (Main) (PSI) for DA42 NG?", secenekler: ["65", "44", "33", "50"], cevap: "65", aciklama: "Ana iniş takımı lastiklerinin muhafaza edilmesi gereken standart basıncı 65 PSI'dır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Minimum Landing Gear Tire Pressure (Nose) (PSI) for DA42 NG?", secenekler: ["65", "44", "26", "35"], cevap: "44", aciklama: "Burun iniş takımı lastiğinin standart hava basınç değeri 44 PSI'dır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Minimum Engine-Out Airspeed for Propeller Feathering (KIAS)?", secenekler: ["80 KIAS", "76 KIAS", "73 KIAS", "84 KIAS"], cevap: "80 KIAS", aciklama: "Havada motor durduğunda pervane hatve sabitleme (feathering) için gereken asgari hız 80 KIAS'tır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Maximum Altitude for Restart (Un-Feathering) (FT) for DA42 NG?", secenekler: ["14000 FT", "16400 FT", "18000 FT", "10000 FT"], cevap: "14000 FT", aciklama: "Havada motoru rüzgar gücüyle (un-feathering) yeniden çalıştırmak için izin verilen azami irtifa 14000 FT'tir.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Restart Speed Range (KIAS) for DA42 NG?", secenekler: ["80 - 120 KIAS", "100 - 110 KIAS", "90 - 115 KIAS", "86 - 133 KIAS"], cevap: "80 - 120 KIAS", aciklama: "Havada starter kullanmadan motoru yeniden çalıştırma emniyetli sürat aralığı 80 - 120 KIAS'tır.", cat: "Engine & Power System Limits" },
+        { soru: "What is the Minimum Engine-Out Safe Climb Speed (V_YSE) (KIAS)?", secenekler: ["80 KIAS", "84 KIAS", "86 KIAS", "76 KIAS"], cevap: "84 KIAS", aciklama: "Tek motorla tırmanışta en iyi tırmanış oranı hızı (Blue Line - V_YSE) 84 KIAS'tır.", cat: "Engine & Power System Limits" },
+
+        // --- 4. Fuel Quantity (2 Soru) ---
+        { soru: "What is the Total Fuel Quantity (USG) for DA42 NG Main Tanks?", secenekler: ["52 USG", "50 USG", "51.8 USG", "26 USG"], cevap: "51.8 USG", aciklama: "DA42 NG ana depolarının fiziki toplam yakıt hacmi 2 x 25.9 = 51.8 galondur.", cat: "Fuel Quantity" },
+        { soru: "What is the Usable Fuel Quantity (USG) for DA42 NG Main Tanks?", secenekler: ["50 USG", "51.8 USG", "48 USG", "45 USG"], cevap: "50 USG", aciklama: "Ana depolardan motorlar tarafından çekilebilen net emniyetli kullanılabilir yakıt miktarı 2 x 25 = 50 galondur.", cat: "Fuel Quantity" },
+
+        // --- 5. Stall Speed (2 Soru) ---
+        { soru: "What is the Stall Speed (Landing Flap) for DA42 NG?", secenekler: ["62 KIAS", "66 KIAS", "69 KIAS", "60 KIAS"], cevap: "62 KIAS", aciklama: "İniş takımları aşağıda ve full iniş flap konfigürasyonunda uçağın stall sürati 62 KIAS'tır.", cat: "Stall Speed" },
+        { soru: "What is the Maximum Bank Angle for Standard Maneuvers in DA42 NG?", secenekler: ["60°", "45°", "30°", "90°"], cevap: "60°", aciklama: "DA42 NG ile sertifikalı normal manevralarda müsaade edilen maksimum yatış açısı 60 derecedir.", cat: "Stall Speed" }
+    ];
+
     let activeQuestions = [];
     let currentQuestionIndex = 0;
     let selectedCategory = "";
@@ -607,7 +677,7 @@
     let questionStates = []; 
     let quizTimerInterval = null;
     let timeLeft = 0; 
-    let currentQuestionStartTime = 0; // Soru bazlı geri sayım ses takibi için
+    let currentQuestionStartTime = 0; 
     
     let consecutiveCorrect = 0;
     let consecutiveWrong = 0;
@@ -685,7 +755,6 @@
         trollModalOverlay.classList.remove('show');
     }
 
-    // Thema Değişimi
     function toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const btn = document.getElementById('theme-toggle-btn');
@@ -784,33 +853,13 @@
         
         let categories = [];
         if (selectedAircraft === 'Diamond DA40 NG') {
-            categories = [
-                'Indicated Airspeeds',
-                'Maneuvering',
-                'Weight And Balance',
-                'Rotate Speeds',
-                'Engine & Power System Limits',
-                'Fuel Quantity'
-            ];
+            categories = ['Indicated Airspeeds', 'Maneuvering', 'Weight And Balance', 'Rotate Speeds', 'Engine & Power System Limits', 'Fuel Quantity'];
         } else if (selectedAircraft === 'Aquila A211') {
-            categories = [
-                'Indicated Airspeeds',
-                'Maneuvering',
-                'Weight And Balance',
-                'Engine & Power System Limits',
-                'Fuel Quantity'
-            ];
+            categories = ['Indicated Airspeeds', 'Maneuvering', 'Weight And Balance', 'Engine & Power System Limits', 'Fuel Quantity'];
         } else if (selectedAircraft === 'Diamond DA20 Eclipse') {
-            categories = [
-                'Indicated Airspeeds',
-                'Maneuvering',
-                'Weight And Balance',
-                'Voltmeter',
-                'Miscellaneous',
-                'Engine & Power System Limits',
-                'Fuel Quantity',
-                'Take Off & Landing'
-            ];
+            categories = ['Indicated Airspeeds', 'Maneuvering', 'Weight And Balance', 'Voltmeter', 'Miscellaneous', 'Engine & Power System Limits', 'Fuel Quantity', 'Take Off & Landing'];
+        } else if (selectedAircraft === 'Diamond DA42 NG') {
+            categories = ['Indicated Airspeeds', 'Maneuvering', 'Engine & Power System Limits', 'Fuel Quantity', 'Stall Speed'];
         }
         
         categories.forEach(cat => {
@@ -869,27 +918,22 @@
     }
 
     function startTimer() {
-        // Soru başına 10 saniye üzerinden dinamik toplam süre hesabı
         timeLeft = activeQuestions.length * 10;
         maydayTriggered = false;
         quizTimerView.style.display = 'inline-block';
         updateTimerDisplay();
         
-        // İlk soru başladığında sayacı kur
         currentQuestionStartTime = Date.now();
         
         quizTimerInterval = setInterval(() => {
             timeLeft--;
             updateTimerDisplay();
             
-            // Soru bazlı geçen süreyi kontrol et (Kalan süre 4, 3, 2, 1 saniye iken ses çıkarma)
             const elapsedOnQuestion = Math.floor((Date.now() - currentQuestionStartTime) / 1000);
             if (elapsedOnQuestion >= 6 && elapsedOnQuestion < 10) {
-                // Soru başı 10 saniyelik hakkın son 4 saniyesindeyiz (6, 7, 8, 9. saniyelerde tık sesi)
                 playBeep(440, 'sine', 0.08);
             }
             
-            // Genel Sınavın Son 2 Dakika İkazı (120 Saniye)
             if (timeLeft === 120 && !maydayTriggered) {
                 maydayTriggered = true;
                 playBeep(600, 'sine', 0.4);
@@ -919,6 +963,7 @@
         if (selectedAircraft === 'Diamond DA40 NG') activeDatabase = da40Database;
         else if (selectedAircraft === 'Aquila A211') activeDatabase = aquilaDatabase;
         else if (selectedAircraft === 'Diamond DA20 Eclipse') activeDatabase = da20Database;
+        else if (selectedAircraft === 'Diamond DA42 NG') activeDatabase = da42Database;
 
         if (categoryName === 'General') {
             activeQuestions = [...activeDatabase];
@@ -973,14 +1018,13 @@
     function loadQuestion() {
         explanationBox.style.display = 'none';
         optionsContainer.innerHTML = '';
-        
-        // Yeni soru yüklendiğinde soru bazlı kronometreyi sıfırla
         currentQuestionStartTime = Date.now();
 
         let activeDatabase = [];
         if (selectedAircraft === 'Diamond DA40 NG') activeDatabase = da40Database;
         else if (selectedAircraft === 'Aquila A211') activeDatabase = aquilaDatabase;
         else if (selectedAircraft === 'Diamond DA20 Eclipse') activeDatabase = da20Database;
+        else if (selectedAircraft === 'Diamond DA42 NG') activeDatabase = da42Database;
 
         let currentQuestion = activeDatabase.find(q => q.soru === activeQuestions[currentQuestionIndex].soru);
         let state = questionStates[currentQuestionIndex];
@@ -1071,7 +1115,7 @@
             } else if (consecutiveWrong === 3) {
                 openTrollModal("🚨 MASTER CAUTION 🚨", "Maşallah Soluksuz 3 Yanlış! SOP'yi Hiç Okumamışsın! 🚨");
             }
-            showExplanationStatic(state.status === 'correct', correctAnswer, aciklama);
+            showExplanationStatic(state.status === 'wrong', correctAnswer, aciklama);
             updateMatrixUI();
         }
     }
@@ -1140,6 +1184,7 @@
         if (selectedAircraft === 'Diamond DA40 NG') acLabel = 'DA40';
         else if (selectedAircraft === 'Aquila A211') acLabel = 'A211';
         else if (selectedAircraft === 'Diamond DA20 Eclipse') acLabel = 'DA20';
+        else if (selectedAircraft === 'Diamond DA42 NG') acLabel = 'DA42';
 
         saveHistory(`${acLabel}-${selectedCategory.substring(0,5).toUpperCase()}`, percentage);
         sendDataToCloud(currentName, currentSurname, currentGender, currentSchool, `${selectedAircraft} (${selectedCategory})`, percentage, testDate);
