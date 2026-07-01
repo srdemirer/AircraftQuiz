@@ -242,7 +242,7 @@
     <div class="top-buttons">
         <button class="home-btn" onclick="backToMenu()">Ana Sayfa 🏠</button>
         <button class="share-btn" onclick="shareSystem()">Paylaş 🔗</button>
-        <button class="theme-switch" onclick="toggleTheme()" id="theme-toggle-btn">Sınav Modu ⏱️</button>
+        <button class="theme-switch" onclick="toggleTheme()" id="theme-toggle-btn">Koyu Mod 🌙</button>
     </div>
 
     <div class="header">
@@ -268,15 +268,6 @@
                 <option value="">Seçiniz...</option>
                 <option value="Erkek">Erkek</option>
                 <option value="Kadın">Kadın</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label style="font-weight: 600;">Uçuş Okulunuz:</label>
-            <select id="userschool-input" class="input-control">
-                <option value="">Seçiniz...</option>
-                <option value="Atlantik Uçuş Okulu">Atlantik Uçuş Okulu</option>
-                <option value="Asya Uçuş Okulu">Asya Uçuş Okulu</option>
-                <option value="Fenix Uçuş Okulu">Fenix Uçuş Okulu</option>
             </select>
         </div>
         <button class="input-control input-btn" onclick="saveUser()">Sınav Sistemine Giriş Yap</button>
@@ -592,7 +583,7 @@
         { soru: "What is the Maximum Tailwind Component (KTS) allowed for DA20?", secenekler: ["5 KTS", "10 KTS", "12 KTS", "15 KTS"], cevap: "5 KTS", aciklama: "Kalkış ve inişlerde emniyet sınırı olarak izin verilen maksimum arka rüzgar (tailwind) bileşeni 5 Knottur.", cat: "Take Off & Landing" }
     ];
 
-    // === Diamond DA42 NG Excel Verilerinden %100 Doğrulanmış 5 Kategori, 57 Soru Veritabanı ===
+    // === Diamond DA42 NG Excel Verilerinden %100 Doğrulanmış 4 Kategori Veritabanı ===
     const da42Database = [
         // --- 1. Indicated Airspeeds (17 Soru) ---
         { soru: "What is the Operating Maneuvering Speed Up to 1700 Kg. for DA42 NG?", secenekler: ["112 KIAS", "119 KIAS", "122 KIAS", "126 KIAS"], cevap: "112 KIAS", aciklama: "1700 kg kütleye kadar ani kumanda ve manevra hız limiti 112 KIAS'tır.", cat: "Indicated Airspeeds" },
@@ -649,8 +640,7 @@
 
         // --- 4. Fuel Quantity (2 Soru) ---
         { soru: "What is the Total Fuel Quantity (USG) for DA42 NG Main Tanks?", secenekler: ["56 USG", "50 USG", "52 USG", "26 USG"], cevap: "52 USG", aciklama: "DA42 NG ana depolarının fiziki toplam yakıt hacmi 2 x 25.9 = 51.8 galondur.", cat: "Fuel Quantity" },
-        { soru: "What is the Usable Fuel Quantity (USG) for DA42 NG Main Tanks?", secenekler: ["50 USG", "51.8 USG", "48 USG", "45 USG"], cevap: "50 USG", aciklama: "Ana depolardan motorlar tarafından çekilebilen net emniyetli kullanılabilir yakıt miktarı 2 x 25 = 50 galondur.", cat: "Fuel Quantity" },
-
+        { soru: "What is the Usable Fuel Quantity (USG) for DA42 NG Main Tanks?", secenekler: ["50 USG", "51.8 USG", "48 USG", "45 USG"], cevap: "50 USG", aciklama: "Ana depolardan motorlar tarafından çekilebilen net emniyetli kullanılabilir yakıt miktarı 2 x 25 = 50 galondur.", cat: "Fuel Quantity" }
     ];
 
     let activeQuestions = [];
@@ -661,7 +651,6 @@
     let currentName = "";
     let currentSurname = "";
     let currentGender = "";
-    let currentSchool = "";
     let pilotEmoji = "👨‍✈️"; 
 
     let signatureClickCount = 0;
@@ -728,7 +717,6 @@
             currentName = storedName;
             currentSurname = localStorage.getItem('p_surname') || "";
             currentGender = localStorage.getItem('p_gender') || "Erkek";
-            currentSchool = localStorage.getItem('p_school') || "Belirtilmemiş";
             pilotEmoji = (currentGender === "Kadın") ? "👩‍✈️" : "👨‍✈️";
             showMainMenu();
         } else {
@@ -751,10 +739,10 @@
         const btn = document.getElementById('theme-toggle-btn');
         if (currentTheme === 'exam') {
             document.documentElement.removeAttribute('data-theme');
-            btn.innerText = "Sınav Modu ⏱️";
+            btn.innerText = "Koyu Mod 🌙";
         } else {
             document.documentElement.setAttribute('data-theme', 'exam');
-            btn.innerText = "Klasik Mod 🎨";
+            btn.innerText = "Açık Mod ☀️";
         }
     }
 
@@ -786,9 +774,8 @@
         const nameInput = document.getElementById('username-input').value.trim();
         const surnameInput = document.getElementById('usersurname-input').value.trim();
         const genderInput = document.getElementById('usergender-input').value;
-        const schoolInput = document.getElementById('userschool-input').value;
         
-        if(nameInput === "" || surnameInput === "" || genderInput === "" || schoolInput === "") {
+        if(nameInput === "" || surnameInput === "" || genderInput === "") {
             alert("Başarı Belgesi için Lütfen Bilgileri Doldurunuz!");
             return;
         }
@@ -796,12 +783,10 @@
         localStorage.setItem('p_name', nameInput);
         localStorage.setItem('p_surname', surnameInput);
         localStorage.setItem('p_gender', genderInput);
-        localStorage.setItem('p_school', schoolInput);
         
         currentName = nameInput;
         currentSurname = surnameInput;
         currentGender = genderInput;
-        currentSchool = schoolInput;
         pilotEmoji = (genderInput === "Kadın") ? "👩‍✈️" : "👨‍✈️";
 
         showMainMenu();
@@ -822,7 +807,7 @@
         questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
         questionCounter.style.display = 'block';
         
-        welcomeMsg.innerHTML = `Pilot: ${currentName} ${currentSurname} ${pilotEmoji}<br><small style='color:#718096;'>${currentSchool}</small>`;
+        welcomeMsg.innerHTML = `Pilot: ${currentName} ${currentSurname} ${pilotEmoji}`;
         aircraftSelector.style.display = 'block';
         
         generateWeaknessInsight();
@@ -850,7 +835,7 @@
         } else if (selectedAircraft === 'Diamond DA20 Eclipse') {
             categories = ['Indicated Airspeeds', 'Maneuvering', 'Weight And Balance', 'Voltmeter', 'Miscellaneous', 'Engine & Power System Limits', 'Fuel Quantity', 'Take Off & Landing'];
         } else if (selectedAircraft === 'Diamond DA42 NG') {
-            categories = ['Indicated Airspeeds', 'Maneuvering', 'Engine & Power System Limits', 'Fuel Quantity', 'Stall Speed'];
+            categories = ['Indicated Airspeeds', 'Maneuvering', 'Engine & Power System Limits', 'Fuel Quantity'];
         }
         
         categories.forEach(cat => {
@@ -909,7 +894,9 @@
     }
 
     function startTimer() {
-        timeLeft = activeQuestions.length * 10;
+        const totalTime = activeQuestions.length * 10;
+        timeLeft = totalTime;
+        const warningTime = Math.floor(totalTime * 0.10);
         maydayTriggered = false;
         quizTimerView.style.display = 'inline-block';
         updateTimerDisplay();
@@ -925,10 +912,10 @@
                 playBeep(440, 'sine', 0.08);
             }
             
-            if (timeLeft === 120 && !maydayTriggered) {
+            if (timeLeft === warningTime && !maydayTriggered) {
                 maydayTriggered = true;
                 playBeep(600, 'sine', 0.4);
-                openTrollModal("🚨 MAYDAY! ACİL DURUM 🚨", "Mayday Mayday! Yakıt kritiğe girdi, kule acil iniş izni verdi ama sen hala sorudasın! Azıcık gaz aç! ⏱️");
+                openTrollModal("🚨 KOKPİT İKAZI 🚨", "Sınav sürenizin %10'u kaldı! Azıcık gaz açın, emniyetli uçuşlar! ⏱️");
             }
             
             if (timeLeft <= 0) {
@@ -1105,6 +1092,10 @@
                 openTrollModal("⚠️ KOKPİT İKAZI ⚠️", "Arka Arkaya 2 Yanlış! Sanırım Stall'a giriyorsun kaptan? ✈️");
             } else if (consecutiveWrong === 3) {
                 openTrollModal("🚨 MASTER CAUTION 🚨", "Maşallah Soluksuz 3 Yanlış! SOP'yi Hiç Okumamışsın! 🚨");
+            } else if (consecutiveWrong === 4) {
+                openTrollModal("❌ SİSTEM UYARISI ❌", "Gerçekten Tebrikler! Elinden hiç bir iş gelmiyor :) Biraz Dikkatli Oku!");
+            } else if (consecutiveWrong >= 5) {
+                openTrollModal("🚨 CRITICAL FAILURE 🚨", "İstersen Okumayı Öğrenmekle Başlayalım. Alfabemizde 29 Harf Mevcuttur. A-B-C-D-E şeklinde tekrar edelim!");
             }
             showExplanationStatic(state.status === 'wrong', correctAnswer, aciklama);
             updateMatrixUI();
@@ -1178,12 +1169,12 @@
         else if (selectedAircraft === 'Diamond DA42 NG') acLabel = 'DA42';
 
         saveHistory(`${acLabel}-${selectedCategory.substring(0,5).toUpperCase()}`, percentage);
-        sendDataToCloud(currentName, currentSurname, currentGender, currentSchool, `${selectedAircraft} (${selectedCategory})`, percentage, testDate);
+        sendDataToCloud(currentName, currentSurname, currentGender, "", `${selectedAircraft} (${selectedCategory})`, percentage, testDate);
 
         resultBody.style.display = 'block';
         document.getElementById('score').innerText = correctCount;
         document.getElementById('total').innerText = activeQuestions.length;
-        userScoreMsg.innerText = `${currentSchool} Pilotu Sayın ${currentName} ${currentSurname}, Sınav Başarı Oranınız: %${percentage}`;
+        userScoreMsg.innerText = `Pilot Sayın ${currentName} ${currentSurname}, Sınav Başarı Oranınız: %${percentage}`;
         
         if (percentage >= 80 && selectedCategory === 'General') {
             certDownloadBtn.style.display = 'block';
@@ -1477,7 +1468,7 @@
         ctx.fillStyle = '#fc8181';
         ctx.font = 'bold 11px Arial';
         
-        const disclaimerText = `⚠️ Yasal Uyarı: Bu belge tamamen eğlence amacıyla üretilmiştir. Öğretmenlerinize göstermeniz durumunda lisansınızın askıya alınması, meydandan kovulmanıza veya en hafifinden " Senden Pilot Olmaz !! " bakışlarına maruz kalmanıza sebep olur. `;
+        const disclaimerText = `⚠️ Yasal Uyarı: Bu belge tamamen eğlence amacıyla üretilmiştir. Öğretmenlerinize göstermeniz durumunda lisansınızın askıya alınması, meydandan kovulmanıza veya en hafifinden " Senden Pilot Olmaz !! " bakışlarına maruz kalmanıza sebob olur. `;
         
         wrapText(ctx, disclaimerText, 425, lastY + 100, 700, 16);
 
