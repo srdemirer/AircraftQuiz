@@ -621,9 +621,10 @@
     }
 
     function startTimer() {
+        // soru başına 30 saniye
         const totalTime = activeQuestions.length * 30;
         timeLeft = totalTime;
-        const warningTime = Math.floor(totalTime * 0.30);
+        const warningTime = Math.floor(totalTime * 0.10);
         maydayTriggered = false;
         quizTimerView.style.display = 'inline-block';
         updateTimerDisplay();
@@ -642,7 +643,7 @@
             if (timeLeft === warningTime && !maydayTriggered) {
                 maydayTriggered = true;
                 playBeep(600, 'sine', 0.4);
-                openTrollModal("🚨 KOKPİT İKAZI 🚨", "Sınav sürenizin %30'u kaldı! Azıcık gaz açın, emniyetli uçuşlar! ⏱️");
+                openTrollModal("🚨 KOKPİT İKAZI 🚨", "Sınav sürenizin %10'u kaldı! Azıcık gaz açın, emniyetli uçuşlar! ⏱️");
             }
 
             if (timeLeft <= 0) {
@@ -898,7 +899,7 @@
         document.getElementById('total').innerText = activeQuestions.length;
         userScoreMsg.innerText = `Pilot Sayın ${currentName} ${currentSurname}, Sınav Başarı Oranınız: %${percentage}`;
 
-        // Değişiklik: %75 ve üzeri başarıda sertifika butonu görünür
+        // %75 ve üzeri başarıda sertifika butonu görünür
         if (percentage >= 75) {
             certDownloadBtn.style.display = 'block';
         }
@@ -1139,7 +1140,7 @@
         ctx.fillStyle = '#ffffff';
         ctx.font = '15px Arial';
 
-        // Değişiklik: Sertifika metnine uçak tipi ve kategori eklendi
+        // Uçak tipi ve kategori sertifika metninde gösteriliyor
         const mainText = `Bu belge, ${selectedAircraft.toUpperCase()} - ${selectedCategory.toUpperCase()} konusunda ''Doktor - Doçent - Profesör '' gibi bir şey olduğunuzu kanıtlar. Uçağınızın motorunu yakmadan, kanatları elinize almadan, HSI göstergesini dev bir saat olduğunu düşünmeden, ikaz lambalarını yakıp uçağı '' Gece Kulübüne '' çevirmeden uçurabileceğinizi kanıtlamaz :). Uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve edeceğiniz duaların gücüyle alakalıdır.`;
 
         let lastY = wrapText(ctx, mainText, 425, 240, 680, 24);
