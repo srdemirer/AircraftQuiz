@@ -621,9 +621,9 @@
     }
 
     function startTimer() {
-        const totalTime = activeQuestions.length * 10;
+        const totalTime = activeQuestions.length * 30;
         timeLeft = totalTime;
-        const warningTime = Math.floor(totalTime * 0.10);
+        const warningTime = Math.floor(totalTime * 0.30);
         maydayTriggered = false;
         quizTimerView.style.display = 'inline-block';
         updateTimerDisplay();
@@ -642,7 +642,7 @@
             if (timeLeft === warningTime && !maydayTriggered) {
                 maydayTriggered = true;
                 playBeep(600, 'sine', 0.4);
-                openTrollModal("🚨 KOKPİT İKAZI 🚨", "Sınav sürenizin %10'u kaldı! Azıcık gaz açın, emniyetli uçuşlar! ⏱️");
+                openTrollModal("🚨 KOKPİT İKAZI 🚨", "Sınav sürenizin %30'u kaldı! Azıcık gaz açın, emniyetli uçuşlar! ⏱️");
             }
 
             if (timeLeft <= 0) {
