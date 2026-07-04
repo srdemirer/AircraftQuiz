@@ -503,7 +503,7 @@
         clearInterval(quizTimerInterval);
 
         mainTitle.innerText = "Uçuş Hattı ✈️";
-        questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
+        questionCounter.innerText = "Lütfen Konu Seçiniz";
         questionCounter.style.display = 'block';
 
         welcomeMsg.innerHTML = `Pilot: ${currentName} ${currentSurname} ${pilotEmoji}`;
@@ -581,7 +581,7 @@
     function backToAircrafts() {
         subcategorySelector.style.display = 'none';
         aircraftSelector.style.display = 'block';
-        questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
+        questionCounter.innerText = "Lütfen Konu Seçiniz";
         // Dinamik butonları tekrar oluştur
         const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
         const optionsDiv = document.getElementById('aircraft-options-container');
