@@ -996,6 +996,22 @@
 
         welcomeMsg.innerHTML = `Pilot: ${currentName} ${currentSurname} ${pilotEmoji}`;
 
+	// Benzersiz uçak tiplerini al
+	const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
+
+	// Butonların ekleneceği konteyneri seç
+	const optionsDiv = document.querySelector('#aircraft-selector .options');
+	optionsDiv.innerHTML = ''; // varsa eski butonları temizle
+
+	aircraftTypes.forEach(type => {
+  	  if (!type) return;
+    const btn = document.createElement('button');
+    btn.className = 'btn aircraft-btn';
+    btn.innerText = type;
+    btn.onclick = () => showSubCategories(type);
+    optionsDiv.appendChild(btn);
+});
+
         aircraftSelector.style.display = 'block';
 
         
@@ -1101,14 +1117,22 @@
     
 
     function backToAircrafts() {
-
-        subcategorySelector.style.display = 'none';
-
-        aircraftSelector.style.display = 'block';
-
-        questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
-
-    }
+    subcategorySelector.style.display = 'none';
+    aircraftSelector.style.display = 'block';
+    questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
+    // Dinamik butonları tekrar oluştur
+    const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
+    const optionsDiv = document.querySelector('#aircraft-selector .options');
+    optionsDiv.innerHTML = '';
+    aircraftTypes.forEach(type => {
+        if (!type) return;
+        const btn = document.createElement('button');
+        btn.className = 'btn aircraft-btn';
+        btn.innerText = type;
+        btn.onclick = () => showSubCategories(type);
+        optionsDiv.appendChild(btn);
+    });
+}
 
     
 
