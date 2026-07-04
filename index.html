@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uçak Limitleri</title>
+    <title>Uçuş Hattı</title>
     <style>
         * { box-sizing: border-box; }
 
@@ -232,7 +232,7 @@
         <button class="logout-btn" id="logout-btn" onclick="logout()" style="display: none;">Çıkış 🔓</button>
     </div>
     <div class="header">
-        <h1 id="main-title">Uçak Limitleri ✈️</h1>
+        <h1 id="main-title">Uçuş Hattı ✈️</h1>
         <p id="question-counter">Sistem Başlatılıyor...</p>
         <div id="quiz-timer" class="timer-badge" style="display: none;">00:00</div>
     </div>
@@ -402,7 +402,7 @@
     const logoutBtn = document.getElementById('logout-btn');
 
     window.onload = async function() {
-        mainTitle.innerText = "Uçak Limitleri ✈️";
+        mainTitle.innerText = "Uçuş Hattı ✈️";
         questionCounter.innerText = "Veritabanı Yükleniyor... Lütfen Bekleyin ⏳";
         questionCounter.style.display = 'block';
 
@@ -451,8 +451,8 @@
     }
     function shareSystem() {
         const shareData = {
-            title: 'Uçak Limitleri',
-            text: 'Pilotlar için özel geliştirilmiş uçak limitleri sınav sistemini incele ve kendini test et!',
+            title: 'Uçuş Hattı',
+            text: 'Pilotlar için özel geliştirilmiş Uçuş Hattı sınav sistemini incele ve kendini test et!',
             url: window.location.href
         };
         if (navigator.share) {
@@ -502,8 +502,8 @@
         certDownloadBtn.style.display = 'none';
         clearInterval(quizTimerInterval);
 
-        mainTitle.innerText = "Uçak Limitleri ✈️";
-        questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
+        mainTitle.innerText = "Uçuş Hattı ✈️";
+        questionCounter.innerText = "Konu Seçiniz";
         questionCounter.style.display = 'block';
 
         welcomeMsg.innerHTML = `Pilot: ${currentName} ${currentSurname} ${pilotEmoji}`;
@@ -581,7 +581,7 @@
     function backToAircrafts() {
         subcategorySelector.style.display = 'none';
         aircraftSelector.style.display = 'block';
-        questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
+        questionCounter.innerText = "Konu Seçiniz";
         // Dinamik butonları tekrar oluştur
         const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
         const optionsDiv = document.getElementById('aircraft-options-container');
