@@ -141,6 +141,21 @@
             transition: opacity 0.2s;
 
         }
+	
+	.logout-btn {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+.logout-btn:hover {
+    opacity: 0.9;
+}
 
         
 
@@ -448,17 +463,13 @@
 
 <div class="quiz-container">
 
-    <div class="top-buttons">
-
-        <button class="home-btn" onclick="backToMenu()">Ana Sayfa 🏠</button>
-
-        <button class="share-btn" onclick="shareSystem()">Paylaş 🔗</button>
-
-        <button class="theme-switch" onclick="toggleTheme()" id="theme-toggle-btn">Koyu Mod 🌙</button>
-
-	<button class="btn" onclick="logout()">Çıkış Yap 🔓</button>
-
-    </div>
+  <div class="top-buttons">
+    <button class="home-btn" onclick="backToMenu()">Ana Sayfa 🏠</button>
+    <button class="share-btn" onclick="shareSystem()">Paylaş 🔗</button>
+    <button class="theme-switch" onclick="toggleTheme()" id="theme-toggle-btn">Koyu Mod 🌙</button>
+    <!-- Çıkış butonu buraya eklenecek -->
+    <button class="logout-btn" id="logout-btn" onclick="logout()" style="display: none;">Çıkış 🔓</button>
+</div>
 
     <div class="header">
 
@@ -842,6 +853,7 @@
         } else {
 
             showLoginScreen();
+	document.getElementById('logout-btn').style.display = 'none';
 
         }
 
@@ -888,16 +900,15 @@
     }
 
 function logout() {
-    // Kullanıcı bilgilerini localStorage'dan sil
     localStorage.removeItem('p_name');
     localStorage.removeItem('p_surname');
     localStorage.removeItem('p_gender');
-    // Değişkenleri sıfırla
     currentName = '';
     currentSurname = '';
     currentGender = '';
     pilotEmoji = '👨‍✈️';
-    // Giriş ekranını göster
+    // Çıkış butonunu gizle
+    document.getElementById('logout-btn').style.display = 'none';
     showLoginScreen();
 }
 
@@ -978,6 +989,12 @@ function logout() {
         pilotEmoji = (genderInput === "Kadın") ? "👩‍✈️" : "👨‍✈️";
 
         showMainMenu();
+
+	document.getElementById('logout-btn').style.display = 'inline-block';
+
+	if (currentName) {
+    document.getElementById('logout-btn').style.display = 'inline-block';
+}
 
     }
 
