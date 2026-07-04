@@ -1,4 +1,331 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uçak Limitleri</title>
+    <style>
+        * { box-sizing: border-box; }
+        
+        :root {
+            --bg-color: #f0f4f8;
+            --container-bg: #ffffff;
+            --text-color: #1a202c;
+            --primary-color: #0b3c5d;
+            --accent-color: #328cc1;
+            --btn-bg: #f7fafc;
+            --btn-border: #e2e8f0;
+            --btn-text: #4a5568;
+        }
+        [data-theme="exam"] {
+            --bg-color: #1a202c;
+            --container-bg: #2d3748;
+            --text-color: #edf2f7;
+            --primary-color: #90cdf4;
+            --accent-color: #4299e1;
+            --btn-bg: #4a5568;
+            --btn-border: #718096;
+            --btn-text: #e2e8f0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        .quiz-container {
+            background-color: var(--container-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            max-width: 550px;
+            width: 100%;
+            position: relative;
+        }
+        
+        .top-buttons {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .theme-switch, .share-btn, .home-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        
+        .share-btn {
+            background: #2f855a;
+        }
+        .home-btn {
+            background: #4a5568;
+        }
+        .theme-switch:hover, .share-btn:hover, .home-btn:hover {
+            opacity: 0.9;
+        }
+        .timer-badge {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #e53e3e;
+            background: #fff5f5;
+            padding: 4px 12px;
+            border-radius: 8px;
+            border: 2px solid #fed7d7;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        [data-theme="exam"] .timer-badge {
+            background: #742a2a;
+            border-color: #e53e3e;
+            color: #fff5f5;
+        }
+        .header { text-align: center; margin-bottom: 20px; padding-top: 25px; }
+        .header h1 { color: var(--primary-color); font-size: 1.5rem; margin: 0 0 5px 0; }
+        .header p { color: #718096; margin: 0; font-size: 0.9rem; }
+        .progress-bar { height: 6px; background-color: #e2e8f0; border-radius: 3px; margin-bottom: 25px; overflow: hidden; display: none;}
+        .progress-fill { height: 100%; background-color: var(--accent-color); width: 0%; transition: width 0.3s ease; }
+        .options { display: flex; flex-wrap: wrap; gap: 12px; flex-direction: column; }
+        
+        .btn {
+            background-color: var(--btn-bg); border: 2px solid var(--btn-border); padding: 14px 18px;
+            border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 500;
+            text-align: left; color: var(--btn-text); transition: all 0.2s ease; -webkit-tap-highlight-color: transparent;
+        }
+        .btn:hover:not([disabled]) { background-color: #edf2f7; border-color: #cbd5e0; }
+        [data-theme="exam"] .btn:hover:not([disabled]) { background-color: #718096; }
+        
+        .aircraft-btn { background-color: #e3fafc; border-color: #99e9f2; color: #0c8599; text-align: center; font-weight: 600;}
+        .aircraft-btn:hover:not([disabled]) { background-color: #c5f6fa !important; }
+        
+        .subcat-btn { background-color: #fff9db; border-color: #ffe066; color: #f08c00; text-align: center; font-weight: 600; }
+        .subcat-btn:hover:not([disabled]) { background-color: #fff3bf !important; }
+        .aircraft-btn:disabled {
+            background-color: #edf2f7 !important;
+            border-color: #e2e8f0 !important;
+            color: #a0aec0 !important;
+            cursor: not-allowed !important;
+            opacity: 0.7;
+        }
+        
+        .correct { background-color: #c6f6d5 !important; border-color: #48bb78 !important; color: #22543d !important; font-weight: 600; }
+        .wrong { background-color: #fed7d7 !important; border-color: #f56565 !important; color: #742a2a !important; font-weight: 600; }
+        
+        .explanation { margin-top: 20px; padding: 15px; background-color: #ebf8ff; border-left: 4px solid #3182ce; border-radius: 4px; font-size: 0.95rem; line-height: 1.5; color: #2b6cb0; display: none; }
+        [data-theme="exam"] .explanation { background-color: #2b6cb0; color: white; border-left-color: #90cdf4; }
+        .nav-controls { display: flex; gap: 10px; margin-top: 20px; }
+        .nav-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; text-align: center; font-size: 0.95rem; }
+        .prev-style { background-color: #e2e8f0; color: #4a5568; }
+        .prev-style:hover:not([disabled]) { background-color: #cbd5e0; }
+        .prev-style:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pas-style { background-color: #a0aec0; color: white; }
+        .pas-style:hover { background-color: #718096; }
+        .flag-style { background-color: #ed8936; color: white; }
+        .flag-style:hover { background-color: #dd6b20; }
+        .next-style { background-color: var(--primary-color); color: white; box-shadow: 0 4px 6px rgba(11, 60, 93, 0.2); }
+        [data-theme="exam"] .next-style { color: #1a202c; }
+        .finish-style { background-color: #2f855a; color: white; }
+        
+        .matrix-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 25px; padding-top: 15px; border-top: 1px solid #e2e8f0; justify-content: center; }
+        .matrix-box { width: 26px; height: 26px; border-radius: 6px; border: 1px solid #cbd5e0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; cursor: pointer; background-color: white; color: #1a202c; user-select: none; }
+        .matrix-box.active { border: 2px solid var(--accent-color); transform: scale(1.1); }
+        .matrix-box.m-correct { background-color: #48bb78; color: white; border-color: #38a169; }
+        .matrix-box.m-wrong { background-color: #f56565; color: white; border-color: #e53e3e; }
+        .matrix-box.m-pas { background-color: #a0aec0; color: white; border-color: #718096; }
+        .matrix-box.m-flag { background-color: #ed8936; color: white; border-color: #dd6b20; }
+        .score-container { text-align: center; padding: 10px 0; }
+        .score-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
+        .score-number { font-size: 3rem; font-weight: 800; color: var(--accent-color); margin-bottom: 20px; }
+        .restart-btn { background-color: var(--accent-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 15px; width: 100%;}
+        .review-btn { background-color: #ed8936; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; }
+        
+        .cert-btn { background-color: #2b6cb0; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px; width: 100%; display: none; box-shadow: 0 4px 6px rgba(43, 108, 176, 0.3); }
+        .category-breakdown { margin-top: 20px; padding: 15px; background: #f7fafc; border-radius: 10px; text-align: left; border: 1px solid #e2e8f0; }
+        [data-theme="exam"] .category-breakdown { background: #4a5568; border-color: #718096; }
+        .category-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 500; }
+        
+        .review-list { max-height: 300px; overflow-y: auto; text-align: left; margin-top: 15px; padding: 10px; background: #fffaf0; border-radius: 8px; border: 1px dashed #dd6b20; }
+        [data-theme="exam"] .review-list { background: #2d3748; color: #edf2f7; }
+        .review-item { padding: 10px 0; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
+        .insight-badge { background: #fffaf0; border: 1px solid #feebc8; color: #c05621; padding: 12px; border-radius: 10px; margin-top: 15px; font-size: 0.85rem; line-height: 1.4; font-weight: 500; display: none; }
+        [data-theme="exam"] .insight-badge { background: #7b341e; border-color: #c05621; color: #fffaf0; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; text-align: left;}
+        .input-control { padding: 14px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 1rem; width: 100%; background: white; color: #1a202c;}
+        .input-btn { background-color: var(--primary-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 5px;}
+        [data-theme="exam"] .input-btn { color: #1a202c; }
+        
+        .stats-panel { margin-top: 25px; border-top: 2px dashed #e2e8f0; padding-top: 20px; text-align: left; }
+        .stats-panel:not(#stats-panel) { display: none; }
+        .stats-title { font-weight: bold; color: #4a5568; margin-bottom: 10px; font-size: 1.1rem; }
+        [data-theme="exam"] .stats-title { color: #edf2f7; }
+        #stats-canvas, #pie-canvas { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; width: 100%; margin-top: 10px; }
+        .user-welcome { font-size: 0.95rem; margin-bottom: 15px; font-weight: 600; text-align: center; }
+        
+        .question { font-size: 1.15rem; font-weight: 600; margin-bottom: 24px; padding-bottom: 12px; }
+        .footer-signature { font-size: 0.75rem; color: #a0aec0; margin-top: 25px; text-align: center; user-select: none; cursor: pointer; }
+        
+        .admin-panel { background: white; border-radius: 12px; padding: 15px; margin-top: 15px; width: 100%; max-width: 550px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: none; color: #1a202c;}
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+        .admin-table th, .admin-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
+        .admin-table th { background-color: #f7fafc; }
+        .custom-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center;
+            align-items: center; z-index: 9999; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .custom-modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .custom-modal {
+            background: white; color: #1a202c; border-radius: 16px; padding: 25px;
+            max-width: 420px; width: 90%; text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transform: scale(0.8); transition: transform 0.3s ease;
+            border: 3px solid #328cc1;
+        }
+        .custom-modal-overlay.show .custom-modal { transform: scale(1); }
+        .custom-modal-title { font-size: 1.25rem; font-weight: bold; margin-bottom: 12px; color: #0b3c5d; }
+        .custom-modal-text { font-size: 1rem; line-height: 1.5; margin-bottom: 20px; font-weight: 500; }
+        .custom-modal-btn {
+            background: var(--primary-color); color: white; border: none;
+            padding: 10px 24px; border-radius: 8px; font-weight: bold;
+            cursor: pointer; font-size: 0.95rem; width: 100%; transition: background 0.2s;
+        }
+        [data-theme="exam"] .custom-modal {
+            background: #2d3748; color: #edf2f7; border-color: #e53e3e;
+            box-shadow: 0 0 20px rgba(229, 62, 92, 0.4);
+        }
+        [data-theme="exam"] .custom-modal-title { color: #fc8181; }
+        [data-theme="exam"] .custom-modal-btn { background: #e53e3e; color: white; }
+    </style>
+</head>
+<body>
+<div class="custom-modal-overlay" id="troll-modal-overlay">
+    <div class="custom-modal">
+        <div class="custom-modal-title" id="troll-modal-title">🚨 KOKPİT İKAZI 🚨</div>
+        <div class="custom-modal-text" id="troll-modal-text">Yükleniyor...</div>
+        <button class="custom-modal-btn" onclick="closeTrollModal()">Anlaşıldı, Devam Et 🧑‍✈️</button>
+    </div>
+</div>
+<div class="quiz-container">
+    <div class="top-buttons">
+        <button class="home-btn" onclick="backToMenu()">Ana Sayfa 🏠</button>
+        <button class="share-btn" onclick="shareSystem()">Paylaş 🔗</button>
+        <button class="theme-switch" onclick="toggleTheme()" id="theme-toggle-btn">Koyu Mod 🌙</button>
+    </div>
+    <div class="header">
+        <h1 id="main-title">Uçak Limitleri ✈️</h1>
+        <p id="question-counter">Sistem Başlatılıyor...</p>
+        <div id="quiz-timer" class="timer-badge" style="display: none;">00:00</div>
+    </div>
+    
+    <div class="progress-bar" id="progress-bar-container"><div class="progress-fill" id="progress-fill"></div></div>
+    <div id="login-screen" style="display: none;">
+        <div class="input-group">
+            <label style="font-weight: 600;">Adınız:</label>
+            <input type="text" id="username-input" class="input-control" placeholder="Örn: Ahmet">
+        </div>
+        <div class="input-group">
+            <label style="font-weight: 600;">Soyadınız:</label>
+            <input type="text" id="usersurname-input" class="input-control" placeholder="Örn: Yılmaz">
+        </div>
+        <div class="input-group">
+            <label style="font-weight: 600;">Cinsiyetiniz:</label>
+            <select id="usergender-input" class="input-control">
+                <option value="">Seçiniz...</option>
+                <option value="Erkek">Erkek</option>
+                <option value="Kadın">Kadın</option>
+            </select>
+        </div>
+        <button class="input-control input-btn" onclick="saveUser()">Sınav Sistemine Giriş Yap</button>
+    </div>
+    <div id="aircraft-selector" style="display: none;">
+        <div id="welcome-msg" class="user-welcome"></div>
+        <div class="options">
+            <button class="btn aircraft-btn" onclick="showSubCategories('Aquila A211')">Aquila A211</button>
+            <button class="btn aircraft-btn" onclick="showSubCategories('Diamond DA20 Eclipse')">Diamond DA20 Eclipse</button>
+            <button class="btn aircraft-btn" onclick="showSubCategories('Diamond DA40 NG')">Diamond DA40 NG</button>
+            <button class="btn aircraft-btn" onclick="showSubCategories('Diamond DA42 NG')">Diamond DA42 NG</button>
+        </div>
+        
+        <div class="insight-badge" id="weakness-insight-box"></div>
+        <div class="stats-panel" id="stats-panel" style="display: none;">
+            <div class="stats-title">📊 Son 5 Test Performans Grafiğiniz (%)</div>
+            <canvas id="stats-canvas" height="150"></canvas>
+        </div>
+    </div>
+    <div id="subcategory-selector" style="display: none;">
+        <div id="subcategory-welcome-title" class="user-welcome" style="font-weight:700; color:var(--primary-color);">Sınav Bölümü Seçiniz</div>
+        <div class="options" id="subcategory-buttons-container"></div>
+    </div>
+    <div id="quiz-body" style="display: none;">
+        <div class="question" id="question-text"></div>
+        <div id="options-area">
+            <div class="options" id="options-container"></div>
+        </div>
+        
+        <div class="explanation" id="explanation-box"></div>
+        
+        <div class="nav-controls">
+            <button class="nav-btn prev-style" id="prev-btn" onclick="prevQuestion()">Önceki</button>
+            <button class="nav-btn pas-style" id="pas-btn" onclick="pasQuestion()">Pas</button>
+            <button class="nav-btn flag-style" id="flag-btn" onclick="flagQuestion()">Pin 🚩</button>
+            <button class="nav-btn next-style" id="next-btn" onclick="handleNextOrFinish()">Sonraki</button>
+        </div>
+        <div class="matrix-container" id="matrix-container"></div>
+    </div>
+    <div id="result-body" class="score-container" style="display: none;">
+        <div class="score-title">Sınav Raporu 📋</div>
+        <div class="score-number"><span id="score">0</span> / <span id="total">0</span></div>
+        <div id="user-score-msg" style="font-weight: 600; margin-bottom: 10px;"></div>
+        
+        <div style="margin: 20px 0;">
+            <canvas id="pie-canvas" width="300" height="200" style="max-width:300px; margin:0 auto;"></canvas>
+        </div>
+        <div class="category-breakdown" id="category-breakdown-box"></div>
+        <button class="cert-btn" id="cert-download-btn" onclick="generateCertificate()">🎖️ Başarı Brövesi & Sertifikasını İndir</button>
+        <button class="review-btn" id="review-toggle-btn" onclick="toggleReviewList()">Hataları İncele 🔍</button>
+        <div class="review-list" id="review-list-box" style="display:none;"></div>
+        <button class="restart-btn" onclick="backToMenu()">Ana Menüye Dön</button>
+    </div>
+</div>
+<div class="footer-signature" onclick="handleSignatureClick()">
+    Created by <span style="font-weight: 600; color: #718096;">S.R.Demirer</span>
+</div>
+<div id="admin-panel" class="admin-panel">
+    <div style="font-weight: bold; color: #2d3748; display: flex; justify-content: space-between;">
+        <span>📋 Cihaz Sınav Geçmişi (Admin)</span>
+        <button onclick="clearAdminLogs()" style="font-size: 0.75rem; cursor: pointer; background: #fed7d7; border: 1px solid #f56565; color: #c53030; border-radius: 4px; padding: 2px 6px;">Temizle</button>
+    </div>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Pilot Adı</th>
+                <th>A/C</th>
+                <th>Skor</th>
+                <th>Tarih</th>
+            </tr>
+        </thead>
+        <tbody id="admin-table-body"></tbody>
+    </table>
+</div>
 
+<script>
     const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxm0U6uYP9bHuyP7htPIQ3WwDC_vhKD8pLta1Ptgo-IyWq-O-vmml1UApFbHyXqer8d/exec";
     
     let allQuestions = [];
@@ -69,7 +396,6 @@
     const trollModalText = document.getElementById('troll-modal-text');
 
     window.onload = async function() {
-        // Yükleme Ekranı
         mainTitle.innerText = "Uçak Limitleri ✈️";
         questionCounter.innerText = "Veritabanı Yükleniyor... Lütfen Bekleyin ⏳";
         questionCounter.style.display = 'block';
@@ -190,7 +516,6 @@
         const container = document.getElementById('subcategory-buttons-container');
         container.innerHTML = '';
         
-        // Dinamik olarak Sheets'ten gelen kategorileri bulma
         const aircraftQuestions = allQuestions.filter(q => q.ucak_tipi === selectedAircraft);
         let categories = [...new Set(aircraftQuestions.map(q => q.cat))];
         
@@ -788,3 +1113,6 @@
         link.href = canvas.toDataURL();
         link.click();
     }
+</script>
+</body>
+</html>
