@@ -5,200 +5,1126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uçak Limitleri</title>
     <style>
-        /* Tasarım kodların aynı şekilde korunmuştur */
         * { box-sizing: border-box; }
-        :root { --bg-color: #f0f4f8; --container-bg: #ffffff; --text-color: #1a202c; --primary-color: #0b3c5d; --accent-color: #328cc1; --btn-bg: #f7fafc; --btn-border: #e2e8f0; --btn-text: #4a5568; }
-        [data-theme="exam"] { --bg-color: #1a202c; --container-bg: #2d3748; --text-color: #edf2f7; --primary-color: #90cdf4; --accent-color: #4299e1; --btn-bg: #4a5568; --btn-border: #718096; --btn-text: #e2e8f0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 15px; transition: all 0.3s ease; }
-        .quiz-container { background-color: var(--container-bg); border-radius: 16px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); padding: 25px; max-width: 550px; width: 100%; position: relative; }
-        .top-buttons { position: absolute; top: 15px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-        .theme-switch, .share-btn, .home-btn, .logout-btn { background: var(--accent-color); color: white; border: none; padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; font-weight: bold; }
-        .share-btn { background: #2f855a; }
-        .home-btn { background: #4a5568; }
-        .logout-btn { background: #e53e3e; }
-        .header { text-align: center; margin-bottom: 20px; padding-top: 35px; }
+        
+        :root {
+            --bg-color: #f0f4f8;
+            --container-bg: #ffffff;
+            --text-color: #1a202c;
+            --primary-color: #0b3c5d;
+            --accent-color: #328cc1;
+            --btn-bg: #f7fafc;
+            --btn-border: #e2e8f0;
+            --btn-text: #4a5568;
+        }
+        [data-theme="exam"] {
+            --bg-color: #1a202c;
+            --container-bg: #2d3748;
+            --text-color: #edf2f7;
+            --primary-color: #90cdf4;
+            --accent-color: #4299e1;
+            --btn-bg: #4a5568;
+            --btn-border: #718096;
+            --btn-text: #e2e8f0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        .quiz-container {
+            background-color: var(--container-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            max-width: 550px;
+            width: 100%;
+            position: relative;
+        }
+        
+        .top-buttons {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .theme-switch, .share-btn, .home-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        
+        .share-btn {
+            background: #2f855a;
+        }
+        .home-btn {
+            background: #4a5568;
+        }
+        .theme-switch:hover, .share-btn:hover, .home-btn:hover {
+            opacity: 0.9;
+        }
+        .timer-badge {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #e53e3e;
+            background: #fff5f5;
+            padding: 4px 12px;
+            border-radius: 8px;
+            border: 2px solid #fed7d7;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        [data-theme="exam"] .timer-badge {
+            background: #742a2a;
+            border-color: #e53e3e;
+            color: #fff5f5;
+        }
+        .header { text-align: center; margin-bottom: 20px; padding-top: 25px; }
         .header h1 { color: var(--primary-color); font-size: 1.5rem; margin: 0 0 5px 0; }
-        .timer-badge { font-size: 1.1rem; font-weight: 800; color: #e53e3e; background: #fff5f5; padding: 4px 12px; border-radius: 8px; border: 2px solid #fed7d7; display: inline-block; margin-top: 5px; }
+        .header p { color: #718096; margin: 0; font-size: 0.9rem; }
         .progress-bar { height: 6px; background-color: #e2e8f0; border-radius: 3px; margin-bottom: 25px; overflow: hidden; display: none;}
         .progress-fill { height: 100%; background-color: var(--accent-color); width: 0%; transition: width 0.3s ease; }
-        .btn { background-color: var(--btn-bg); border: 2px solid var(--btn-border); padding: 14px 18px; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 500; text-align: left; color: var(--btn-text); transition: all 0.2s ease; display: block; width: 100%; margin-bottom: 10px; }
-        .correct { background-color: #c6f6d5 !important; border-color: #48bb78 !important; color: #22543d !important; }
-        .wrong { background-color: #fed7d7 !important; border-color: #f56565 !important; color: #742a2a !important; }
-        .explanation { margin-top: 20px; padding: 15px; background-color: #ebf8ff; border-left: 4px solid #3182ce; border-radius: 4px; font-size: 0.95rem; color: #2b6cb0; display: none; }
+        .options { display: flex; flex-wrap: wrap; gap: 12px; flex-direction: column; }
+        
+        .btn {
+            background-color: var(--btn-bg); border: 2px solid var(--btn-border); padding: 14px 18px;
+            border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 500;
+            text-align: left; color: var(--btn-text); transition: all 0.2s ease; -webkit-tap-highlight-color: transparent;
+        }
+        .btn:hover:not([disabled]) { background-color: #edf2f7; border-color: #cbd5e0; }
+        [data-theme="exam"] .btn:hover:not([disabled]) { background-color: #718096; }
+        
+        .aircraft-btn { background-color: #e3fafc; border-color: #99e9f2; color: #0c8599; text-align: center; font-weight: 600;}
+        .aircraft-btn:hover:not([disabled]) { background-color: #c5f6fa !important; }
+        
+        .subcat-btn { background-color: #fff9db; border-color: #ffe066; color: #f08c00; text-align: center; font-weight: 600; }
+        .subcat-btn:hover:not([disabled]) { background-color: #fff3bf !important; }
+        .aircraft-btn:disabled {
+            background-color: #edf2f7 !important;
+            border-color: #e2e8f0 !important;
+            color: #a0aec0 !important;
+            cursor: not-allowed !important;
+            opacity: 0.7;
+        }
+        
+        .correct { background-color: #c6f6d5 !important; border-color: #48bb78 !important; color: #22543d !important; font-weight: 600; }
+        .wrong { background-color: #fed7d7 !important; border-color: #f56565 !important; color: #742a2a !important; font-weight: 600; }
+        
+        .explanation { margin-top: 20px; padding: 15px; background-color: #ebf8ff; border-left: 4px solid #3182ce; border-radius: 4px; font-size: 0.95rem; line-height: 1.5; color: #2b6cb0; display: none; }
+        [data-theme="exam"] .explanation { background-color: #2b6cb0; color: white; border-left-color: #90cdf4; }
         .nav-controls { display: flex; gap: 10px; margin-top: 20px; }
-        .nav-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
+        .nav-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; text-align: center; font-size: 0.95rem; }
+        .prev-style { background-color: #e2e8f0; color: #4a5568; }
+        .prev-style:hover:not([disabled]) { background-color: #cbd5e0; }
+        .prev-style:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pas-style { background-color: #a0aec0; color: white; }
+        .pas-style:hover { background-color: #718096; }
+        .flag-style { background-color: #ed8936; color: white; }
+        .flag-style:hover { background-color: #dd6b20; }
+        .next-style { background-color: var(--primary-color); color: white; box-shadow: 0 4px 6px rgba(11, 60, 93, 0.2); }
+        [data-theme="exam"] .next-style { color: #1a202c; }
+        .finish-style { background-color: #2f855a; color: white; }
+        
         .matrix-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 25px; padding-top: 15px; border-top: 1px solid #e2e8f0; justify-content: center; }
-        .matrix-box { width: 26px; height: 26px; border-radius: 6px; border: 1px solid #cbd5e0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; cursor: pointer; }
-        .matrix-box.active { border: 2px solid var(--accent-color); }
-        .matrix-box.m-correct { background-color: #48bb78; color: white; }
-        .matrix-box.m-wrong { background-color: #f56565; color: white; }
-        .cert-btn { background-color: #2b6cb0; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; width: 100%; display: none; }
+        .matrix-box { width: 26px; height: 26px; border-radius: 6px; border: 1px solid #cbd5e0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; cursor: pointer; background-color: white; color: #1a202c; user-select: none; }
+        .matrix-box.active { border: 2px solid var(--accent-color); transform: scale(1.1); }
+        .matrix-box.m-correct { background-color: #48bb78; color: white; border-color: #38a169; }
+        .matrix-box.m-wrong { background-color: #f56565; color: white; border-color: #e53e3e; }
+        .matrix-box.m-pas { background-color: #a0aec0; color: white; border-color: #718096; }
+        .matrix-box.m-flag { background-color: #ed8936; color: white; border-color: #dd6b20; }
+        .score-container { text-align: center; padding: 10px 0; }
+        .score-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
+        .score-number { font-size: 3rem; font-weight: 800; color: var(--accent-color); margin-bottom: 20px; }
+        .restart-btn { background-color: var(--accent-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 15px; width: 100%;}
+        .review-btn { background-color: #ed8936; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; }
+        
+        .cert-btn { background-color: #2b6cb0; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px; width: 100%; display: none; box-shadow: 0 4px 6px rgba(43, 108, 176, 0.3); }
+        .category-breakdown { margin-top: 20px; padding: 15px; background: #f7fafc; border-radius: 10px; text-align: left; border: 1px solid #e2e8f0; }
+        [data-theme="exam"] .category-breakdown { background: #4a5568; border-color: #718096; }
+        .category-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 500; }
+        
+        .review-list { max-height: 300px; overflow-y: auto; text-align: left; margin-top: 15px; padding: 10px; background: #fffaf0; border-radius: 8px; border: 1px dashed #dd6b20; }
+        [data-theme="exam"] .review-list { background: #2d3748; color: #edf2f7; }
+        .review-item { padding: 10px 0; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
+        .insight-badge { background: #fffaf0; border: 1px solid #feebc8; color: #c05621; padding: 12px; border-radius: 10px; margin-top: 15px; font-size: 0.85rem; line-height: 1.4; font-weight: 500; display: none; }
+        [data-theme="exam"] .insight-badge { background: #7b341e; border-color: #c05621; color: #fffaf0; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; text-align: left;}
+        .input-control { padding: 14px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 1rem; width: 100%; background: white; color: #1a202c;}
+        .input-btn { background-color: var(--primary-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 5px;}
+        [data-theme="exam"] .input-btn { color: #1a202c; }
+        
+        .stats-panel { margin-top: 25px; border-top: 2px dashed #e2e8f0; padding-top: 20px; text-align: left; }
+        .stats-panel:not(#stats-panel) { display: none; }
+        .stats-title { font-weight: bold; color: #4a5568; margin-bottom: 10px; font-size: 1.1rem; }
+        [data-theme="exam"] .stats-title { color: #edf2f7; }
+        #stats-canvas, #pie-canvas { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; width: 100%; margin-top: 10px; }
+        .user-welcome { font-size: 0.95rem; margin-bottom: 15px; font-weight: 600; text-align: center; }
+        
+        .question { font-size: 1.15rem; font-weight: 600; margin-bottom: 24px; padding-bottom: 12px; }
+        .footer-signature { font-size: 0.75rem; color: #a0aec0; margin-top: 25px; text-align: center; user-select: none; cursor: pointer; }
+        
+        .admin-panel { background: white; border-radius: 12px; padding: 15px; margin-top: 15px; width: 100%; max-width: 550px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: none; color: #1a202c;}
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+        .admin-table th, .admin-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
+        .admin-table th { background-color: #f7fafc; }
+        .custom-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center;
+            align-items: center; z-index: 9999; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .custom-modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .custom-modal {
+            background: white; color: #1a202c; border-radius: 16px; padding: 25px;
+            max-width: 420px; width: 90%; text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transform: scale(0.8); transition: transform 0.3s ease;
+            border: 3px solid #328cc1;
+        }
+        .custom-modal-overlay.show .custom-modal { transform: scale(1); }
+        .custom-modal-title { font-size: 1.25rem; font-weight: bold; margin-bottom: 12px; color: #0b3c5d; }
+        .custom-modal-text { font-size: 1rem; line-height: 1.5; margin-bottom: 20px; font-weight: 500; }
+        .custom-modal-btn {
+            background: var(--primary-color); color: white; border: none;
+            padding: 10px 24px; border-radius: 8px; font-weight: bold;
+            cursor: pointer; font-size: 0.95rem; width: 100%; transition: background 0.2s;
+        }
+        [data-theme="exam"] .custom-modal {
+            background: #2d3748; color: #edf2f7; border-color: #e53e3e;
+            box-shadow: 0 0 20px rgba(229, 62, 92, 0.4);
+        }
+        [data-theme="exam"] .custom-modal-title { color: #fc8181; }
+        [data-theme="exam"] .custom-modal-btn { background: #e53e3e; color: white; }
     </style>
 </head>
 <body>
-
+<div class="custom-modal-overlay" id="troll-modal-overlay">
+    <div class="custom-modal">
+        <div class="custom-modal-title" id="troll-modal-title">🚨 KOKPİT İKAZI 🚨</div>
+        <div class="custom-modal-text" id="troll-modal-text">Yükleniyor...</div>
+        <button class="custom-modal-btn" onclick="closeTrollModal()">Anlaşıldı, Devam Et 🧑‍✈️</button>
+    </div>
+</div>
 <div class="quiz-container">
     <div class="top-buttons">
-        <button class="home-btn" onclick="backToMenu()">🏠</button>
-        <button class="share-btn" onclick="shareSystem()">🔗</button>
-        <button class="theme-switch" id="theme-toggle-btn" onclick="toggleTheme()">🌙</button>
-        <button class="logout-btn" onclick="logout()">Çıkış 🚪</button>
-    </div>
+        <button class="home-btn" onclick="backToMenu()">Ana Sayfa 🏠</button>
+        <button class="share-btn" onclick="shareSystem()">Paylaş 🔗</button>
+        <button class="theme-switch" onclick="toggleTheme()" id="theme-toggle-btn">Koyu Mod 🌙</button>
+	<button class="logout-btn" onclick="logout()" style="background: #e53e3e; color: white; border: none; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; font-weight: bold;">Çıkış 🚪</button>
 
+    </div>
     <div class="header">
         <h1 id="main-title">Uçak Limitleri ✈️</h1>
         <p id="question-counter">Sistem Başlatılıyor...</p>
         <div id="quiz-timer" class="timer-badge" style="display: none;">00:00</div>
     </div>
-
-    <div class="progress-bar" id="progress-bar-container"><div class="progress-fill" id="progress-fill"></div></div>
     
-    <div id="login-screen">
-        <input type="text" id="username-input" class="btn" placeholder="Adınız">
-        <input type="text" id="usersurname-input" class="btn" placeholder="Soyadınız">
-        <button class="btn" style="background:var(--primary-color); color:white; text-align:center;" onclick="saveUser()">Giriş Yap</button>
+    <div class="progress-bar" id="progress-bar-container"><div class="progress-fill" id="progress-fill"></div></div>
+    <div id="login-screen" style="display: none;">
+        <div class="input-group">
+            <label style="font-weight: 600;">Adınız:</label>
+            <input type="text" id="username-input" class="input-control" placeholder="Örn: Ahmet">
+        </div>
+        <div class="input-group">
+            <label style="font-weight: 600;">Soyadınız:</label>
+            <input type="text" id="usersurname-input" class="input-control" placeholder="Örn: Yılmaz">
+        </div>
+        <div class="input-group">
+            <label style="font-weight: 600;">Cinsiyetiniz:</label>
+            <select id="usergender-input" class="input-control">
+                <option value="">Seçiniz...</option>
+                <option value="Erkek">Erkek</option>
+                <option value="Kadın">Kadın</option>
+            </select>
+        </div>
+        <button class="input-control input-btn" onclick="saveUser()">Sınav Sistemine Giriş Yap</button>
     </div>
-
     <div id="aircraft-selector" style="display: none;">
-        <div class="options" id="aircraft-container">
-            <button class="btn" onclick="showSubCategories('Aquila A211')">Aquila A211</button>
-            <button class="btn" onclick="showSubCategories('Diamond DA20 Eclipse')">Diamond DA20 Eclipse</button>
-            <button class="btn" onclick="showSubCategories('Diamond DA40 NG')">Diamond DA40 NG</button>
+        <div id="welcome-msg" class="user-welcome"></div>
+        <div class="options">
+            <button class="btn aircraft-btn" onclick="showSubCategories('Aquila A211')">Aquila A211</button>
+            <button class="btn aircraft-btn" onclick="showSubCategories('Diamond DA20 Eclipse')">Diamond DA20 Eclipse</button>
+            <button class="btn aircraft-btn" onclick="showSubCategories('Diamond DA40 NG')">Diamond DA40 NG</button>
+            <button class="btn aircraft-btn" onclick="showSubCategories('Diamond DA42 NG')">Diamond DA42 NG</button>
+        </div>
+        
+        <div class="insight-badge" id="weakness-insight-box"></div>
+        <div class="stats-panel" id="stats-panel" style="display: none;">
+            <div class="stats-title">📊 Son 5 Test Performans Grafiğiniz (%)</div>
+            <canvas id="stats-canvas" height="150"></canvas>
         </div>
     </div>
-
     <div id="subcategory-selector" style="display: none;">
+        <div id="subcategory-welcome-title" class="user-welcome" style="font-weight:700; color:var(--primary-color);">Sınav Bölümü Seçiniz</div>
         <div class="options" id="subcategory-buttons-container"></div>
     </div>
-
     <div id="quiz-body" style="display: none;">
-        <div class="question" id="question-text" style="font-weight:600; margin-bottom:20px;"></div>
-        <div id="options-container"></div>
+        <div class="question" id="question-text"></div>
+        <div id="options-area">
+            <div class="options" id="options-container"></div>
+        </div>
+        
         <div class="explanation" id="explanation-box"></div>
+        
         <div class="nav-controls">
-            <button class="nav-btn" onclick="handleNextOrFinish()" id="next-btn">Sonraki</button>
+            <button class="nav-btn prev-style" id="prev-btn" onclick="prevQuestion()">Önceki</button>
+            <button class="nav-btn pas-style" id="pas-btn" onclick="pasQuestion()">Pas</button>
+            <button class="nav-btn flag-style" id="flag-btn" onclick="flagQuestion()">Pin 🚩</button>
+            <button class="nav-btn next-style" id="next-btn" onclick="handleNextOrFinish()">Sonraki</button>
         </div>
         <div class="matrix-container" id="matrix-container"></div>
     </div>
-
-    <div id="result-body" style="display: none; text-align:center;">
-        <div id="score-text" style="font-size:2rem; font-weight:bold; margin:20px 0;"></div>
-        <button class="cert-btn" id="cert-download-btn" onclick="generateCertificate()">🎖️ Başarı Sertifikasını İndir</button>
-        <button class="btn" onclick="backToMenu()">Ana Menüye Dön</button>
+    <div id="result-body" class="score-container" style="display: none;">
+        <div class="score-title">Sınav Raporu 📋</div>
+        <div class="score-number"><span id="score">0</span> / <span id="total">0</span></div>
+        <div id="user-score-msg" style="font-weight: 600; margin-bottom: 10px;"></div>
+        
+        <div style="margin: 20px 0;">
+            <canvas id="pie-canvas" width="300" height="200" style="max-width:300px; margin:0 auto;"></canvas>
+        </div>
+        <div class="category-breakdown" id="category-breakdown-box"></div>
+        <button class="cert-btn" id="cert-download-btn" onclick="generateCertificate()">🎖️ Başarı Brövesi & Sertifikasını İndir</button>
+        <button class="review-btn" id="review-toggle-btn" onclick="toggleReviewList()">Hataları İncele 🔍</button>
+        <div class="review-list" id="review-list-box" style="display:none;"></div>
+        <button class="restart-btn" onclick="backToMenu()">Ana Menüye Dön</button>
     </div>
+</div>
+<div class="footer-signature" onclick="handleSignatureClick()">
+    Created by <span style="font-weight: 600; color: #718096;">S.R.Demirer</span>
+</div>
+<div id="admin-panel" class="admin-panel">
+    <div style="font-weight: bold; color: #2d3748; display: flex; justify-content: space-between;">
+        <span>📋 Cihaz Sınav Geçmişi (Admin)</span>
+        <button onclick="clearAdminLogs()" style="font-size: 0.75rem; cursor: pointer; background: #fed7d7; border: 1px solid #f56565; color: #c53030; border-radius: 4px; padding: 2px 6px;">Temizle</button>
+    </div>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Pilot Adı</th>
+                <th>A/C</th>
+                <th>Skor</th>
+                <th>Tarih</th>
+            </tr>
+        </thead>
+        <tbody id="admin-table-body"></tbody>
+    </table>
 </div>
 
 <script>
     const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbycVvWk13aBgh6a--r3iBKq4ykoGxfktmCrrGO7_LKcp03Dff4qyEXdjmMDuen8nxwz/exec";
-    let allQuestions = [], activeQuestions = [], currentQuestionIndex = 0, questionStates = [];
+    
+    let allQuestions = [];
+    let activeQuestions = [];
+    let currentQuestionIndex = 0;
+    let selectedCategory = "";
+    let selectedAircraft = ""; 
+    
+    let currentName = "";
+    let currentSurname = "";
+    let currentGender = "";
+    let pilotEmoji = "👨‍✈️"; 
+    let signatureClickCount = 0;
+    let questionStates = []; 
+    let quizTimerInterval = null;
+    let timeLeft = 0; 
+    let currentQuestionStartTime = 0; 
+    
+    let consecutiveCorrect = 0;
+    let consecutiveWrong = 0;
+    let maydayTriggered = false;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    window.onload = async () => {
-        const res = await fetch(GOOGLE_SHEETS_URL);
-        allQuestions = await res.json();
-        if(localStorage.getItem('p_name')) showAircraftSelector();
+    function playBeep(freq, type, duration) {
+        try {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const oscType = type;
+            osc.type = oscType;
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        } catch(e) {}
+    }
+
+    const loginScreen = document.getElementById('login-screen');
+    const aircraftSelector = document.getElementById('aircraft-selector');
+    const subcategorySelector = document.getElementById('subcategory-selector');
+    const quizBody = document.getElementById('quiz-body');
+    const resultBody = document.getElementById('result-body');
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const explanationBox = document.getElementById('explanation-box');
+    const questionCounter = document.getElementById('question-counter');
+    const progressFill = document.getElementById('progress-fill');
+    const progressBarContainer = document.getElementById('progress-bar-container');
+    const mainTitle = document.getElementById('main-title');
+    const welcomeMsg = document.getElementById('welcome-msg');
+    const userScoreMsg = document.getElementById('user-score-msg');
+    const adminPanel = document.getElementById('admin-panel');
+    const adminTableBody = document.getElementById('admin-table-body');
+    const matrixContainer = document.getElementById('matrix-container');
+    const categoryBreakdownBox = document.getElementById('category-breakdown-box');
+    const reviewListBox = document.getElementById('review-list-box');
+    const quizTimerView = document.getElementById('quiz-timer');
+    const weaknessInsightBox = document.getElementById('weakness-insight-box');
+    const certDownloadBtn = document.getElementById('cert-download-btn');
+    
+    const prevBtn = document.getElementById('prev-btn');
+    const pasBtn = document.getElementById('pas-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const trollModalOverlay = document.getElementById('troll-modal-overlay');
+    const trollModalTitle = document.getElementById('troll-modal-title');
+    const trollModalText = document.getElementById('troll-modal-text');
+
+    window.onload = async function() {
+        mainTitle.innerText = "Uçak Limitleri ✈️";
+        questionCounter.innerText = "Veritabanı Yükleniyor... Lütfen Bekleyin ⏳";
+        questionCounter.style.display = 'block';
+
+        try {
+            const response = await fetch(GOOGLE_SHEETS_URL);
+            allQuestions = await response.json();
+            questionCounter.innerText = "Veritabanı Hazır!";
+        } catch (error) {
+            console.error("Veri çekme hatası:", error);
+            questionCounter.innerText = "Sunucu Bağlantı Hatası! Lütfen sayfayı yenileyin.";
+            return;
+        }
+
+        const storedName = localStorage.getItem('p_name');
+        if (storedName) {
+            currentName = storedName;
+            currentSurname = localStorage.getItem('p_surname') || "";
+            currentGender = localStorage.getItem('p_gender') || "Erkek";
+            pilotEmoji = (currentGender === "Kadın") ? "👩‍✈️" : "👨‍✈️";
+            showMainMenu();
+        } else {
+            showLoginScreen();
+        }
     };
 
-    function saveUser() {
-        localStorage.setItem('p_name', document.getElementById('username-input').value);
-        localStorage.setItem('p_surname', document.getElementById('usersurname-input').value);
-        showAircraftSelector();
+    function openTrollModal(title, text) {
+        trollModalTitle.innerText = title;
+        trollModalText.innerText = text;
+        trollModalOverlay.classList.add('show');
     }
-
-    function logout() {
-        if(confirm("Çıkış yapmak istiyor musunuz?")) {
-            localStorage.clear();
-            location.reload();
+    function closeTrollModal() {
+        trollModalOverlay.classList.remove('show');
+    }
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const btn = document.getElementById('theme-toggle-btn');
+        if (currentTheme === 'exam') {
+            document.documentElement.removeAttribute('data-theme');
+            btn.innerText = "Koyu Mod 🌙";
+        } else {
+            document.documentElement.setAttribute('data-theme', 'exam');
+            btn.innerText = "Açık Mod ☀️";
         }
     }
-
-    function showAircraftSelector() {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('aircraft-selector').style.display = 'block';
+    function shareSystem() {
+        const shareData = {
+            title: 'Uçak Limitleri',
+            text: 'Pilotlar için özel geliştirilmiş uçak limitleri sınav sistemini incele ve kendini test et!',
+            url: window.location.href
+        };
+        if (navigator.share) {
+            navigator.share(shareData).catch(err => console.log('Paylaşım hatası:', err));
+        } else {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('Sınav merkezi linki panoya kopyalandı! Arkadaşlarınızla paylaşabilirsiniz.');
+            }).catch(err => console.error('Kopyalanamadı:', err));
+        }
     }
-
-    function showSubCategories(ac) {
-        document.getElementById('aircraft-selector').style.display = 'none';
+    function showLoginScreen() {
+        questionCounter.innerText = "Kullanıcı Kaydı Gerekli";
+        loginScreen.style.display = 'block';
+        aircraftSelector.style.display = 'none';
+        subcategorySelector.style.display = 'none';
+        quizBody.style.display = 'none';
+    }
+    function saveUser() {
+        const nameInput = document.getElementById('username-input').value.trim();
+        const surnameInput = document.getElementById('usersurname-input').value.trim();
+        const genderInput = document.getElementById('usergender-input').value;
+        
+        if(nameInput === "" || surnameInput === "" || genderInput === "") {
+            alert("Başarı Belgesi için Lütfen Bilgileri Doldurunuz!");
+            return;
+        }
+        localStorage.setItem('p_name', nameInput);
+        localStorage.setItem('p_surname', surnameInput);
+        localStorage.setItem('p_gender', genderInput);
+        
+        currentName = nameInput;
+        currentSurname = surnameInput;
+        currentGender = genderInput;
+        pilotEmoji = (genderInput === "Kadın") ? "👩‍✈️" : "👨‍✈️";
+        showMainMenu();
+    }
+    function showMainMenu() {
+        loginScreen.style.display = 'none';
+        quizBody.style.display = 'none';
+        resultBody.style.display = 'none';
+        subcategorySelector.style.display = 'none';
+        progressBarContainer.style.display = 'none';
+        reviewListBox.style.display = 'none';
+        quizTimerView.style.display = 'none';
+        certDownloadBtn.style.display = 'none';
+        clearInterval(quizTimerInterval);
+        
+        mainTitle.innerText = "Uçak Limitleri ✈️";
+        questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
+        questionCounter.style.display = 'block';
+        
+        welcomeMsg.innerHTML = `Pilot: ${currentName} ${currentSurname} ${pilotEmoji}`;
+        aircraftSelector.style.display = 'block';
+        
+        generateWeaknessInsight();
+        drawChart();
+        updateAdminTable();
+    }
+    
+    function showSubCategories(aircraftName) {
+        selectedAircraft = aircraftName;
+        aircraftSelector.style.display = 'none';
+        subcategorySelector.style.display = 'block';
+        
+        const welcomeTitle = document.getElementById('subcategory-welcome-title');
+        welcomeTitle.innerText = `${selectedAircraft} - Sınav Bölümü Seçiniz`;
+        questionCounter.innerText = "Lütfen Sınav Konusunu Seçiniz";
+        
         const container = document.getElementById('subcategory-buttons-container');
         container.innerHTML = '';
-        let cats = [...new Set(allQuestions.filter(q => q.ucak_tipi === ac).map(q => q.cat))];
-        cats.forEach(c => {
-            let b = document.createElement('button');
-            b.className = 'btn';
-            b.innerText = c;
-            b.onclick = () => startQuiz(ac, c);
-            container.appendChild(b);
+        
+        const aircraftQuestions = allQuestions.filter(q => q.ucak_tipi === selectedAircraft);
+        let categories = [...new Set(aircraftQuestions.map(q => q.cat))];
+        
+        if (categories.length === 0) {
+            container.innerHTML = `<div style="text-align:center; margin-bottom:15px; color:#c53030; font-weight:bold;">Bu uçak tipi için henüz soru eklenmemiş.</div>`;
+        }
+        
+        categories.forEach(cat => {
+            if(!cat) return;
+            const btn = document.createElement('button');
+            btn.className = "btn subcat-btn";
+            btn.innerText = cat === 'Weight And Balance' ? 'Weight and Balance' : cat;
+            btn.onclick = () => startQuiz(cat);
+            container.appendChild(btn);
         });
-        document.getElementById('subcategory-selector').style.display = 'block';
+        
+        if (categories.length > 0) {
+            const generalBtn = document.createElement('button');
+            generalBtn.className = "btn";
+            generalBtn.style.cssText = "background-color:#e2f0d9; border-color:#70ad47; color:#385723; text-align:center; font-weight:bold;";
+            generalBtn.innerText = "General (Tüm Sorular - Sıralı)";
+            generalBtn.onclick = () => startQuiz('General');
+            container.appendChild(generalBtn);
+        }
+        
+        const backBtn = document.createElement('button');
+        backBtn.className = "btn prev-style";
+        backBtn.style.cssText = "text-align:center; font-weight:bold;";
+        backBtn.innerText = "↩ Geri Dön";
+        backBtn.onclick = backToAircrafts;
+        container.appendChild(backBtn);
     }
-
-    function startQuiz(ac, cat) {
-        activeQuestions = allQuestions.filter(q => q.ucak_tipi === ac && q.cat === cat);
+    
+    function backToAircrafts() {
+        subcategorySelector.style.display = 'none';
+        aircraftSelector.style.display = 'block';
+        questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
+    }
+    
+    function generateWeaknessInsight() {
+        const history = JSON.parse(localStorage.getItem('quiz_history')) || [];
+        if (history.length === 0 || !localStorage.getItem('cat_errors')) {
+            weaknessInsightBox.style.display = 'none';
+            return;
+        }
+        
+        const errors = JSON.parse(localStorage.getItem('cat_errors')) || {};
+        let worstCategory = "";
+        let maxErrors = 0;
+        for (const [cat, count] of Object.entries(errors)) {
+            if (count > maxErrors) {
+                maxErrors = count;
+                worstCategory = cat;
+            }
+        }
+        if (maxErrors > 1) {
+            weaknessInsightBox.innerHTML = `⚠️ <strong>Uçuş Emniyet Notu:</strong> Son test analizlerine göre <strong>"${worstCategory}"</strong> konusundaki limitlerde hata oranınız yüksektir. Bu bölüme ağırlık vermeniz önerilir.`;
+            weaknessInsightBox.style.display = 'block';
+        } else {
+            weaknessInsightBox.style.display = 'none';
+        }
+    }
+    
+    function startTimer() {
+        const totalTime = activeQuestions.length * 10;
+        timeLeft = totalTime;
+        const warningTime = Math.floor(totalTime * 0.10);
+        maydayTriggered = false;
+        quizTimerView.style.display = 'inline-block';
+        updateTimerDisplay();
+        
+        currentQuestionStartTime = Date.now();
+        
+        quizTimerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+            
+            const elapsedOnQuestion = Math.floor((Date.now() - currentQuestionStartTime) / 1000);
+            if (elapsedOnQuestion >= 6 && elapsedOnQuestion < 10) {
+                playBeep(440, 'sine', 0.08);
+            }
+            
+            if (timeLeft === warningTime && !maydayTriggered) {
+                maydayTriggered = true;
+                playBeep(600, 'sine', 0.4);
+                openTrollModal("🚨 KOKPİT İKAZI 🚨", "Sınav sürenizin %10'u kaldı! Azıcık gaz açın, emniyetli uçuşlar! ⏱️");
+            }
+            
+            if (timeLeft <= 0) {
+                clearInterval(quizTimerInterval);
+                playBeep(440, 'sawtooth', 0.8);
+                alert("Süre Sınırı Doldu! Sınavınız Otomatik Kilitleniyor.");
+                showResult();
+            }
+        }, 1000);
+    }
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        quizTimerView.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    function startQuiz(categoryName) {
+        selectedCategory = categoryName;
+        mainTitle.innerText = selectedAircraft;
+        
+        if (categoryName === 'General') {
+            activeQuestions = allQuestions.filter(q => q.ucak_tipi === selectedAircraft);
+        } else {
+            activeQuestions = allQuestions.filter(q => q.ucak_tipi === selectedAircraft && q.cat === categoryName);
+        }
+        
         questionStates = activeQuestions.map(() => ({ status: 'unanswered', userA: '' }));
+        
         currentQuestionIndex = 0;
-        document.getElementById('subcategory-selector').style.display = 'none';
-        document.getElementById('quiz-body').style.display = 'block';
+        consecutiveCorrect = 0;
+        consecutiveWrong = 0;
+        subcategorySelector.style.display = 'none';
+        adminPanel.style.display = 'none'; 
+        signatureClickCount = 0;
+        quizBody.style.display = 'block';
+        progressBarContainer.style.display = 'block';
+        buildMatrix();
+        loadQuestion();
+        startTimer();
+    }
+    
+    function buildMatrix() {
+        matrixContainer.innerHTML = '';
+        questionStates.forEach((_, idx) => {
+            const box = document.createElement('div');
+            box.classList.add('matrix-box');
+            box.innerText = idx + 1;
+            box.addEventListener('click', () => jumpToQuestion(idx));
+            matrixContainer.appendChild(box);
+        });
+    }
+    function updateMatrixUI() {
+        const boxes = matrixContainer.querySelectorAll('.matrix-box');
+        boxes.forEach((box, idx) => {
+            box.classList.remove('active', 'm-correct', 'm-wrong', 'm-pas', 'm-flag');
+            if (idx === currentQuestionIndex) box.classList.add('active');
+            if (questionStates[idx].status === 'correct') box.classList.add('m-correct');
+            else if (questionStates[idx].status === 'wrong') box.classList.add('m-wrong');
+            else if (questionStates[idx].status === 'pas') box.classList.add('m-pas');
+            else if (questionStates[idx].status === 'flagged') box.classList.add('m-flag');
+        });
+    }
+    function jumpToQuestion(idx) {
+        currentQuestionIndex = idx;
         loadQuestion();
     }
-
+    
     function loadQuestion() {
-        let q = activeQuestions[currentQuestionIndex];
-        document.getElementById('question-text').innerText = q.soru;
-        const optCont = document.getElementById('options-container');
-        optCont.innerHTML = '';
-        q.secenekler.forEach(opt => {
-            let b = document.createElement('button');
-            b.className = 'btn';
-            b.innerText = opt;
-            b.onclick = () => {
-                let isCorrect = (opt === q.cevap);
-                questionStates[currentQuestionIndex].status = isCorrect ? 'correct' : 'wrong';
-                b.classList.add(isCorrect ? 'correct' : 'wrong');
-                document.getElementById('explanation-box').innerHTML = q.aciklama;
-                document.getElementById('explanation-box').style.display = 'block';
-            };
-            optCont.appendChild(b);
+        explanationBox.style.display = 'none';
+        optionsContainer.innerHTML = '';
+        currentQuestionStartTime = Date.now();
+        
+        let currentQuestion = activeQuestions[currentQuestionIndex];
+        let state = questionStates[currentQuestionIndex];
+        
+        questionCounter.innerText = `${selectedCategory} - Soru ${currentQuestionIndex + 1} / ${activeQuestions.length}`;
+        const answeredCount = questionStates.filter(s => s.status !== 'unanswered' && s.status !== 'flagged').length;
+        const progressPercent = (answeredCount / activeQuestions.length) * 100;
+        progressFill.style.width = `${progressPercent}%`;
+        questionText.innerHTML = currentQuestion.soru;
+        
+        let randomizedOptions = [...currentQuestion.secenekler].sort(() => Math.random() - 0.5);
+        const prefixMap = ['A) ', 'B) ', 'C) ', 'D) '];
+        randomizedOptions.forEach((option, oIdx) => {
+            const button = document.createElement('button');
+            const prefix = prefixMap[oIdx] || '';
+            button.innerText = prefix + option;
+            button.classList.add('btn');
+            
+            if (state.status === 'unanswered' || state.status === 'flagged') {
+                button.addEventListener('click', () => checkMultipleChoice(button, option, currentQuestion.cevap, currentQuestion.aciklama));
+            } else {
+                button.disabled = true;
+                if (option === currentQuestion.cevap) button.classList.add('correct');
+                if (state.status === 'wrong' && option === state.userA) button.classList.add('wrong');
+            }
+            optionsContainer.appendChild(button);
         });
+        if(state.status !== 'unanswered' && state.status !== 'flagged') {
+            showExplanationStatic(state.status === 'correct', currentQuestion.cevap, currentQuestion.aciklama);
+        }
+        prevBtn.disabled = (currentQuestionIndex === 0);
+        
+        if (currentQuestionIndex === activeQuestions.length - 1) {
+            nextBtn.innerText = "Sınavı Bitir";
+            nextBtn.className = "nav-btn finish-style";
+        } else {
+            nextBtn.innerText = "Sonraki";
+            nextBtn.className = "nav-btn next-style";
+        }
+        updateMatrixUI();
+    }
+    
+    function checkMultipleChoice(selectedBtn, selectedOption, correctAnswer, aciklama) {
+        let state = questionStates[currentQuestionIndex];
+        let currentQuestion = activeQuestions[currentQuestionIndex];
+        state.userA = selectedOption;
+        
+        const buttons = optionsContainer.querySelectorAll('.btn');
+        buttons.forEach(btn => btn.disabled = true);
+        if (selectedOption === correctAnswer) {
+            state.status = 'correct';
+            selectedBtn.classList.add('correct');
+            playBeep(1200, 'sine', 0.15);
+            
+            consecutiveWrong = 0;
+            consecutiveCorrect++;
+            
+            if (consecutiveCorrect === 20) {
+                openTrollModal("😎 KAPTAN MODU AKTİF 😎", "20 Peşpeşe Doğru! Kaptan Pilot gibi uçuyorsun! Motor sıcaklığı stabil, rüzgar tam karşıdan. Şov yapma, emniyetle devam et! 😎");
+            }
+            
+            showExplanationStatic(state.status === 'correct', correctAnswer, aciklama);
+            updateMatrixUI();
+            setTimeout(() => {
+                handleNextOrFinish();
+            }, 1000);
+        } else {
+            state.status = 'wrong';
+            selectedBtn.classList.add('wrong');
+            buttons.forEach(btn => {
+                const optionTextWithoutPrefix = btn.innerText.substring(3);
+                if(optionTextWithoutPrefix === correctAnswer) btn.classList.add('correct');
+            });
+            playBeep(250, 'square', 0.3);
+            logCategoryError(currentQuestion.cat);
+            
+            consecutiveCorrect = 0;
+            consecutiveWrong++;
+            
+            if (consecutiveWrong === 2) {
+                openTrollModal("⚠️ KOKPİT İKAZI ⚠️", "Arka Arkaya 2 Yanlış! Sanırım Stall'a giriyorsun kaptan? ✈️");
+            } else if (consecutiveWrong === 3) {
+                openTrollModal("🚨 MASTER CAUTION 🚨", "Maşallah Soluksuz 3 Yanlış! SOP'yi Hiç Okumamışsın! 🚨");
+            } else if (consecutiveWrong === 4) {
+                openTrollModal("❌ SİSTEM UYARISI ❌", "Gerçekten Tebrikler! Elinden hiç bir iş gelmiyor :) Biraz Dikkatli Oku!");
+            } else if (consecutiveWrong >= 5) {
+                openTrollModal("🚨 CRITICAL FAILURE 🚨", "İstersen Okumayı Öğrenmekle Başlayalım. Alfabemizde 29 Harf Mevcuttur. A-B-C-D-E şeklinde tekrar edelim!");
+            }
+            showExplanationStatic(state.status === 'wrong', correctAnswer, aciklama);
+            updateMatrixUI();
+        }
+    }
+    
+    function flagQuestion() {
+        let state = questionStates[currentQuestionIndex];
+        if (state.status === 'unanswered') state.status = 'flagged';
+        else if (state.status === 'flagged') state.status = 'unanswered';
+        updateMatrixUI();
+        handleNextOrFinish();
+    }
+    function logCategoryError(category) {
+        let errors = JSON.parse(localStorage.getItem('cat_errors')) || {};
+        errors[category] = (errors[category] || 0) + 1;
+        localStorage.setItem('cat_errors', JSON.stringify(errors));
+    }
+    function showExplanationStatic(isCorrect, rightAnswer, text) {
+        explanationBox.innerHTML = `<strong>${isCorrect ? 'Doğru! ✔️' : 'Yanlış! ❌'}</strong> Doğru Cevap: ${rightAnswer}<br>${text}`;
+        explanationBox.style.display = 'block';
+    }
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+        }
+    }
+    function pasQuestion() {
+        let state = questionStates[currentQuestionIndex];
+        if(state.status === 'unanswered' || state.status === 'flagged') {
+            state.status = 'pas';
+            state.userA = '';
+            consecutiveCorrect = 0;
+            consecutiveWrong = 0;
+        }
+        handleNextOrFinish();
+    }
+    
+    function sendDataToCloud(name, surname, aircraft, category, score, date) {
+        if(!GOOGLE_SHEETS_URL) return;
+        
+        const payload = { 
+            name: name, 
+            surname: surname, 
+            aircraft: aircraft, 
+            category: category, 
+            score: score, 
+            date: date 
+        };
+        
+        fetch(GOOGLE_SHEETS_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload),
+            redirect: "follow"
+        }).catch(err => console.log("Bulut gönderim hatası: ", err));
     }
 
     function handleNextOrFinish() {
-        if(currentQuestionIndex < activeQuestions.length - 1) {
+        if (currentQuestionIndex < activeQuestions.length - 1) {
             currentQuestionIndex++;
             loadQuestion();
         } else {
             showResult();
         }
     }
-
+    
     function showResult() {
-        let correct = questionStates.filter(s => s.status === 'correct').length;
-        let pct = Math.round((correct / activeQuestions.length) * 100);
-        document.getElementById('quiz-body').style.display = 'none';
-        document.getElementById('result-body').style.display = 'block';
-        document.getElementById('score-text').innerText = `%${pct} Başarı`;
+        clearInterval(quizTimerInterval);
+        quizTimerView.style.display = 'none';
+        quizBody.style.display = 'none';
+        progressBarContainer.style.display = 'none';
+        questionCounter.style.display = 'none';
         
-        // Sertifika mantığı: Her kategoride %75 üstü için
-        if(pct >= 75) {
-            document.getElementById('cert-download-btn').style.display = 'block';
+        let correctCount = questionStates.filter(s => s.status === 'correct').length;
+        let wrongCount = questionStates.filter(s => s.status === 'wrong').length;
+        let pasCount = questionStates.filter(s => s.status === 'pas' || s.status === 'unanswered' || s.status === 'flagged').length;
+        
+        const percentage = Math.round((correctCount / activeQuestions.length) * 100);
+        const testDate = new Date().toLocaleDateString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+        
+        let acLabel = 'AC';
+        if (selectedAircraft === 'Diamond DA40 NG') acLabel = 'DA40';
+        else if (selectedAircraft === 'Aquila A211') acLabel = 'A211';
+        else if (selectedAircraft === 'Diamond DA20 Eclipse') acLabel = 'DA20';
+        else if (selectedAircraft === 'Diamond DA42 NG') acLabel = 'DA42';
+        
+        saveHistory(`${acLabel}-${selectedCategory.substring(0,5).toUpperCase()}`, percentage);
+        
+        sendDataToCloud(currentName, currentSurname, selectedAircraft, selectedCategory, percentage, testDate);
+        
+        resultBody.style.display = 'block';
+        document.getElementById('score').innerText = correctCount;
+        document.getElementById('total').innerText = activeQuestions.length;
+        userScoreMsg.innerText = `Pilot Sayın ${currentName} ${currentSurname}, Sınav Başarı Oranınız: %${percentage}`;
+        
+       if (percentage >= 75) {
+    certDownloadBtn.style.display = 'block';
+}
+        calculateCategoryMetrics();
+        buildReviewList();
+        setTimeout(() => {
+            renderPieChart(correctCount, wrongCount, pasCount);
+        }, 150);
+    }
+    
+    function calculateCategoryMetrics() {
+        const catData = {};
+        activeQuestions.forEach((q, idx) => {
+            const category = q.cat || "Genel Havacılık";
+            if (!catData[category]) catData[category] = { total: 0, correct: 0 };
+            catData[category].total++;
+            if (questionStates[idx].status === 'correct') catData[category].correct++;
+        });
+        let html = `<div class="stats-title">🎯 Konu Bazlı Başarı Analizi</div>`;
+        for (const [catName, metrics] of Object.entries(catData)) {
+            const pct = Math.round((metrics.correct / metrics.total) * 100);
+            html += `
+                <div class="category-item">
+                    <span>${catName} (${metrics.correct}/${metrics.total})</span>
+                    <span style="font-weight:bold; color:${pct >= 75 ? '#2f855a' : '#c53030'}">%${pct}</span>
+                </div>
+            `;
+        }
+        categoryBreakdownBox.innerHTML = html;
+    }
+    function buildReviewList() {
+        reviewListBox.innerHTML = '';
+        let wrongQuestions = activeQuestions.filter((_, idx) => questionStates[idx].status === 'wrong');
+        if (wrongQuestions.length === 0) {
+            reviewListBox.innerHTML = `<div style="color:#2f855a; font-weight:600; text-align:center;">Harika! Hiç yanlışınız bulunmuyor. 🎉</div>`;
+            return;
+        }
+        activeQuestions.forEach((q, idx) => {
+            if (questionStates[idx].status === 'wrong') {
+                const item = document.createElement('div');
+                item.classList.add('review-item');
+                item.innerHTML = `
+                    <strong style="color:#c53030;">Soru:</strong> ${q.soru}<br>
+                    <span style="color:#e53e3e;">Sizin Cevabınız: ${questionStates[idx].userA || 'Boş'}</span><br>
+                    <span style="color:#2f855a; font-weight:600;">Doğru Cevap: ${q.cevap}</span><br>
+                    <small style="color:#3182ce; font-style:italic;">Açıklama: ${q.aciklama}</small>
+                `;
+                reviewListBox.appendChild(item);
+            }
+        });
+    }
+    function toggleReviewList() {
+        if (reviewListBox.style.display === 'none') {
+            reviewListBox.style.display = 'block';
+            document.getElementById('review-toggle-btn').innerText = "Listeyi Gizle 🔼";
+        } else {
+            reviewListBox.style.display = 'none';
+            document.getElementById('review-toggle-btn').innerText = "Hataları İncele 🔍";
         }
     }
-
-    function backToMenu() { location.reload(); }
-    function toggleTheme() { document.documentElement.toggleAttribute('data-theme', document.documentElement.getAttribute('data-theme') !== 'exam'); }
-    function shareSystem() { alert("Link kopyalandı!"); }
-    
-    // Basit Sertifika Çizimi
+    function renderPieChart(correct, wrong, pas) {
+        const canvas = document.getElementById('pie-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const total = correct + wrong + pas;
+        if(total === 0) return;
+        const data = [correct, wrong, pas];
+        const colors = ['#48bb78', '#f56565', '#a0aec0']; 
+        const labels = ['Doğru', 'Yanlış', 'Boş/Pas/Flag'];
+        let centerX = 100;
+        let centerY = 100;
+        let radius = 75;
+        let startAngle = 0;
+        for (let i = 0; i < data.length; i++) {
+            if(data[i] === 0) continue;
+            let sliceAngle = (data[i] / total) * 2 * Math.PI;
+            ctx.beginPath();
+            ctx.fillStyle = colors[i];
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+            ctx.closePath();
+            ctx.fill();
+            startAngle += sliceAngle;
+        }
+        ctx.font = '12px Arial';
+        let legendX = 200;
+        let legendY = 50;
+        for (let i = 0; i < data.length; i++) {
+            ctx.fillStyle = colors[i];
+            ctx.fillRect(legendX, legendY + (i * 25), 15, 15);
+            ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'exam' ? '#edf2f7' : '#4a5568';
+            ctx.fillText(`${labels[i]}: ${data[i]}`, legendX + 22, legendY + 12 + (i * 25));
+        }
+    }
+    function backToMenu() { showMainMenu(); }
+    function saveHistory(acLabel, pct) {
+        let history = JSON.parse(localStorage.getItem('quiz_history')) || [];
+        const newRecord = {
+            pilot: `${currentName} ${currentSurname}`, 
+            aircraft: acLabel,
+            score: pct,
+            date: new Date().toLocaleDateString('tr-TR', {hour: '2-digit', minute:'2-digit'})
+        };
+        history.push(newRecord);
+        localStorage.setItem('quiz_history', JSON.stringify(history));
+    }
+    function handleSignatureClick() {
+        signatureClickCount++;
+        if (signatureClickCount === 3) {
+            if (adminPanel.style.display === 'none' || adminPanel.style.display === '') {
+                updateAdminTable();
+                adminPanel.style.display = 'block';
+                adminPanel.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                adminPanel.style.display = 'none';
+            }
+            signatureClickCount = 0;
+        }
+    }
+    function updateAdminTable() {
+        const history = JSON.parse(localStorage.getItem('quiz_history')) || [];
+        adminTableBody.innerHTML = '';
+        if(history.length === 0) {
+            adminTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#a0aec0;">Henüz sınav kaydı bulunmuyor.</td></tr>`;
+            return;
+        }
+        [...history].reverse().forEach(log => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="font-weight:600;">${log.pilot || 'Bilinmeyen'}</td>
+                <td>${log.aircraft}</td>
+                <td style="font-weight:bold; color:${log.score >= 75 ? '#2f855a' : '#c53030'}">%${log.score}</td>
+                <td>${log.date}</td>
+            `;
+            adminTableBody.appendChild(row);
+        });
+    }
+    function clearAdminLogs() {
+        if(confirm("Tüm kullanıcı sınav geçmişini silmek istediğinize emin misiniz?")) {
+            localStorage.removeItem('quiz_history');
+            localStorage.removeItem('cat_errors');
+            updateAdminTable();
+            drawChart();
+        }
+    }
+    function drawChart() {
+        const history = JSON.parse(localStorage.getItem('quiz_history')) || [];
+        const canvas = document.getElementById('stats-canvas');
+        const statsPanel = document.getElementById('stats-panel');
+        if (history.length === 0) {
+            statsPanel.style.display = 'none';
+            return;
+        }
+        statsPanel.style.display = 'block';
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const padding = 30;
+        const chartWidth = canvas.width - padding * 2;
+        const chartHeight = canvas.height - padding * 2;
+        
+        ctx.beginPath();
+        ctx.strokeStyle = '#cbd5e0';
+        ctx.lineWidth = 1;
+        ctx.moveTo(padding, padding);
+        ctx.lineTo(padding, canvas.height - padding);
+        ctx.lineTo(canvas.width - padding, canvas.height - padding);
+        ctx.stroke();
+        const points = [];
+        const displayHistory = history.slice(-5);
+        const stepX = displayHistory.length > 1 ? chartWidth / (displayHistory.length - 1) : chartWidth;
+        displayHistory.forEach((data, index) => {
+            const x = padding + (index * stepX);
+            const y = (canvas.height - padding) - (data.score / 100 * chartHeight);
+            points.push({x, y, label: data.aircraft, score: data.score});
+        });
+        if (points.length > 0) {
+            ctx.beginPath();
+            ctx.strokeStyle = '#328cc1';
+            ctx.lineWidth = 3;
+            ctx.moveTo(points[0].x, points[0].y);
+            for(let i=1; i<points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+            ctx.stroke();
+        }
+        points.forEach(p => {
+            ctx.beginPath();
+            ctx.fillStyle = '#0b3c5d';
+            ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.font = 'bold 9px Arial';
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`%${p.score}`, p.x - 8, p.y - 10);
+            ctx.font = '8px Arial';
+            ctx.fillText(p.label, p.x - 12, canvas.height - padding + 15);
+        });
+    }
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+        var words = text.split(' ');
+        var line = '';
+        for (var n = 0; n < words.length; n++) {
+            var testLine = line + words[n] + ' ';
+            var metrics = context.measureText(testLine);
+            var testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+                context.fillText(line, x, y);
+                line = words[n] + ' ';
+                y += lineHeight;
+            } else {
+                line = testLine;
+            }
+        }
+        context.fillText(line, x, y);
+        return y;
+    }
     function generateCertificate() {
         const canvas = document.createElement('canvas');
-        canvas.width = 600; canvas.height = 400;
+        canvas.width = 850;
+        canvas.height = 680;
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#0b3c5d'; ctx.fillRect(0,0,600,400);
-        ctx.fillStyle = 'white'; ctx.font = '30px Arial';
-        ctx.fillText('BAŞARI SERTİFİKASI', 150, 100);
-        ctx.font = '20px Arial';
-        ctx.fillText(localStorage.getItem('p_name') + ' ' + localStorage.getItem('p_surname'), 200, 200);
+        const grad = ctx.createLinearGradient(0, 0, 850, 680);
+        grad.addColorStop(0, '#0b3c5d');
+        grad.addColorStop(1, '#1d2731');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 850, 680);
+        ctx.strokeStyle = '#d4af37';
+        ctx.lineWidth = 10;
+        ctx.strokeRect(40, 40, 770, 600);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(55, 55, 740, 570);
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#d4af37';
+        ctx.font = 'bold 34px Georgia';
+        ctx.fillText('Limit Profesörü', 425, 120);
+        ctx.fillStyle = '#90cdf4';
+        ctx.font = 'bold 36px Helvetica';
+        ctx.fillText(`${currentName.toUpperCase()} ${currentSurname.toUpperCase()}`, 425, 190);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '15px Arial';
+        
+        const mainText = `Bu belge, seçmiş olduğu ${selectedAircraft.toUpperCase()} uçağının motorunu yakmadan, kanatlarını eline almadan, kokpitteki Master Caution ışıklarını yakıp uçağı ''Gece Kulübüne'' çevirmeden uçabileceğini gösterir. Uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve edeceğiniz duaların gücüyle alakalıdır.`;
+        
+        let lastY = wrapText(ctx, mainText, 425, 240, 680, 24);
+        ctx.fillStyle = '#d4af37';
+        ctx.font = 'bold 24px Arial';
+        ctx.fillText(`${pilotEmoji}   Başarı Belgesi   ${pilotEmoji}`, 425, lastY + 50);
+        ctx.fillStyle = '#fc8181';
+        ctx.font = 'bold 11px Arial';
+        
+        const disclaimerText = `⚠️ Yasal Uyarı: Bu belge tamamen eğlence amacıyla üretilmiştir. Öğretmenlerinize göstermeniz durumunda lisansınızın askıya alınması, meydandan kovulmanıza veya en hafifinden " Senden Pilot Olmaz !! " bakışlarına maruz kalmanıza sebob olur. `;
+        
+        wrapText(ctx, disclaimerText, 425, lastY + 100, 700, 16);
         const link = document.createElement('a');
-        link.download = 'Sertifika.png'; link.href = canvas.toDataURL(); link.click();
+        link.download = `${currentName}_${currentSurname}_Limit_Sertifikasi.png`;
+        link.href = canvas.toDataURL();
+        link.click();
     }
+
+function logout() {
+    if(confirm("Çıkış yapmak istiyor musunuz?")) {
+        localStorage.removeItem('p_name');
+        localStorage.removeItem('p_surname');
+        localStorage.removeItem('p_gender');
+        location.reload(); // Sayfayı yenileyerek giriş ekranına döner
+    }
+}
+
 </script>
 </body>
 </html>
