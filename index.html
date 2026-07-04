@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uçuş Hattı</title>
+    <title>Uçak Limitleri</title>
     <style>
         * { box-sizing: border-box; }
 
@@ -232,7 +232,7 @@
         <button class="logout-btn" id="logout-btn" onclick="logout()" style="display: none;">Çıkış 🔓</button>
     </div>
     <div class="header">
-        <h1 id="main-title">Uçuş Hattı ✈️</h1>
+        <h1 id="main-title">Uçak Limitleri ✈️</h1>
         <p id="question-counter">Sistem Başlatılıyor...</p>
         <div id="quiz-timer" class="timer-badge" style="display: none;">00:00</div>
     </div>
@@ -402,7 +402,7 @@
     const logoutBtn = document.getElementById('logout-btn');
 
     window.onload = async function() {
-        mainTitle.innerText = "Uçuş Hattı ✈️";
+        mainTitle.innerText = "Uçak Limitleri ✈️";
         questionCounter.innerText = "Veritabanı Yükleniyor... Lütfen Bekleyin ⏳";
         questionCounter.style.display = 'block';
 
@@ -451,8 +451,8 @@
     }
     function shareSystem() {
         const shareData = {
-            title: 'Uçuş Hattı',
-            text: 'Pilotlar için özel geliştirilmiş Uçuş Hattı sınav sistemini incele ve kendini test et!',
+            title: 'Uçak Limitleri',
+            text: 'Pilotlar için özel geliştirilmiş uçak limitleri sınav sistemini incele ve kendini test et!',
             url: window.location.href
         };
         if (navigator.share) {
@@ -502,8 +502,8 @@
         certDownloadBtn.style.display = 'none';
         clearInterval(quizTimerInterval);
 
-        mainTitle.innerText = "Uçuş Hattı ✈️";
-        questionCounter.innerText = "Lütfen Konu Seçiniz";
+        mainTitle.innerText = "Uçak Limitleri ✈️";
+        questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
         questionCounter.style.display = 'block';
 
         welcomeMsg.innerHTML = `Pilot: ${currentName} ${currentSurname} ${pilotEmoji}`;
@@ -581,7 +581,7 @@
     function backToAircrafts() {
         subcategorySelector.style.display = 'none';
         aircraftSelector.style.display = 'block';
-        questionCounter.innerText = "Lütfen Konu Seçiniz";
+        questionCounter.innerText = "Lütfen Uçak Tipini Seçiniz";
         // Dinamik butonları tekrar oluştur
         const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
         const optionsDiv = document.getElementById('aircraft-options-container');
@@ -1130,14 +1130,14 @@
         ctx.textAlign = 'center';
         ctx.fillStyle = '#d4af37';
         ctx.font = 'bold 34px Georgia';
-        ctx.fillText('Uçuş Hattı Profesörü', 425, 120);
+        ctx.fillText('Limit Profesörü', 425, 120);
         ctx.fillStyle = '#90cdf4';
         ctx.font = 'bold 36px Helvetica';
         ctx.fillText(`${currentName.toUpperCase()} ${currentSurname.toUpperCase()}`, 425, 190);
         ctx.fillStyle = '#ffffff';
         ctx.font = '15px Arial';
 
-        const mainText = `Bu belge, seçmiş olduğu ${selectedAircraft.toUpperCase()} uçağının motorunu yakmadan, kanatlarını eline almadan, kokpitteki Master Caution ışıklarını yakıp uçağı ''Gece Kulübüne'' çevirmeden uçabileceğini gösterir. Uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve edeceğiniz duaların gücüyle alakalıdır.`;
+        const mainText = `Bu belge, ${selectedAircraft.toUpperCase()} konusunda ''Doktor - Doçent - Profesör '' gibi bir şey olduğunuzu kanıtlar. Uçağınızın motorunu yakmadan, kanatları elinize almadan, HSI göstergesini dev bir saat olduğunu düşünmeden, ikaz lambalarını yakıp uçağı '' Gece Kulübüne '' çevirmeden uçurabileceğinizi kanıtlamaz :). Uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve edeceğiniz duaların gücüyle alakalıdır.`;
 
         let lastY = wrapText(ctx, mainText, 425, 240, 680, 24);
         ctx.fillStyle = '#d4af37';
@@ -1146,7 +1146,7 @@
         ctx.fillStyle = '#fc8181';
         ctx.font = 'bold 11px Arial';
 
-        const disclaimerText = `⚠️ Yasal Uyarı: Bu belge tamamen eğlence amacıyla üretilmiştir. Öğretmenlerinize göstermeniz durumunda lisansınızın askıya alınması, meydandan kovulmanıza veya en hafifinden " Senden Pilot Olmaz !! " bakışlarına maruz kalmanıza sebob olur. `;
+        const disclaimerText = `⚠️ Yasal Uyarı: Bu belge tamamen eğlence amacıyla üretilmiştir. Öğretmenlerinize göstermeniz durumunda lisansınızın askıya alınması, meydandan kovulmanıza veya en hafifinden " Senden Pilot Olmaz !! " bakışlarına maruz kalmanıza sebep olur. `;
 
         wrapText(ctx, disclaimerText, 425, lastY + 100, 700, 16);
         const link = document.createElement('a');
