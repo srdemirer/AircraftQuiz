@@ -524,7 +524,9 @@
 
             <button class="btn aircraft-btn" onclick="showSubCategories('Diamond DA42 NG')">Diamond DA42 NG</button>
 
-        </div>
+	    <button class="btn" style="background:#e53e3e; color:white; margin-top:15px; width:100%; font-weight:bold;" onclick="logout()">Çıkış Yap 🔓</button>
+        
+</div>
 
         
 
@@ -883,6 +885,20 @@
         }
 
     }
+
+function logout() {
+    // Kullanıcı bilgilerini localStorage'dan sil
+    localStorage.removeItem('p_name');
+    localStorage.removeItem('p_surname');
+    localStorage.removeItem('p_gender');
+    // Değişkenleri sıfırla
+    currentName = '';
+    currentSurname = '';
+    currentGender = '';
+    pilotEmoji = '👨‍✈️';
+    // Giriş ekranını göster
+    showLoginScreen();
+}
 
     function shareSystem() {
 
