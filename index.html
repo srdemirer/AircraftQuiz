@@ -58,7 +58,7 @@
             display: flex;
             justify-content: center;
             gap: 8px;
-            flex-wrap: wrap; /* çok buton olursa taşmasın */
+            flex-wrap: wrap;
         }
         .home-btn, .share-btn, .theme-switch, .logout-btn {
             border: none;
@@ -898,9 +898,11 @@
         document.getElementById('total').innerText = activeQuestions.length;
         userScoreMsg.innerText = `Pilot Sayın ${currentName} ${currentSurname}, Sınav Başarı Oranınız: %${percentage}`;
 
-        if (percentage >= 80 && selectedCategory === 'General') {
+        // Değişiklik: %75 ve üzeri başarıda sertifika butonu görünür
+        if (percentage >= 75) {
             certDownloadBtn.style.display = 'block';
         }
+
         calculateCategoryMetrics();
         buildReviewList();
         setTimeout(() => {
@@ -1137,7 +1139,8 @@
         ctx.fillStyle = '#ffffff';
         ctx.font = '15px Arial';
 
-        const mainText = `Bu belge, ${selectedAircraft.toUpperCase()} konusunda ''Doktor - Doçent - Profesör '' gibi bir şey olduğunuzu kanıtlar. Uçağınızın motorunu yakmadan, kanatları elinize almadan, HSI göstergesini dev bir saat olduğunu düşünmeden, ikaz lambalarını yakıp uçağı '' Gece Kulübüne '' çevirmeden uçurabileceğinizi kanıtlamaz :). Uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve edeceğiniz duaların gücüyle alakalıdır.`;
+        // Değişiklik: Sertifika metnine uçak tipi ve kategori eklendi
+        const mainText = `Bu belge, ${selectedAircraft.toUpperCase()} - ${selectedCategory.toUpperCase()} konusunda ''Doktor - Doçent - Profesör '' gibi bir şey olduğunuzu kanıtlar. Uçağınızın motorunu yakmadan, kanatları elinize almadan, HSI göstergesini dev bir saat olduğunu düşünmeden, ikaz lambalarını yakıp uçağı '' Gece Kulübüne '' çevirmeden uçurabileceğinizi kanıtlamaz :). Uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve edeceğiniz duaların gücüyle alakalıdır.`;
 
         let lastY = wrapText(ctx, mainText, 425, 240, 680, 24);
         ctx.fillStyle = '#d4af37';
