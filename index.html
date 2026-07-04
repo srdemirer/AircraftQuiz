@@ -1114,42 +1114,5 @@
         link.click();
     }
 </script>
-    <button onclick="csvIndir()" style="position:fixed; top:10px; left:10px; z-index:9999; padding:15px; background:red; color:white; font-weight:bold; border:none; cursor:pointer;">📥 TÜM SORULARI (CSV) İNDİR</button>
-
-<script>
-function csvIndir() {
-    let csvContent = "Ucak_Tipi,Kategori,Soru,Secenek_A,Secenek_B,Secenek_C,Secenek_D,Cevap,Aciklama\n";
-    function escapeCSV(str) {
-        if (str == null) return '""';
-        let cleanStr = str.toString().replace(/"/g, '""');
-        return `"${cleanStr}"`; 
-    }
-    function addData(db, ucakTipi) {
-        db.forEach(q => {
-            let row = [
-                escapeCSV(ucakTipi), escapeCSV(q.cat), escapeCSV(q.soru),
-                escapeCSV(q.secenekler[0]), escapeCSV(q.secenekler[1]),
-                escapeCSV(q.secenekler[2]), escapeCSV(q.secenekler[3]),
-                escapeCSV(q.cevap), escapeCSV(q.aciklama)
-            ].join(",");
-            csvContent += row + "\n";
-        });
-    }
-    // Veritabanlarını birleştir
-    addData(da40Database, "Diamond DA40 NG");
-    addData(aquilaDatabase, "Aquila A211");
-    addData(da20Database, "Diamond DA20 Eclipse");
-    addData(da42Database, "Diamond DA42 NG");
-
-    // İndirme işlemi
-    let blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
-    let link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "Ucak_Limitleri_Veritabani.csv";
-    link.click();
-    
-    alert("Dosya başarıyla indirildi! Artık bu kırmızı butonu koddan silebilirsin.");
-}
-</script>
 </body>
 </html>
