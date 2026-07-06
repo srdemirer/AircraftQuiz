@@ -17,16 +17,7 @@
             --btn-border: #e2e8f0;
             --btn-text: #4a5568;
         }
-        [data-theme="exam"] {
-            --bg-color: #1a202c;
-            --container-bg: #2d3748;
-            --text-color: #edf2f7;
-            --primary-color: #90cdf4;
-            --accent-color: #4299e1;
-            --btn-bg: #4a5568;
-            --btn-border: #718096;
-            --btn-text: #e2e8f0;
-        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             background-color: var(--bg-color);
@@ -40,6 +31,7 @@
             padding: 15px;
             transition: all 0.3s ease;
         }
+
         .quiz-container {
             background-color: var(--container-bg);
             border-radius: 16px;
@@ -60,7 +52,7 @@
             gap: 8px;
             flex-wrap: wrap;
         }
-        .home-btn, .share-btn, .theme-switch, .logout-btn {
+        .home-btn, .share-btn, .logout-btn {
             border: none;
             padding: 5px 12px;
             border-radius: 20px;
@@ -72,34 +64,19 @@
         }
         .home-btn { background: #4a5568; }
         .share-btn { background: #2f855a; }
-        .theme-switch { background: var(--accent-color); }
         .logout-btn { background: #e53e3e; }
 
-        .home-btn:hover, .share-btn:hover, .theme-switch:hover, .logout-btn:hover {
+        .home-btn:hover, .share-btn:hover, .logout-btn:hover {
             opacity: 0.9;
         }
 
-        .timer-badge {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: #e53e3e;
-            background: #fff5f5;
-            padding: 4px 12px;
-            border-radius: 8px;
-            border: 2px solid #fed7d7;
-            display: inline-block;
-            margin-top: 5px;
-        }
-        [data-theme="exam"] .timer-badge {
-            background: #742a2a;
-            border-color: #e53e3e;
-            color: #fff5f5;
-        }
         .header { text-align: center; margin-bottom: 20px; padding-top: 25px; }
         .header h1 { color: var(--primary-color); font-size: 1.5rem; margin: 0 0 5px 0; }
         .header p { color: #718096; margin: 0; font-size: 0.9rem; }
+
         .progress-bar { height: 6px; background-color: #e2e8f0; border-radius: 3px; margin-bottom: 25px; overflow: hidden; display: none; }
         .progress-fill { height: 100%; background-color: var(--accent-color); width: 0%; transition: width 0.3s ease; }
+
         .options { display: flex; flex-wrap: wrap; gap: 12px; flex-direction: column; }
 
         .btn {
@@ -108,7 +85,6 @@
             text-align: left; color: var(--btn-text); transition: all 0.2s ease; -webkit-tap-highlight-color: transparent;
         }
         .btn:hover:not([disabled]) { background-color: #edf2f7; border-color: #cbd5e0; }
-        [data-theme="exam"] .btn:hover:not([disabled]) { background-color: #718096; }
 
         .aircraft-btn { background-color: #e3fafc; border-color: #99e9f2; color: #0c8599; text-align: center; font-weight: 600; }
         .aircraft-btn:hover:not([disabled]) { background-color: #c5f6fa !important; }
@@ -127,7 +103,7 @@
         .wrong { background-color: #fed7d7 !important; border-color: #f56565 !important; color: #742a2a !important; font-weight: 600; }
 
         .explanation { margin-top: 20px; padding: 15px; background-color: #ebf8ff; border-left: 4px solid #3182ce; border-radius: 4px; font-size: 0.95rem; line-height: 1.5; color: #2b6cb0; display: none; }
-        [data-theme="exam"] .explanation { background-color: #2b6cb0; color: white; border-left-color: #90cdf4; }
+
         .nav-controls { display: flex; gap: 10px; margin-top: 20px; }
         .nav-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; text-align: center; font-size: 0.95rem; }
         .prev-style { background-color: #e2e8f0; color: #4a5568; }
@@ -138,7 +114,6 @@
         .flag-style { background-color: #ed8936; color: white; }
         .flag-style:hover { background-color: #dd6b20; }
         .next-style { background-color: var(--primary-color); color: white; box-shadow: 0 4px 6px rgba(11, 60, 93, 0.2); }
-        [data-theme="exam"] .next-style { color: #1a202c; }
         .finish-style { background-color: #2f855a; color: white; }
 
         .matrix-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 25px; padding-top: 15px; border-top: 1px solid #e2e8f0; justify-content: center; }
@@ -148,6 +123,7 @@
         .matrix-box.m-wrong { background-color: #f56565; color: white; border-color: #e53e3e; }
         .matrix-box.m-pas { background-color: #a0aec0; color: white; border-color: #718096; }
         .matrix-box.m-flag { background-color: #ed8936; color: white; border-color: #dd6b20; }
+
         .score-container { text-align: center; padding: 10px 0; }
         .score-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
         .score-number { font-size: 3rem; font-weight: 800; color: var(--accent-color); margin-bottom: 20px; }
@@ -155,25 +131,24 @@
         .review-btn { background-color: #ed8936; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; }
 
         .cert-btn { background-color: #2b6cb0; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px; width: 100%; display: none; box-shadow: 0 4px 6px rgba(43, 108, 176, 0.3); }
+
         .category-breakdown { margin-top: 20px; padding: 15px; background: #f7fafc; border-radius: 10px; text-align: left; border: 1px solid #e2e8f0; }
-        [data-theme="exam"] .category-breakdown { background: #4a5568; border-color: #718096; }
         .category-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 500; }
 
         .review-list { max-height: 300px; overflow-y: auto; text-align: left; margin-top: 15px; padding: 10px; background: #fffaf0; border-radius: 8px; border: 1px dashed #dd6b20; }
-        [data-theme="exam"] .review-list { background: #2d3748; color: #edf2f7; }
         .review-item { padding: 10px 0; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
+
         .insight-badge { background: #fffaf0; border: 1px solid #feebc8; color: #c05621; padding: 12px; border-radius: 10px; margin-top: 15px; font-size: 0.85rem; line-height: 1.4; font-weight: 500; display: none; }
-        [data-theme="exam"] .insight-badge { background: #7b341e; border-color: #c05621; color: #fffaf0; }
+
         .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; text-align: left; }
         .input-control { padding: 14px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 1rem; width: 100%; background: white; color: #1a202c; }
         .input-btn { background-color: var(--primary-color); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 5px; }
-        [data-theme="exam"] .input-btn { color: #1a202c; }
 
         .stats-panel { margin-top: 25px; border-top: 2px dashed #e2e8f0; padding-top: 20px; text-align: left; }
         .stats-panel:not(#stats-panel) { display: none; }
         .stats-title { font-weight: bold; color: #4a5568; margin-bottom: 10px; font-size: 1.1rem; }
-        [data-theme="exam"] .stats-title { color: #edf2f7; }
         #stats-canvas, #pie-canvas { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; width: 100%; margin-top: 10px; }
+
         .user-welcome { font-size: 0.95rem; margin-bottom: 15px; font-weight: 600; text-align: center; }
 
         .question { font-size: 1.15rem; font-weight: 600; margin-bottom: 24px; padding-bottom: 12px; }
@@ -183,6 +158,7 @@
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
         .admin-table th, .admin-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
         .admin-table th { background-color: #f7fafc; }
+
         .custom-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center;
@@ -205,12 +181,6 @@
             padding: 10px 24px; border-radius: 8px; font-weight: bold;
             cursor: pointer; font-size: 0.95rem; width: 100%; transition: background 0.2s;
         }
-        [data-theme="exam"] .custom-modal {
-            background: #2d3748; color: #edf2f7; border-color: #e53e3e;
-            box-shadow: 0 0 20px rgba(229, 62, 92, 0.4);
-        }
-        [data-theme="exam"] .custom-modal-title { color: #fc8181; }
-        [data-theme="exam"] .custom-modal-btn { background: #e53e3e; color: white; }
     </style>
 </head>
 <body>
@@ -227,14 +197,11 @@
     <div class="top-buttons">
         <button class="home-btn" onclick="backToMenu()">Ana Sayfa 🏠</button>
         <button class="share-btn" onclick="shareSystem()">Paylaş 🔗</button>
-        <button class="theme-switch" onclick="toggleTheme()" id="theme-toggle-btn">Koyu Mod 🌙</button>
-        <!-- Çıkış butonu eklendi -->
         <button class="logout-btn" id="logout-btn" onclick="logout()" style="display: none;">Çıkış 🔓</button>
     </div>
     <div class="header">
         <h1 id="main-title">Uçuş Hattı ✈️</h1>
         <p id="question-counter">Sistem Başlatılıyor...</p>
-        <div id="quiz-timer" class="timer-badge" style="display: none;">00:00</div>
     </div>
 
     <div class="progress-bar" id="progress-bar-container"><div class="progress-fill" id="progress-fill"></div></div>
@@ -261,7 +228,6 @@
 
     <div id="aircraft-selector" style="display: none;">
         <div id="welcome-msg" class="user-welcome"></div>
-        <!-- Uçak butonları buraya dinamik eklenecek -->
         <div class="options" id="aircraft-options-container"></div>
 
         <div class="insight-badge" id="weakness-insight-box"></div>
@@ -346,13 +312,9 @@
     let pilotEmoji = "👨‍✈️";
     let signatureClickCount = 0;
     let questionStates = [];
-    let quizTimerInterval = null;
-    let timeLeft = 0;
-    let currentQuestionStartTime = 0;
 
     let consecutiveCorrect = 0;
     let consecutiveWrong = 0;
-    let maydayTriggered = false;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     function playBeep(freq, type, duration) {
@@ -389,7 +351,6 @@
     const matrixContainer = document.getElementById('matrix-container');
     const categoryBreakdownBox = document.getElementById('category-breakdown-box');
     const reviewListBox = document.getElementById('review-list-box');
-    const quizTimerView = document.getElementById('quiz-timer');
     const weaknessInsightBox = document.getElementById('weakness-insight-box');
     const certDownloadBtn = document.getElementById('cert-download-btn');
 
@@ -437,17 +398,6 @@
     }
     function closeTrollModal() {
         trollModalOverlay.classList.remove('show');
-    }
-    function toggleTheme() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const btn = document.getElementById('theme-toggle-btn');
-        if (currentTheme === 'exam') {
-            document.documentElement.removeAttribute('data-theme');
-            btn.innerText = "Koyu Mod 🌙";
-        } else {
-            document.documentElement.setAttribute('data-theme', 'exam');
-            btn.innerText = "Açık Mod ☀️";
-        }
     }
     function shareSystem() {
         const shareData = {
@@ -498,9 +448,7 @@
         subcategorySelector.style.display = 'none';
         progressBarContainer.style.display = 'none';
         reviewListBox.style.display = 'none';
-        quizTimerView.style.display = 'none';
         certDownloadBtn.style.display = 'none';
-        clearInterval(quizTimerInterval);
 
         mainTitle.innerText = "Uçuş Hattı ✈️";
         questionCounter.innerText = "Konu Seçiniz";
@@ -509,7 +457,6 @@
         welcomeMsg.innerHTML = `Pilot: ${currentName} ${currentSurname} ${pilotEmoji}`;
         aircraftSelector.style.display = 'block';
 
-        // Dinamik uçak butonlarını oluştur
         const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
         const optionsDiv = document.getElementById('aircraft-options-container');
         optionsDiv.innerHTML = '';
@@ -582,7 +529,6 @@
         subcategorySelector.style.display = 'none';
         aircraftSelector.style.display = 'block';
         questionCounter.innerText = "Konu Seçiniz";
-        // Dinamik butonları tekrar oluştur
         const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
         const optionsDiv = document.getElementById('aircraft-options-container');
         optionsDiv.innerHTML = '';
@@ -620,46 +566,6 @@
         }
     }
 
-    function startTimer() {
-        // soru başına 30 saniye
-        const totalTime = activeQuestions.length * 30;
-        timeLeft = totalTime;
-        const warningTime = Math.floor(totalTime * 0.10);
-        maydayTriggered = false;
-        quizTimerView.style.display = 'inline-block';
-        updateTimerDisplay();
-
-        currentQuestionStartTime = Date.now();
-
-        quizTimerInterval = setInterval(() => {
-            timeLeft--;
-            updateTimerDisplay();
-
-            const elapsedOnQuestion = Math.floor((Date.now() - currentQuestionStartTime) / 1000);
-            if (elapsedOnQuestion >= 6 && elapsedOnQuestion < 10) {
-                playBeep(440, 'sine', 0.08);
-            }
-
-            if (timeLeft === warningTime && !maydayTriggered) {
-                maydayTriggered = true;
-                playBeep(600, 'sine', 0.4);
-                openTrollModal("🚨 KOKPİT İKAZI 🚨", "Sınav sürenizin %10'u kaldı! Azıcık gaz açın, emniyetli uçuşlar! ⏱️");
-            }
-
-            if (timeLeft <= 0) {
-                clearInterval(quizTimerInterval);
-                playBeep(440, 'sawtooth', 0.8);
-                alert("Süre Sınırı Doldu! Sınavınız Otomatik Kilitleniyor.");
-                showResult();
-            }
-        }, 1000);
-    }
-    function updateTimerDisplay() {
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        quizTimerView.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-
     function startQuiz(categoryName) {
         selectedCategory = categoryName;
         mainTitle.innerText = selectedAircraft;
@@ -682,7 +588,6 @@
         progressBarContainer.style.display = 'block';
         buildMatrix();
         loadQuestion();
-        startTimer();
     }
 
     function buildMatrix() {
@@ -714,7 +619,6 @@
     function loadQuestion() {
         explanationBox.style.display = 'none';
         optionsContainer.innerHTML = '';
-        currentQuestionStartTime = Date.now();
 
         let currentQuestion = activeQuestions[currentQuestionIndex];
         let state = questionStates[currentQuestionIndex];
@@ -871,8 +775,6 @@
     }
 
     function showResult() {
-        clearInterval(quizTimerInterval);
-        quizTimerView.style.display = 'none';
         quizBody.style.display = 'none';
         progressBarContainer.style.display = 'none';
         questionCounter.style.display = 'none';
@@ -899,7 +801,6 @@
         document.getElementById('total').innerText = activeQuestions.length;
         userScoreMsg.innerText = `Pilot Sayın ${currentName} ${currentSurname}, Sınav Başarı Oranınız: %${percentage}`;
 
-        // %75 ve üzeri başarıda sertifika butonu görünür
         if (percentage >= 75) {
             certDownloadBtn.style.display = 'block';
         }
@@ -991,7 +892,7 @@
         for (let i = 0; i < data.length; i++) {
             ctx.fillStyle = colors[i];
             ctx.fillRect(legendX, legendY + (i * 25), 15, 15);
-            ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'exam' ? '#edf2f7' : '#4a5568';
+            ctx.fillStyle = '#4a5568';
             ctx.fillText(`${labels[i]}: ${data[i]}`, legendX + 22, legendY + 12 + (i * 25));
         }
     }
@@ -1140,7 +1041,6 @@
         ctx.fillStyle = '#ffffff';
         ctx.font = '15px Arial';
 
-        // Uçak tipi ve kategori sertifika metninde gösteriliyor
         const mainText = `Bu belge, ${selectedAircraft.toUpperCase()} - ${selectedCategory.toUpperCase()} konusunda ''Doktor - Doçent - Profesör '' gibi bir şey olduğunuzu kanıtlar. Uçağınızın motorunu yakmadan, kanatları elinize almadan, HSI göstergesini dev bir saat olduğunu düşünmeden, ikaz lambalarını yakıp uçağı '' Gece Kulübüne '' çevirmeden uçurabileceğinizi kanıtlamaz :). Uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve edeceğiniz duaların gücüyle alakalıdır.`;
 
         let lastY = wrapText(ctx, mainText, 425, 240, 680, 24);
@@ -1159,7 +1059,6 @@
         link.click();
     }
 
-    // Çıkış yap fonksiyonu
     function logout() {
         localStorage.removeItem('p_name');
         localStorage.removeItem('p_surname');
