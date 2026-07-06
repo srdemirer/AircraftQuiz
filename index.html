@@ -421,15 +421,6 @@
             transition: background 0.2s;
         }
         .custom-modal-btn:hover { background: var(--primary-light); }
-
-        /* ===== GÖRSEL STİLİ ===== */
-        .question-image {
-            max-width: 100%;
-            border-radius: 12px;
-            margin: 10px 0 12px 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            display: block;
-        }
     </style>
 </head>
 <body>
@@ -505,7 +496,7 @@
 
         <!-- QUIZ BODY -->
         <div id="quiz-body" style="display: none;">
-            <div class="question fw-bold fs-5 mb-2" id="question-text"></div>
+            <div class="question fw-bold fs-5 mb-3" id="question-text"></div>
             <div id="options-area">
                 <div class="d-grid gap-3" id="options-container"></div>
             </div>
@@ -560,11 +551,11 @@
         </table>
     </div>
 
-    <!-- Bootstrap JS (isteğe bağlı) -->
+    <!-- Bootstrap JS (isteğe bağlı, bazı bileşenler için) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // ===== ORİJİNAL JAVASCRIPT (güncellenmiş) =====
+        // ===== ORİJİNAL JAVASCRIPT (güncellenmiş HTML ile uyumlu) =====
         const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbycVvWk13aBgh6a--r3iBKq4ykoGxfktmCrrGO7_LKcp03Dff4qyEXdjmMDuen8nxwz/exec";
 
         let allQuestions = [];
@@ -891,14 +882,7 @@
             const answeredCount = questionStates.filter(s => s.status !== 'unanswered' && s.status !== 'flagged').length;
             const progressPercent = (answeredCount / activeQuestions.length) * 100;
             progressFill.style.width = `${progressPercent}%`;
-
-            // ===== GÖRSEL DESTEĞİ =====
-            let imageHtml = '';
-            if (currentQuestion.gorsel_url && currentQuestion.gorsel_url.trim() !== '') {
-                imageHtml = `<img src="${currentQuestion.gorsel_url}" alt="Soru görseli" class="question-image" onerror="this.style.display='none'">`;
-            }
-            // Soru metnini ve görseli birlikte göster
-            questionText.innerHTML = imageHtml + currentQuestion.soru;
+            questionText.innerHTML = currentQuestion.soru;
 
             let randomizedOptions = [...currentQuestion.secenekler].sort(() => Math.random() - 0.5);
             const prefixMap = ['A) ', 'B) ', 'C) ', 'D) '];
