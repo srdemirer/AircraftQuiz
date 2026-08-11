@@ -545,12 +545,12 @@
             <div id="welcome-msg" class="user-welcome text-center fw-bold mb-3"></div>
             <div class="d-grid gap-3" id="aircraft-options-container"></div>
 
-            <!-- CHART KÜTÜPHANESİ KATEGORİSİ (EN ALTA EKLENDİ) -->
+            <!-- CHART KÜTÜPHANESİ KATEGORİSİ -->
             <button class="btn btn-chart-category w-100" onclick="showChartCategory()">
                 🗺️ Chart Kütüphanesi
             </button>
 
-            <!-- Chart Gösterim Alanları (Bu butona tıklanınca görünür) -->
+            <!-- Chart Gösterim Alanları -->
             <div id="chart-category-area" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px dashed var(--gray-300);">
                 <div id="chart-type-list" class="d-grid gap-2"></div>
                 <div id="chart-list-view" class="mt-3" style="display: none;"></div>
@@ -638,7 +638,7 @@
         // ============================================================
         // 1. GOOGLE SHEETS API URL
         // ============================================================
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwrr2j3PzISkffNIkYXBIKvBpItXMH38cj5ik-t9Ae8-dX3MhuzVfYoGiPDEZCLnZ5M/exec";
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwr8TECeTgLvNI_H2J9iXvSJxpvT0nPdXTTK3ZlHmTBZ7TC6Fzk0hxb3kzp3XjSAqZ1/exec";
 
         // ============================================================
         // 2. DEĞİŞKENLER
@@ -733,15 +733,12 @@
                 const response = await fetch(GOOGLE_SHEETS_URL);
                 const data = await response.json();
                 
-                console.log('Gelen veri:', data); // Debug için
+                console.log('Gelen veri:', data);
                 
-                // Veriyi doğru şekilde ayır
                 if (Array.isArray(data)) {
-                    // Eski sistem: sadece soru dizisi
                     allQuestions = data;
                     allCharts = [];
                 } else if (data && typeof data === 'object') {
-                    // Yeni sistem: { questions: [...], charts: [...] }
                     allQuestions = data.questions || [];
                     allCharts = data.charts || [];
                 } else {
@@ -832,7 +829,6 @@
         }
 
         function showMainMenu() {
-            // Tüm ekranları gizle
             loginScreen.style.display = 'none';
             quizBody.style.display = 'none';
             resultBody.style.display = 'none';
@@ -842,7 +838,6 @@
             certDownloadBtn.style.display = 'none';
             chartCategoryArea.style.display = 'none';
             
-            // Ana menüyü göster
             aircraftSelector.style.display = 'block';
 
             mainTitle.innerText = "Uçuş Hattı ✈️";
@@ -851,7 +846,6 @@
 
             welcomeMsg.innerHTML = `Pilot: ${currentName} ${currentSurname} ${pilotEmoji}`;
 
-            // Uçak listesini oluştur
             const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
             const optionsDiv = document.getElementById('aircraft-options-container');
             optionsDiv.innerHTML = '';
@@ -1460,10 +1454,12 @@
         }
 
         // ============================================================
-        // 7. CHART KATEGORİ FONKSİYONLARI
+        // 7. CHART KATEGORİ FONKSİYONLARI (DÜZELTİLMİŞ SON HAL)
         // ============================================================
         function showChartCategory() {
-            if (allCharts.length === 0) {
+            console.log('Chart verileri:', allCharts);
+            
+            if (!allCharts || allCharts.length === 0) {
                 alert('⚠️ Henüz chart verisi bulunmuyor. Lütfen Google Sheets\'e "Charts" sayfası ekleyin.');
                 return;
             }
@@ -1474,6 +1470,15 @@
             chartTypeList.style.display = 'block';
 
             const types = [...new Set(allCharts.map(c => c.chartType))];
+            
+            if (types.length === 0) {
+                chartTypeList.innerHTML = `
+                    <div class="alert alert-warning">Henüz chart türü eklenmemiş.</div>
+                    <button class="btn btn-secondary btn-sm mt-2" onclick="closeChartCategory()">✕ Kapat</button>
+                `;
+                return;
+            }
+
             chartTypeList.innerHTML = `
                 <h6 class="text-center fw-bold">📋 Chart Türünü Seçiniz</h6>
                 <div class="d-grid gap-2">
@@ -1496,8 +1501,16 @@
             chartTypeList.style.display = 'none';
             chartListView.style.display = 'block';
 
+            if (charts.length === 0) {
+                chartListView.innerHTML = `
+                    <div class="alert alert-warning">Bu türde henüz chart bulunmuyor.</div>
+                    <button class="btn btn-secondary btn-sm mt-2" onclick="backToChartTypes()">← Geri</button>
+                `;
+                return;
+            }
+
             if (charts.length === 1) {
-                displayChart(charts[0]);
+                displayChart(charts[0].id);
                 return;
             }
 
@@ -1505,10 +1518,11 @@
                 <h6 class="text-center fw-bold">${type} Chart'ları</h6>
                 <div class="list-group">
                     ${charts.map(chart => `
-                        <div class="list-group-item chart-list-item d-flex justify-content-between align-items-center" onclick="displayChart('${chart.id}')">
+                        <div class="list-group-item chart-list-item d-flex justify-content-between align-items-center" 
+                             onclick="displayChart('${chart.id}')">
                             <div>
-                                <strong>${chart.chartTitle}</strong>
-                                <br><small class="text-muted">${chart.airportName} • ${chart.pins ? chart.pins.length : 0} pin</small>
+                                <strong>${chart.chartTitle || 'Başlıksız Chart'}</strong>
+                                <br><small class="text-muted">${chart.airportName || ''} • ${chart.pins ? chart.pins.length : 0} pin</small>
                             </div>
                             <span class="badge bg-primary">Görüntüle →</span>
                         </div>
@@ -1519,8 +1533,17 @@
         }
 
         function displayChart(chartId) {
+            console.log('Aranan chart ID:', chartId);
+            console.log('Tüm chartlar:', allCharts);
+            
             const chart = allCharts.find(c => c.id === chartId);
-            if (!chart) return;
+            if (!chart) {
+                console.error('Chart bulunamadı! ID:', chartId);
+                alert('Chart verisi bulunamadı. Lütfen Google Sheets\'i kontrol edin.');
+                return;
+            }
+
+            console.log('Bulunan chart:', chart);
 
             document.querySelectorAll('.chart-pin').forEach(p => p.remove());
 
@@ -1528,20 +1551,20 @@
             chartListView.style.display = 'none';
             chartTypeList.style.display = 'none';
 
-            chartViewerTitle.innerText = `${chart.airportName} - ${chart.chartTitle}`;
-            chartImage.src = chart.imageUrl;
+            chartViewerTitle.innerText = `${chart.airportName || ''} - ${chart.chartTitle || 'Chart'}`;
+            chartImage.src = chart.imageUrl || '';
             
             chartImage.onload = function() {
                 if (chart.pins && Array.isArray(chart.pins)) {
                     chart.pins.forEach(pinData => {
                         const pin = document.createElement('div');
                         pin.className = 'chart-pin';
-                        pin.style.left = pinData.x;
-                        pin.style.top = pinData.y;
-                        pin.title = pinData.note;
+                        pin.style.left = pinData.x || '0%';
+                        pin.style.top = pinData.y || '0%';
+                        pin.title = pinData.note || '';
                         pin.addEventListener('click', function(e) {
                             e.stopPropagation();
-                            alert(`📍 ${pinData.note}`);
+                            alert(`📍 ${pinData.note || 'Not yok'}`);
                         });
                         mapContainer.appendChild(pin);
                     });
