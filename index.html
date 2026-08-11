@@ -422,14 +422,22 @@
         }
         .custom-modal-btn:hover { background: var(--primary-light); }
 
-        /* ===== CHART KÜTÜPHANESİ STILLERİ ===== */
-        .chart-card {
-            transition: all 0.2s ease;
-            cursor: pointer;
+        /* ===== CHART KATEGORİ STILLERİ ===== */
+        .btn-chart-category {
+            background: #e8f0fe;
+            border: 2px solid #90cdf4;
+            color: #1a5a7a;
+            font-weight: 700;
+            text-align: center;
+            border-radius: 14px;
+            padding: 1.2rem 0.9rem;
+            transition: all 0.15s;
+            margin-top: 1.5rem;
         }
-        .chart-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        .btn-chart-category:hover {
+            background: #bee3f8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(50, 140, 193, 0.2);
         }
         #map-container {
             position: relative;
@@ -447,7 +455,6 @@
             user-select: none;
             -webkit-user-drag: none;
         }
-        /* Pin Tasarımı */
         .chart-pin {
             position: absolute;
             width: 24px;
@@ -481,21 +488,10 @@
         .chart-pin:active {
             transform: translate(-50%, -50%) rotate(-45deg) scale(0.9);
         }
-        #chart-library .btn-airport {
-            background: var(--accent-light);
-            border: 2px solid #99e9f2;
-            color: #0c8599;
-            font-weight: 600;
-            text-align: center;
-            border-radius: 14px;
-            padding: 1.5rem 0.9rem;
-            transition: all 0.15s;
-            height: 100%;
-        }
-        #chart-library .btn-airport:hover {
-            background: #c5f6fa;
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(50, 140, 193, 0.2);
+        #chart-viewer {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px dashed var(--gray-300);
         }
         .chart-type-btn {
             background: #fff9db;
@@ -511,6 +507,14 @@
             background: #fff3bf;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(240, 140, 0, 0.15);
+        }
+        .chart-list-item {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .chart-list-item:hover {
+            background: var(--gray-100);
+            transform: translateX(4px);
         }
     </style>
 </head>
@@ -530,9 +534,7 @@
         <!-- TOP BUTONLAR -->
         <div class="top-buttons">
             <button class="btn btn-secondary" onclick="backToMenu()">Ana Sayfa 🏠</button>
-            <button class="btn btn-primary" onclick="showQuizMenu()">📝 Sınav</button>
-            <button class="btn btn-success" id="chartLibraryBtn" onclick="showChartLibrary()">🗺️ Chart Kütüphanesi</button>
-            <button class="btn btn-outline-secondary" onclick="shareSystem()">Paylaş 🔗</button>
+            <button class="btn btn-success" onclick="shareSystem()">Paylaş 🔗</button>
             <button class="btn btn-danger" id="logout-btn" onclick="logout()" style="display: none;">Çıkış 🔓</button>
         </div>
 
@@ -568,10 +570,32 @@
             <button class="btn-login" onclick="saveUser()">Sınav Sistemine Giriş Yap</button>
         </div>
 
-        <!-- UÇAK SEÇİMİ (Sınav Menüsü) -->
+        <!-- UÇAK SEÇİMİ (Ana Menü) -->
         <div id="aircraft-selector" style="display: none;">
             <div id="welcome-msg" class="user-welcome text-center fw-bold mb-3"></div>
             <div class="d-grid gap-3" id="aircraft-options-container"></div>
+
+            <!-- CHART KÜTÜPHANESİ KATEGORİSİ (EN ALTA EKLENDİ) -->
+            <button class="btn btn-chart-category w-100" onclick="showChartCategory()">
+                <i class="bi bi-map-fill"></i> 🗺️ Chart Kütüphanesi
+            </button>
+
+            <!-- Chart Gösterim Alanları (Bu butona tıklanınca görünür) -->
+            <div id="chart-category-area" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px dashed var(--gray-300);">
+                <div id="chart-type-list" class="d-grid gap-2"></div>
+                <div id="chart-list-view" class="mt-3" style="display: none;"></div>
+                <div id="chart-viewer" style="display: none;">
+                    <h6 id="chart-viewer-title" class="text-center mb-2"></h6>
+                    <div id="map-container" class="position-relative">
+                        <img id="chartImage" src="" alt="Chart" style="max-width: 100%; height: auto; display: block;">
+                    </div>
+                    <div class="mt-2 d-flex gap-2">
+                        <button class="btn btn-secondary btn-sm" onclick="backToChartTypes()">← Chart Türlerine Dön</button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="closeChartCategory()">✕ Kapat</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="insight-badge" id="weakness-insight-box"></div>
             <div class="stats-panel mt-4" id="stats-panel" style="display: none;">
                 <div class="fw-bold">📊 Son 5 Test Performans Grafiğiniz (%)</div>
@@ -616,44 +640,6 @@
             <button class="btn btn-secondary w-100 mt-3" onclick="backToMenu()">Ana Menüye Dön</button>
         </div>
 
-        <!-- ============================================ -->
-        <!-- CHART KÜTÜPHANESİ BÖLÜMÜ -->
-        <!-- ============================================ -->
-        <div id="chart-library" style="display: none;">
-            <div id="chart-header" class="text-center mb-3">
-                <h3 id="chart-library-title">🗺️ Chart Kütüphanesi</h3>
-                <p id="chart-library-subtitle" class="text-muted">Bir havalimanı seçiniz</p>
-            </div>
-            
-            <!-- Havalimanları Listesi -->
-            <div id="airport-list" class="row g-3"></div>
-            
-            <!-- Chart Türleri Listesi (SID / VOR / ILS) -->
-            <div id="chart-type-list" class="d-grid gap-3 mt-3" style="display: none;"></div>
-            
-            <!-- Chart Listesi (Birden fazla chart varsa) -->
-            <div id="chart-list-view" class="mt-3" style="display: none;"></div>
-            
-            <!-- Chart Görüntüleyici -->
-            <div id="chart-viewer" style="display: none;">
-                <h5 id="chart-viewer-title" class="text-center mb-2"></h5>
-                <div id="map-container" class="position-relative">
-                    <img id="chartImage" src="" alt="Chart" style="max-width: 100%; height: auto; display: block;">
-                    <!-- Pinler buraya eklenecek -->
-                </div>
-                <div class="mt-3 d-flex gap-2">
-                    <button class="btn btn-secondary" onclick="backToChartList()">← Geri</button>
-                    <button class="btn btn-outline-primary" onclick="backToChartMenu()">← Chart Menüsü</button>
-                </div>
-            </div>
-            
-            <!-- Ana menüye dönüş butonu -->
-            <div class="mt-4">
-                <button class="btn btn-secondary w-100" onclick="backToMenu()">Ana Menüye Dön</button>
-            </div>
-        </div>
-        <!-- ===== CHART KÜTÜPHANESİ BİTİŞ ===== -->
-
     </div>
 
     <!-- FOOTER -->
@@ -680,7 +666,7 @@
 
     <script>
         // ============================================================
-        // 1. GOOGLE SHEETS API URL (TÜM VERİLERİ ÇEKEN)
+        // 1. GOOGLE SHEETS API URL
         // ============================================================
         const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwr8TECeTgLvNI_H2J9iXvSJxpvT0nPdXTTK3ZlHmTBZ7TC6Fzk0hxb3kzp3XjSAqZ1/exec";
 
@@ -754,37 +740,16 @@
         const logoutBtn = document.getElementById('logout-btn');
 
         // Chart DOM Elemanları
-        const chartLibrary = document.getElementById('chart-library');
-        const airportList = document.getElementById('airport-list');
+        const chartCategoryArea = document.getElementById('chart-category-area');
         const chartTypeList = document.getElementById('chart-type-list');
         const chartListView = document.getElementById('chart-list-view');
         const chartViewer = document.getElementById('chart-viewer');
         const chartImage = document.getElementById('chartImage');
         const mapContainer = document.getElementById('map-container');
         const chartViewerTitle = document.getElementById('chart-viewer-title');
-        const chartLibraryTitle = document.getElementById('chart-library-title');
-        const chartLibrarySubtitle = document.getElementById('chart-library-subtitle');
 
         // ============================================================
-        // 3. SES FONKSİYONU
-        // ============================================================
-        function playBeep(freq, type, duration) {
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {}
-        }
-
-        // ============================================================
-        // 4. SAYFA YÜKLENME - VERİLERİ ÇEK
+        // 3. SAYFA YÜKLENME - VERİLERİ ÇEK
         // ============================================================
         window.onload = async function() {
             mainTitle.innerText = "Uçuş Hattı ✈️";
@@ -795,13 +760,10 @@
                 const response = await fetch(GOOGLE_SHEETS_URL);
                 const data = await response.json();
                 
-                // Veriyi ikiye ayır: sorular ve chartlar
                 if (Array.isArray(data)) {
-                    // Eski sistem sadece soru dizisi döndürüyorsa
                     allQuestions = data;
                     allCharts = [];
                 } else {
-                    // Yeni sistem: { questions: [...], charts: [...] }
                     allQuestions = data.questions || [];
                     allCharts = data.charts || [];
                 }
@@ -830,7 +792,7 @@
         };
 
         // ============================================================
-        // 5. GİRİŞ / MENÜ FONKSİYONLARI (MEVCUT)
+        // 4. GİRİŞ / MENÜ FONKSİYONLARI (MEVCUT, DEĞİŞMEDİ)
         // ============================================================
         function openTrollModal(title, text) {
             trollModalTitle.innerText = title;
@@ -851,7 +813,7 @@
                 navigator.share(shareData).catch(err => console.log('Paylaşım hatası:', err));
             } else {
                 navigator.clipboard.writeText(window.location.href).then(() => {
-                    alert('Sistem linki panoya kopyalandı! Arkadaşlarınızla paylaşabilirsiniz.');
+                    alert('Sistem linki panoya kopyalandı!');
                 }).catch(err => console.error('Kopyalanamadı:', err));
             }
         }
@@ -863,7 +825,6 @@
             subcategorySelector.style.display = 'none';
             quizBody.style.display = 'none';
             resultBody.style.display = 'none';
-            chartLibrary.style.display = 'none';
             logoutBtn.style.display = 'none';
         }
 
@@ -896,8 +857,12 @@
             progressBarContainer.style.display = 'none';
             reviewListBox.style.display = 'none';
             certDownloadBtn.style.display = 'none';
-            chartLibrary.style.display = 'none';
             aircraftSelector.style.display = 'block';
+            
+            // Chart alanını gizle
+            chartCategoryArea.style.display = 'none';
+            chartViewer.style.display = 'none';
+            chartListView.style.display = 'none';
 
             mainTitle.innerText = "Uçuş Hattı ✈️";
             questionCounter.innerText = "Konu Seçiniz";
@@ -928,22 +893,18 @@
             updateAdminTable();
         }
 
-        function showQuizMenu() {
-            showMainMenu();
-        }
-
         function backToMenu() {
             showMainMenu();
         }
 
         // ============================================================
-        // 6. SINAV FONKSİYONLARI (MEVCUT, DEĞİŞMEDİ)
+        // 5. SINAV FONKSİYONLARI (MEVCUT, DEĞİŞMEDİ)
         // ============================================================
         function showSubCategories(aircraftName) {
             selectedAircraft = aircraftName;
             aircraftSelector.style.display = 'none';
             subcategorySelector.style.display = 'block';
-            chartLibrary.style.display = 'none';
+            chartCategoryArea.style.display = 'none';
 
             const welcomeTitle = document.getElementById('subcategory-welcome-title');
             welcomeTitle.innerText = `${selectedAircraft} - Sınav Bölümü Seçiniz`;
@@ -986,7 +947,7 @@
         function backToAircrafts() {
             subcategorySelector.style.display = 'none';
             aircraftSelector.style.display = 'block';
-            chartLibrary.style.display = 'none';
+            chartCategoryArea.style.display = 'none';
             questionCounter.innerText = "Konu Seçiniz";
             const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
             const optionsDiv = document.getElementById('aircraft-options-container');
@@ -1040,7 +1001,7 @@
             consecutiveWrong = 0;
             subcategorySelector.style.display = 'none';
             adminPanel.style.display = 'none';
-            chartLibrary.style.display = 'none';
+            chartCategoryArea.style.display = 'none';
             signatureClickCount = 0;
             quizBody.style.display = 'block';
             progressBarContainer.style.display = 'block';
@@ -1523,124 +1484,77 @@
         }
 
         // ============================================================
-        // 7. CHART KÜTÜPHANESİ FONKSİYONLARI (YENİ)
+        // 6. CHART KATEGORİ FONKSİYONLARI (YENİ)
         // ============================================================
-        function showChartLibrary() {
-            // Tüm ekranları gizle
-            document.querySelectorAll('#login-screen, #aircraft-selector, #subcategory-selector, #quiz-body, #result-body')
-                .forEach(el => el.style.display = 'none');
-            
-            chartLibrary.style.display = 'block';
-            mainTitle.innerText = '🗺️ Chart Kütüphanesi';
-            questionCounter.innerText = allCharts.length > 0 ? `${allCharts.length} chart mevcut` : 'Henüz chart yüklenmemiş';
-            
-            // Chart görüntüleyiciyi sıfırla
-            chartViewer.style.display = 'none';
-            chartTypeList.style.display = 'none';
-            chartListView.style.display = 'none';
-            
-            showAirports();
-        }
-
-        function showAirports() {
-            const airports = [...new Set(allCharts.map(c => c.airportId))];
-            airportList.innerHTML = '';
-            chartLibrarySubtitle.innerText = 'Bir havalimanı seçiniz';
-
-            if (airports.length === 0) {
-                airportList.innerHTML = `
-                    <div class="col-12">
-                        <div class="alert alert-warning text-center">
-                            <i class="bi bi-info-circle"></i> Henüz chart verisi bulunmuyor. Lütfen Google Sheets'e "Charts" sayfası ekleyin.
-                        </div>
-                    </div>
-                `;
+        function showChartCategory() {
+            // Eğer chart verisi yoksa uyarı göster
+            if (allCharts.length === 0) {
+                alert('⚠️ Henüz chart verisi bulunmuyor. Lütfen Google Sheets\'e "Charts" sayfası ekleyin.');
                 return;
             }
 
-            airports.forEach(id => {
-                const airport = allCharts.find(c => c.airportId === id);
-                const chartCount = allCharts.filter(c => c.airportId === id).length;
-                const col = document.createElement('div');
-                col.className = 'col-6 col-md-4 col-lg-3';
-                col.innerHTML = `
-                    <div class="btn-airport w-100" onclick="showChartTypes('${id}')">
-                        <div style="font-size: 2rem;">✈️</div>
-                        <div class="fw-bold mt-2">${airport.airportName}</div>
-                        <small class="text-muted">${chartCount} chart</small>
-                    </div>
-                `;
-                airportList.appendChild(col);
-            });
-        }
-
-        function showChartTypes(airportId) {
-            currentAirportId = airportId;
-            const charts = allCharts.filter(c => c.airportId === airportId);
-            const types = [...new Set(charts.map(c => c.chartType))];
-
-            airportList.style.display = 'none';
+            // Sadece chart alanını göster, diğer her şey aynı kalsın
+            chartCategoryArea.style.display = 'block';
+            chartViewer.style.display = 'none';
+            chartListView.style.display = 'none';
             chartTypeList.style.display = 'block';
+
+            // Chart türlerini listele (SID, VOR, ILS, STAR vb.)
+            const types = [...new Set(allCharts.map(c => c.chartType))];
             chartTypeList.innerHTML = `
-                <h5 class="text-center">${charts[0]?.airportName || 'Havalimanı'} - Chart Türleri</h5>
+                <h6 class="text-center fw-bold">📋 Chart Türünü Seçiniz</h6>
                 <div class="d-grid gap-2">
                     ${types.map(type => `
-                        <button class="btn chart-type-btn" onclick="showChartList('${airportId}', '${type}')">
-                            ${type} (${charts.filter(c => c.chartType === type).length})
+                        <button class="btn chart-type-btn" onclick="showChartListByType('${type}')">
+                            ${type}
+                            <span class="badge bg-secondary">${allCharts.filter(c => c.chartType === type).length}</span>
                         </button>
                     `).join('')}
-                    <button class="btn btn-secondary mt-2" onclick="backToAirports()">← Havalimanlarına Dön</button>
+                    <button class="btn btn-secondary btn-sm mt-2" onclick="closeChartCategory()">✕ Kapat</button>
                 </div>
             `;
-            chartListView.style.display = 'none';
-            chartViewer.style.display = 'none';
         }
 
-        function showChartList(airportId, type) {
-            currentChartType = type;
-            const charts = allCharts.filter(c => c.airportId === airportId && c.chartType === type);
+        function showChartListByType(type) {
+            const charts = allCharts.filter(c => c.chartType === type);
             currentChartList = charts;
+            currentChartType = type;
 
             chartTypeList.style.display = 'none';
             chartListView.style.display = 'block';
 
             if (charts.length === 1) {
-                // Tek chart varsa direkt göster
                 displayChart(charts[0]);
                 return;
             }
 
             chartListView.innerHTML = `
-                <h5 class="text-center">${type} Chart'ları</h5>
-                <div class="d-grid gap-2">
+                <h6 class="text-center fw-bold">${type} Chart'ları</h6>
+                <div class="list-group">
                     ${charts.map(chart => `
-                        <div class="card chart-card" onclick="displayChart('${chart.id}')">
-                            <div class="card-body d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="card-title mb-0">${chart.chartTitle}</h6>
-                                    <small class="text-muted">${chart.pins ? chart.pins.length : 0} pin</small>
-                                </div>
-                                <span class="badge bg-primary">Görüntüle →</span>
+                        <div class="list-group-item chart-list-item d-flex justify-content-between align-items-center" onclick="displayChart('${chart.id}')">
+                            <div>
+                                <strong>${chart.chartTitle}</strong>
+                                <br><small class="text-muted">${chart.airportName} • ${chart.pins ? chart.pins.length : 0} pin</small>
                             </div>
+                            <span class="badge bg-primary">Görüntüle →</span>
                         </div>
                     `).join('')}
-                    <button class="btn btn-secondary mt-2" onclick="showChartTypes('${airportId}')">← Chart Türlerine Dön</button>
                 </div>
+                <button class="btn btn-secondary btn-sm mt-3" onclick="backToChartTypes()">← Chart Türlerine Dön</button>
             `;
-            chartViewer.style.display = 'none';
         }
 
         function displayChart(chartId) {
             const chart = allCharts.find(c => c.id === chartId);
             if (!chart) return;
 
-            // Pinleri temizle
+            // Eski pinleri temizle
             document.querySelectorAll('.chart-pin').forEach(p => p.remove());
 
             chartViewer.style.display = 'block';
             chartListView.style.display = 'none';
             chartTypeList.style.display = 'none';
-            airportList.style.display = 'none';
 
             chartViewerTitle.innerText = `${chart.airportName} - ${chart.chartTitle}`;
             chartImage.src = chart.imageUrl;
@@ -1668,31 +1582,17 @@
             };
         }
 
-        function backToChartList() {
+        function backToChartTypes() {
             chartViewer.style.display = 'none';
-            if (currentChartList && currentChartList.length > 0) {
-                showChartList(currentAirportId, currentChartType);
-            } else {
-                showChartTypes(currentAirportId);
-            }
-        }
-
-        function backToChartMenu() {
-            chartViewer.style.display = 'none';
-            if (currentAirportId) {
-                showChartTypes(currentAirportId);
-            } else {
-                backToAirports();
-            }
-        }
-
-        function backToAirports() {
-            airportList.style.display = 'flex';
-            chartTypeList.style.display = 'none';
             chartListView.style.display = 'none';
+            chartTypeList.style.display = 'block';
+        }
+
+        function closeChartCategory() {
+            chartCategoryArea.style.display = 'none';
             chartViewer.style.display = 'none';
-            chartLibrarySubtitle.innerText = 'Bir havalimanı seçiniz';
-            showAirports();
+            chartListView.style.display = 'none';
+            chartTypeList.style.display = 'block';
         }
     </script>
 </body>
