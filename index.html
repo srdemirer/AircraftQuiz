@@ -46,7 +46,7 @@
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             padding: 2rem 1.5rem;
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
             transition: all 0.2s ease;
             position: relative;
@@ -378,7 +378,7 @@
             border-radius: var(--radius);
             padding: 1.2rem;
             margin-top: 1.5rem;
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
             box-shadow: var(--shadow);
             display: none;
@@ -395,7 +395,7 @@
         }
         .admin-table th { background: var(--gray-100); }
 
-        /* Modal (troll) aynı, ama bootstrap modal kullanabiliriz, ama mevcut custom modal korunsun */
+        /* Modal (troll) */
         .custom-modal-overlay {
             position: fixed; top:0; left:0; width:100%; height:100%;
             background: rgba(0,0,0,0.6);
@@ -421,6 +421,97 @@
             transition: background 0.2s;
         }
         .custom-modal-btn:hover { background: var(--primary-light); }
+
+        /* ===== CHART KÜTÜPHANESİ STILLERİ ===== */
+        .chart-card {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .chart-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+        #map-container {
+            position: relative;
+            display: inline-block;
+            background: #dee2e6;
+            min-height: 300px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        #map-container img {
+            display: block;
+            width: 100%;
+            height: auto;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        /* Pin Tasarımı */
+        .chart-pin {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-color: #dc3545;
+            border: 3px solid white;
+            border-radius: 50% 50% 50% 0;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10;
+        }
+        .chart-pin::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background-color: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .chart-pin:hover {
+            transform: translate(-50%, -50%) rotate(-45deg) scale(1.25);
+            background-color: #ff6b6b;
+            box-shadow: 0 0 0 6px rgba(220, 53, 69, 0.3);
+            z-index: 20;
+        }
+        .chart-pin:active {
+            transform: translate(-50%, -50%) rotate(-45deg) scale(0.9);
+        }
+        #chart-library .btn-airport {
+            background: var(--accent-light);
+            border: 2px solid #99e9f2;
+            color: #0c8599;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 14px;
+            padding: 1.5rem 0.9rem;
+            transition: all 0.15s;
+            height: 100%;
+        }
+        #chart-library .btn-airport:hover {
+            background: #c5f6fa;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(50, 140, 193, 0.2);
+        }
+        .chart-type-btn {
+            background: #fff9db;
+            border: 2px solid #ffe066;
+            color: #f08c00;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 14px;
+            padding: 1rem;
+            transition: all 0.15s;
+        }
+        .chart-type-btn:hover {
+            background: #fff3bf;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(240, 140, 0, 0.15);
+        }
     </style>
 </head>
 <body>
@@ -439,7 +530,9 @@
         <!-- TOP BUTONLAR -->
         <div class="top-buttons">
             <button class="btn btn-secondary" onclick="backToMenu()">Ana Sayfa 🏠</button>
-            <button class="btn btn-success" onclick="shareSystem()">Paylaş 🔗</button>
+            <button class="btn btn-primary" onclick="showQuizMenu()">📝 Sınav</button>
+            <button class="btn btn-success" id="chartLibraryBtn" onclick="showChartLibrary()">🗺️ Chart Kütüphanesi</button>
+            <button class="btn btn-outline-secondary" onclick="shareSystem()">Paylaş 🔗</button>
             <button class="btn btn-danger" id="logout-btn" onclick="logout()" style="display: none;">Çıkış 🔓</button>
         </div>
 
@@ -475,20 +568,18 @@
             <button class="btn-login" onclick="saveUser()">Sınav Sistemine Giriş Yap</button>
         </div>
 
-        <!-- UÇAK SEÇİMİ -->
+        <!-- UÇAK SEÇİMİ (Sınav Menüsü) -->
         <div id="aircraft-selector" style="display: none;">
             <div id="welcome-msg" class="user-welcome text-center fw-bold mb-3"></div>
             <div class="d-grid gap-3" id="aircraft-options-container"></div>
-
             <div class="insight-badge" id="weakness-insight-box"></div>
-
             <div class="stats-panel mt-4" id="stats-panel" style="display: none;">
                 <div class="fw-bold">📊 Son 5 Test Performans Grafiğiniz (%)</div>
                 <canvas id="stats-canvas" height="150"></canvas>
             </div>
         </div>
 
-        <!-- ALT KATEGORİ SEÇİMİ -->
+        <!-- ALT KATEGORİ SEÇİMİ (Sınav) -->
         <div id="subcategory-selector" style="display: none;">
             <div id="subcategory-welcome-title" class="text-center fw-bold mb-3" style="color: var(--primary);">Sınav Bölümü Seçiniz</div>
             <div class="d-grid gap-3" id="subcategory-buttons-container"></div>
@@ -500,16 +591,13 @@
             <div id="options-area">
                 <div class="d-grid gap-3" id="options-container"></div>
             </div>
-
             <div class="explanation-box" id="explanation-box"></div>
-
             <div class="nav-btn-group">
                 <button class="btn btn-prev" id="prev-btn" onclick="prevQuestion()">Önceki</button>
                 <button class="btn btn-pas" id="pas-btn" onclick="pasQuestion()">Pas</button>
                 <button class="btn btn-flag" id="flag-btn" onclick="flagQuestion()">Pin 🚩</button>
                 <button class="btn btn-next" id="next-btn" onclick="handleNextOrFinish()">Sonraki</button>
             </div>
-
             <div class="matrix-grid" id="matrix-container"></div>
         </div>
 
@@ -518,18 +606,54 @@
             <div class="score-title fw-bold fs-3">Sınav Raporu 📋</div>
             <div class="score-number"><span id="score">0</span> / <span id="total">0</span></div>
             <div id="user-score-msg" class="fw-bold mb-3"></div>
-
             <div style="margin: 1.5rem 0;">
                 <canvas id="pie-canvas" width="300" height="200" style="max-width:300px; margin:0 auto;"></canvas>
             </div>
-
             <div class="category-breakdown" id="category-breakdown-box"></div>
-
             <button class="btn btn-primary w-100 mt-3" id="cert-download-btn" onclick="generateCertificate()" style="display: none;">🎖️ Başarı Brövesi & Sertifikasını İndir</button>
             <button class="btn btn-warning w-100 mt-2" id="review-toggle-btn" onclick="toggleReviewList()">Hataları İncele 🔍</button>
             <div class="review-list" id="review-list-box" style="display: none;"></div>
             <button class="btn btn-secondary w-100 mt-3" onclick="backToMenu()">Ana Menüye Dön</button>
         </div>
+
+        <!-- ============================================ -->
+        <!-- CHART KÜTÜPHANESİ BÖLÜMÜ -->
+        <!-- ============================================ -->
+        <div id="chart-library" style="display: none;">
+            <div id="chart-header" class="text-center mb-3">
+                <h3 id="chart-library-title">🗺️ Chart Kütüphanesi</h3>
+                <p id="chart-library-subtitle" class="text-muted">Bir havalimanı seçiniz</p>
+            </div>
+            
+            <!-- Havalimanları Listesi -->
+            <div id="airport-list" class="row g-3"></div>
+            
+            <!-- Chart Türleri Listesi (SID / VOR / ILS) -->
+            <div id="chart-type-list" class="d-grid gap-3 mt-3" style="display: none;"></div>
+            
+            <!-- Chart Listesi (Birden fazla chart varsa) -->
+            <div id="chart-list-view" class="mt-3" style="display: none;"></div>
+            
+            <!-- Chart Görüntüleyici -->
+            <div id="chart-viewer" style="display: none;">
+                <h5 id="chart-viewer-title" class="text-center mb-2"></h5>
+                <div id="map-container" class="position-relative">
+                    <img id="chartImage" src="" alt="Chart" style="max-width: 100%; height: auto; display: block;">
+                    <!-- Pinler buraya eklenecek -->
+                </div>
+                <div class="mt-3 d-flex gap-2">
+                    <button class="btn btn-secondary" onclick="backToChartList()">← Geri</button>
+                    <button class="btn btn-outline-primary" onclick="backToChartMenu()">← Chart Menüsü</button>
+                </div>
+            </div>
+            
+            <!-- Ana menüye dönüş butonu -->
+            <div class="mt-4">
+                <button class="btn btn-secondary w-100" onclick="backToMenu()">Ana Menüye Dön</button>
+            </div>
+        </div>
+        <!-- ===== CHART KÜTÜPHANESİ BİTİŞ ===== -->
+
     </div>
 
     <!-- FOOTER -->
@@ -551,28 +675,38 @@
         </table>
     </div>
 
-    <!-- Bootstrap JS (isteğe bağlı, bazı bileşenler için) -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // ===== ORİJİNAL JAVASCRIPT (güncellenmiş HTML ile uyumlu) =====
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbycVvWk13aBgh6a--r3iBKq4ykoGxfktmCrrGO7_LKcp03Dff4qyEXdjmMDuen8nxwz/exec";
+        // ============================================================
+        // 1. GOOGLE SHEETS API URL (TÜM VERİLERİ ÇEKEN)
+        // ============================================================
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwr8TECeTgLvNI_H2J9iXvSJxpvT0nPdXTTK3ZlHmTBZ7TC6Fzk0hxb3kzp3XjSAqZ1/exec";
 
+        // ============================================================
+        // 2. DEĞİŞKENLER
+        // ============================================================
         let allQuestions = [];
+        let allCharts = [];
         let activeQuestions = [];
         let currentQuestionIndex = 0;
         let selectedCategory = "";
         let selectedAircraft = "";
-
         let currentName = "";
         let currentSurname = "";
         let currentGender = "";
         let pilotEmoji = "👨‍✈️";
         let signatureClickCount = 0;
         let questionStates = [];
-
         let consecutiveCorrect = 0;
         let consecutiveWrong = 0;
+
+        // Chart değişkenleri
+        let currentAirportId = null;
+        let currentChartType = null;
+        let currentChartList = [];
+
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         function playBeep(freq, type, duration) {
@@ -590,6 +724,7 @@
             } catch(e) {}
         }
 
+        // DOM Elemanları
         const loginScreen = document.getElementById('login-screen');
         const aircraftSelector = document.getElementById('aircraft-selector');
         const subcategorySelector = document.getElementById('subcategory-selector');
@@ -611,7 +746,6 @@
         const reviewListBox = document.getElementById('review-list-box');
         const weaknessInsightBox = document.getElementById('weakness-insight-box');
         const certDownloadBtn = document.getElementById('cert-download-btn');
-
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         const trollModalOverlay = document.getElementById('troll-modal-overlay');
@@ -619,6 +753,39 @@
         const trollModalText = document.getElementById('troll-modal-text');
         const logoutBtn = document.getElementById('logout-btn');
 
+        // Chart DOM Elemanları
+        const chartLibrary = document.getElementById('chart-library');
+        const airportList = document.getElementById('airport-list');
+        const chartTypeList = document.getElementById('chart-type-list');
+        const chartListView = document.getElementById('chart-list-view');
+        const chartViewer = document.getElementById('chart-viewer');
+        const chartImage = document.getElementById('chartImage');
+        const mapContainer = document.getElementById('map-container');
+        const chartViewerTitle = document.getElementById('chart-viewer-title');
+        const chartLibraryTitle = document.getElementById('chart-library-title');
+        const chartLibrarySubtitle = document.getElementById('chart-library-subtitle');
+
+        // ============================================================
+        // 3. SES FONKSİYONU
+        // ============================================================
+        function playBeep(freq, type, duration) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        // ============================================================
+        // 4. SAYFA YÜKLENME - VERİLERİ ÇEK
+        // ============================================================
         window.onload = async function() {
             mainTitle.innerText = "Uçuş Hattı ✈️";
             questionCounter.innerText = "Veritabanı Yükleniyor... Lütfen Bekleyin ⏳";
@@ -626,7 +793,21 @@
 
             try {
                 const response = await fetch(GOOGLE_SHEETS_URL);
-                allQuestions = await response.json();
+                const data = await response.json();
+                
+                // Veriyi ikiye ayır: sorular ve chartlar
+                if (Array.isArray(data)) {
+                    // Eski sistem sadece soru dizisi döndürüyorsa
+                    allQuestions = data;
+                    allCharts = [];
+                } else {
+                    // Yeni sistem: { questions: [...], charts: [...] }
+                    allQuestions = data.questions || [];
+                    allCharts = data.charts || [];
+                }
+                
+                console.log('📚 Soru sayısı:', allQuestions.length);
+                console.log('🗺️ Chart sayısı:', allCharts.length);
                 questionCounter.innerText = "Veritabanı Hazır!";
             } catch (error) {
                 console.error("Veri çekme hatası:", error);
@@ -648,6 +829,9 @@
             }
         };
 
+        // ============================================================
+        // 5. GİRİŞ / MENÜ FONKSİYONLARI (MEVCUT)
+        // ============================================================
         function openTrollModal(title, text) {
             trollModalTitle.innerText = title;
             trollModalText.innerText = text;
@@ -656,28 +840,33 @@
         function closeTrollModal() {
             trollModalOverlay.classList.remove('show');
         }
+
         function shareSystem() {
             const shareData = {
                 title: 'Uçuş Hattı',
-                text: 'Pilotlar için özel geliştirilmiş Uçuş Hattı sınav sistemini incele ve kendini test et!',
+                text: 'Pilotlar için özel geliştirilmiş Uçuş Hattı sınav ve chart sistemini incele!',
                 url: window.location.href
             };
             if (navigator.share) {
                 navigator.share(shareData).catch(err => console.log('Paylaşım hatası:', err));
             } else {
                 navigator.clipboard.writeText(window.location.href).then(() => {
-                    alert('Sınav merkezi linki panoya kopyalandı! Arkadaşlarınızla paylaşabilirsiniz.');
+                    alert('Sistem linki panoya kopyalandı! Arkadaşlarınızla paylaşabilirsiniz.');
                 }).catch(err => console.error('Kopyalanamadı:', err));
             }
         }
+
         function showLoginScreen() {
             questionCounter.innerText = "Kullanıcı Kaydı Gerekli";
             loginScreen.style.display = 'block';
             aircraftSelector.style.display = 'none';
             subcategorySelector.style.display = 'none';
             quizBody.style.display = 'none';
+            resultBody.style.display = 'none';
+            chartLibrary.style.display = 'none';
             logoutBtn.style.display = 'none';
         }
+
         function saveUser() {
             const nameInput = document.getElementById('username-input').value.trim();
             const surnameInput = document.getElementById('usersurname-input').value.trim();
@@ -698,6 +887,7 @@
             logoutBtn.style.display = 'inline-block';
             showMainMenu();
         }
+
         function showMainMenu() {
             loginScreen.style.display = 'none';
             quizBody.style.display = 'none';
@@ -706,13 +896,14 @@
             progressBarContainer.style.display = 'none';
             reviewListBox.style.display = 'none';
             certDownloadBtn.style.display = 'none';
+            chartLibrary.style.display = 'none';
+            aircraftSelector.style.display = 'block';
 
             mainTitle.innerText = "Uçuş Hattı ✈️";
             questionCounter.innerText = "Konu Seçiniz";
             questionCounter.style.display = 'block';
 
             welcomeMsg.innerHTML = `Pilot: ${currentName} ${currentSurname} ${pilotEmoji}`;
-            aircraftSelector.style.display = 'block';
 
             const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
             const optionsDiv = document.getElementById('aircraft-options-container');
@@ -737,10 +928,22 @@
             updateAdminTable();
         }
 
+        function showQuizMenu() {
+            showMainMenu();
+        }
+
+        function backToMenu() {
+            showMainMenu();
+        }
+
+        // ============================================================
+        // 6. SINAV FONKSİYONLARI (MEVCUT, DEĞİŞMEDİ)
+        // ============================================================
         function showSubCategories(aircraftName) {
             selectedAircraft = aircraftName;
             aircraftSelector.style.display = 'none';
             subcategorySelector.style.display = 'block';
+            chartLibrary.style.display = 'none';
 
             const welcomeTitle = document.getElementById('subcategory-welcome-title');
             welcomeTitle.innerText = `${selectedAircraft} - Sınav Bölümü Seçiniz`;
@@ -783,6 +986,7 @@
         function backToAircrafts() {
             subcategorySelector.style.display = 'none';
             aircraftSelector.style.display = 'block';
+            chartLibrary.style.display = 'none';
             questionCounter.innerText = "Konu Seçiniz";
             const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
             const optionsDiv = document.getElementById('aircraft-options-container');
@@ -803,7 +1007,6 @@
                 weaknessInsightBox.style.display = 'none';
                 return;
             }
-
             const errors = JSON.parse(localStorage.getItem('cat_errors')) || {};
             let worstCategory = "";
             let maxErrors = 0;
@@ -832,12 +1035,12 @@
             }
 
             questionStates = activeQuestions.map(() => ({ status: 'unanswered', userA: '' }));
-
             currentQuestionIndex = 0;
             consecutiveCorrect = 0;
             consecutiveWrong = 0;
             subcategorySelector.style.display = 'none';
             adminPanel.style.display = 'none';
+            chartLibrary.style.display = 'none';
             signatureClickCount = 0;
             quizBody.style.display = 'block';
             progressBarContainer.style.display = 'block';
@@ -855,6 +1058,7 @@
                 matrixContainer.appendChild(box);
             });
         }
+
         function updateMatrixUI() {
             const boxes = matrixContainer.querySelectorAll('.matrix-box');
             boxes.forEach((box, idx) => {
@@ -866,6 +1070,7 @@
                 else if (questionStates[idx].status === 'flagged') box.classList.add('m-flag');
             });
         }
+
         function jumpToQuestion(idx) {
             currentQuestionIndex = idx;
             loadQuestion();
@@ -901,11 +1106,12 @@
                 }
                 optionsContainer.appendChild(button);
             });
+
             if(state.status !== 'unanswered' && state.status !== 'flagged') {
                 showExplanationStatic(state.status === 'correct', currentQuestion.cevap, currentQuestion.aciklama);
             }
-            prevBtn.disabled = (currentQuestionIndex === 0);
 
+            prevBtn.disabled = (currentQuestionIndex === 0);
             if (currentQuestionIndex === activeQuestions.length - 1) {
                 nextBtn.innerText = "Sınavı Bitir";
                 nextBtn.className = 'btn btn-finish';
@@ -923,23 +1129,19 @@
 
             const buttons = optionsContainer.querySelectorAll('.btn-option');
             buttons.forEach(btn => btn.disabled = true);
+
             if (selectedOption === correctAnswer) {
                 state.status = 'correct';
                 selectedBtn.classList.add('correct');
                 playBeep(1200, 'sine', 0.15);
-
                 consecutiveWrong = 0;
                 consecutiveCorrect++;
-
                 if (consecutiveCorrect === 20) {
                     openTrollModal("😎 KAPTAN MODU AKTİF 😎", "20 Peşpeşe Doğru! Kaptan Pilot gibi uçuyorsun! Motor sıcaklığı stabil, rüzgar tam karşıdan. Şov yapma, emniyetle devam et! 😎");
                 }
-
                 showExplanationStatic(true, correctAnswer, aciklama);
                 updateMatrixUI();
-                setTimeout(() => {
-                    handleNextOrFinish();
-                }, 1000);
+                setTimeout(() => { handleNextOrFinish(); }, 1000);
             } else {
                 state.status = 'wrong';
                 selectedBtn.classList.add('wrong');
@@ -949,10 +1151,8 @@
                 });
                 playBeep(250, 'square', 0.3);
                 logCategoryError(currentQuestion.cat);
-
                 consecutiveCorrect = 0;
                 consecutiveWrong++;
-
                 if (consecutiveWrong === 2) {
                     openTrollModal("⚠️ KOKPİT İKAZI ⚠️", "Arka Arkaya 2 Yanlış! Sanırım Stall'a giriyorsun kaptan? ✈️");
                 } else if (consecutiveWrong === 3) {
@@ -974,22 +1174,26 @@
             updateMatrixUI();
             handleNextOrFinish();
         }
+
         function logCategoryError(category) {
             let errors = JSON.parse(localStorage.getItem('cat_errors')) || {};
             errors[category] = (errors[category] || 0) + 1;
             localStorage.setItem('cat_errors', JSON.stringify(errors));
         }
+
         function showExplanationStatic(isCorrect, rightAnswer, text) {
             explanationBox.innerHTML = `<strong>${isCorrect ? 'Doğru! ✔️' : 'Yanlış! ❌'}</strong> Doğru Cevap: ${rightAnswer}<br>${text}`;
             explanationBox.style.display = 'block';
             explanationBox.classList.add('fade-enter');
         }
+
         function prevQuestion() {
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
                 loadQuestion();
             }
         }
+
         function pasQuestion() {
             let state = questionStates[currentQuestionIndex];
             if(state.status === 'unanswered' || state.status === 'flagged') {
@@ -1003,16 +1207,7 @@
 
         function sendDataToCloud(name, surname, aircraft, category, score, date) {
             if(!GOOGLE_SHEETS_URL) return;
-
-            const payload = {
-                name: name,
-                surname: surname,
-                aircraft: aircraft,
-                category: category,
-                score: score,
-                date: date
-            };
-
+            const payload = { name, surname, aircraft, category, score, date };
             fetch(GOOGLE_SHEETS_URL, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -1049,7 +1244,6 @@
             else if (selectedAircraft === 'Diamond DA42 NG') acLabel = 'DA42';
 
             saveHistory(`${acLabel}-${selectedCategory.substring(0,5).toUpperCase()}`, percentage);
-
             sendDataToCloud(currentName, currentSurname, selectedAircraft, selectedCategory, percentage, testDate);
 
             resultBody.style.display = 'block';
@@ -1063,9 +1257,7 @@
 
             calculateCategoryMetrics();
             buildReviewList();
-            setTimeout(() => {
-                renderPieChart(correctCount, wrongCount, pasCount);
-            }, 150);
+            setTimeout(() => { renderPieChart(correctCount, wrongCount, pasCount); }, 150);
         }
 
         function calculateCategoryMetrics() {
@@ -1088,6 +1280,7 @@
             }
             categoryBreakdownBox.innerHTML = html;
         }
+
         function buildReviewList() {
             reviewListBox.innerHTML = '';
             let wrongQuestions = activeQuestions.filter((_, idx) => questionStates[idx].status === 'wrong');
@@ -1109,6 +1302,7 @@
                 }
             });
         }
+
         function toggleReviewList() {
             if (reviewListBox.style.display === 'none') {
                 reviewListBox.style.display = 'block';
@@ -1118,6 +1312,7 @@
                 document.getElementById('review-toggle-btn').innerText = "Hataları İncele 🔍";
             }
         }
+
         function renderPieChart(correct, wrong, pas) {
             const canvas = document.getElementById('pie-canvas');
             const ctx = canvas.getContext('2d');
@@ -1127,10 +1322,7 @@
             const data = [correct, wrong, pas];
             const colors = ['#48bb78', '#f56565', '#a0aec0'];
             const labels = ['Doğru', 'Yanlış', 'Boş/Pas/Flag'];
-            let centerX = 100;
-            let centerY = 100;
-            let radius = 75;
-            let startAngle = 0;
+            let centerX = 100, centerY = 100, radius = 75, startAngle = 0;
             for (let i = 0; i < data.length; i++) {
                 if(data[i] === 0) continue;
                 let sliceAngle = (data[i] / total) * 2 * Math.PI;
@@ -1143,8 +1335,7 @@
                 startAngle += sliceAngle;
             }
             ctx.font = '12px Arial';
-            let legendX = 200;
-            let legendY = 50;
+            let legendX = 200, legendY = 50;
             for (let i = 0; i < data.length; i++) {
                 ctx.fillStyle = colors[i];
                 ctx.fillRect(legendX, legendY + (i * 25), 15, 15);
@@ -1152,7 +1343,7 @@
                 ctx.fillText(`${labels[i]}: ${data[i]}`, legendX + 22, legendY + 12 + (i * 25));
             }
         }
-        function backToMenu() { showMainMenu(); }
+
         function saveHistory(acLabel, pct) {
             let history = JSON.parse(localStorage.getItem('quiz_history')) || [];
             const newRecord = {
@@ -1164,6 +1355,7 @@
             history.push(newRecord);
             localStorage.setItem('quiz_history', JSON.stringify(history));
         }
+
         function handleSignatureClick() {
             signatureClickCount++;
             if (signatureClickCount === 3) {
@@ -1177,6 +1369,7 @@
                 signatureClickCount = 0;
             }
         }
+
         function updateAdminTable() {
             const history = JSON.parse(localStorage.getItem('quiz_history')) || [];
             adminTableBody.innerHTML = '';
@@ -1195,6 +1388,7 @@
                 adminTableBody.appendChild(row);
             });
         }
+
         function clearAdminLogs() {
             if(confirm("Tüm kullanıcı sınav geçmişini silmek istediğinize emin misiniz?")) {
                 localStorage.removeItem('quiz_history');
@@ -1203,6 +1397,7 @@
                 drawChart();
             }
         }
+
         function drawChart() {
             const history = JSON.parse(localStorage.getItem('quiz_history')) || [];
             const canvas = document.getElementById('stats-canvas');
@@ -1225,6 +1420,7 @@
             ctx.lineTo(padding, canvas.height - padding);
             ctx.lineTo(canvas.width - padding, canvas.height - padding);
             ctx.stroke();
+
             const points = [];
             const displayHistory = history.slice(-5);
             const stepX = displayHistory.length > 1 ? chartWidth / (displayHistory.length - 1) : chartWidth;
@@ -1233,6 +1429,7 @@
                 const y = (canvas.height - padding) - (data.score / 100 * chartHeight);
                 points.push({x, y, label: data.aircraft, score: data.score});
             });
+
             if (points.length > 0) {
                 ctx.beginPath();
                 ctx.strokeStyle = '#328cc1';
@@ -1253,6 +1450,7 @@
                 ctx.fillText(p.label, p.x - 12, canvas.height - padding + 15);
             });
         }
+
         function wrapText(context, text, x, y, maxWidth, lineHeight) {
             var words = text.split(' ');
             var line = '';
@@ -1271,6 +1469,7 @@
             context.fillText(line, x, y);
             return y;
         }
+
         function generateCertificate() {
             const canvas = document.createElement('canvas');
             canvas.width = 850;
@@ -1296,18 +1495,14 @@
             ctx.fillText(`${currentName.toUpperCase()} ${currentSurname.toUpperCase()}`, 425, 190);
             ctx.fillStyle = '#ffffff';
             ctx.font = '15px Arial';
-
             const mainText = `Bu belge, ${selectedAircraft.toUpperCase()} - ${selectedCategory.toUpperCase()} konusunda ''Doktor - Doçent - Profesör '' gibi bir şey olduğunuzu kanıtlar. Uçağınızın motorunu yakmadan, kanatları elinize almadan, HSI göstergesini dev bir saat olduğunu düşünmeden, ikaz lambalarını yakıp uçağı '' Gece Kulübüne '' çevirmeden uçurabileceğinizi kanıtlamaz :). Uçağı limitlerinde emniyetle uçurmanız tamamen kendi hayatta kalma içgüdünüzle ve edeceğiniz duaların gücüyle alakalıdır.`;
-
             let lastY = wrapText(ctx, mainText, 425, 240, 680, 24);
             ctx.fillStyle = '#d4af37';
             ctx.font = 'bold 24px Arial';
             ctx.fillText(`${pilotEmoji}   Başarı Belgesi   ${pilotEmoji}`, 425, lastY + 50);
             ctx.fillStyle = '#fc8181';
             ctx.font = 'bold 11px Arial';
-
             const disclaimerText = `⚠️ Yasal Uyarı: Bu belge tamamen eğlence amacıyla üretilmiştir. Öğretmenlerinize göstermeniz durumunda lisansınızın askıya alınması, meydandan kovulmanıza veya en hafifinden " Senden Pilot Olmaz !! " bakışlarına maruz kalmanıza sebep olur. `;
-
             wrapText(ctx, disclaimerText, 425, lastY + 100, 700, 16);
             const link = document.createElement('a');
             link.download = `${currentName}_${currentSurname}_Limit_Sertifikasi.png`;
@@ -1325,6 +1520,179 @@
             pilotEmoji = '👨‍✈️';
             document.getElementById('logout-btn').style.display = 'none';
             showLoginScreen();
+        }
+
+        // ============================================================
+        // 7. CHART KÜTÜPHANESİ FONKSİYONLARI (YENİ)
+        // ============================================================
+        function showChartLibrary() {
+            // Tüm ekranları gizle
+            document.querySelectorAll('#login-screen, #aircraft-selector, #subcategory-selector, #quiz-body, #result-body')
+                .forEach(el => el.style.display = 'none');
+            
+            chartLibrary.style.display = 'block';
+            mainTitle.innerText = '🗺️ Chart Kütüphanesi';
+            questionCounter.innerText = allCharts.length > 0 ? `${allCharts.length} chart mevcut` : 'Henüz chart yüklenmemiş';
+            
+            // Chart görüntüleyiciyi sıfırla
+            chartViewer.style.display = 'none';
+            chartTypeList.style.display = 'none';
+            chartListView.style.display = 'none';
+            
+            showAirports();
+        }
+
+        function showAirports() {
+            const airports = [...new Set(allCharts.map(c => c.airportId))];
+            airportList.innerHTML = '';
+            chartLibrarySubtitle.innerText = 'Bir havalimanı seçiniz';
+
+            if (airports.length === 0) {
+                airportList.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-warning text-center">
+                            <i class="bi bi-info-circle"></i> Henüz chart verisi bulunmuyor. Lütfen Google Sheets'e "Charts" sayfası ekleyin.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            airports.forEach(id => {
+                const airport = allCharts.find(c => c.airportId === id);
+                const chartCount = allCharts.filter(c => c.airportId === id).length;
+                const col = document.createElement('div');
+                col.className = 'col-6 col-md-4 col-lg-3';
+                col.innerHTML = `
+                    <div class="btn-airport w-100" onclick="showChartTypes('${id}')">
+                        <div style="font-size: 2rem;">✈️</div>
+                        <div class="fw-bold mt-2">${airport.airportName}</div>
+                        <small class="text-muted">${chartCount} chart</small>
+                    </div>
+                `;
+                airportList.appendChild(col);
+            });
+        }
+
+        function showChartTypes(airportId) {
+            currentAirportId = airportId;
+            const charts = allCharts.filter(c => c.airportId === airportId);
+            const types = [...new Set(charts.map(c => c.chartType))];
+
+            airportList.style.display = 'none';
+            chartTypeList.style.display = 'block';
+            chartTypeList.innerHTML = `
+                <h5 class="text-center">${charts[0]?.airportName || 'Havalimanı'} - Chart Türleri</h5>
+                <div class="d-grid gap-2">
+                    ${types.map(type => `
+                        <button class="btn chart-type-btn" onclick="showChartList('${airportId}', '${type}')">
+                            ${type} (${charts.filter(c => c.chartType === type).length})
+                        </button>
+                    `).join('')}
+                    <button class="btn btn-secondary mt-2" onclick="backToAirports()">← Havalimanlarına Dön</button>
+                </div>
+            `;
+            chartListView.style.display = 'none';
+            chartViewer.style.display = 'none';
+        }
+
+        function showChartList(airportId, type) {
+            currentChartType = type;
+            const charts = allCharts.filter(c => c.airportId === airportId && c.chartType === type);
+            currentChartList = charts;
+
+            chartTypeList.style.display = 'none';
+            chartListView.style.display = 'block';
+
+            if (charts.length === 1) {
+                // Tek chart varsa direkt göster
+                displayChart(charts[0]);
+                return;
+            }
+
+            chartListView.innerHTML = `
+                <h5 class="text-center">${type} Chart'ları</h5>
+                <div class="d-grid gap-2">
+                    ${charts.map(chart => `
+                        <div class="card chart-card" onclick="displayChart('${chart.id}')">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title mb-0">${chart.chartTitle}</h6>
+                                    <small class="text-muted">${chart.pins ? chart.pins.length : 0} pin</small>
+                                </div>
+                                <span class="badge bg-primary">Görüntüle →</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                    <button class="btn btn-secondary mt-2" onclick="showChartTypes('${airportId}')">← Chart Türlerine Dön</button>
+                </div>
+            `;
+            chartViewer.style.display = 'none';
+        }
+
+        function displayChart(chartId) {
+            const chart = allCharts.find(c => c.id === chartId);
+            if (!chart) return;
+
+            // Pinleri temizle
+            document.querySelectorAll('.chart-pin').forEach(p => p.remove());
+
+            chartViewer.style.display = 'block';
+            chartListView.style.display = 'none';
+            chartTypeList.style.display = 'none';
+            airportList.style.display = 'none';
+
+            chartViewerTitle.innerText = `${chart.airportName} - ${chart.chartTitle}`;
+            chartImage.src = chart.imageUrl;
+            
+            chartImage.onload = function() {
+                if (chart.pins && Array.isArray(chart.pins)) {
+                    chart.pins.forEach(pinData => {
+                        const pin = document.createElement('div');
+                        pin.className = 'chart-pin';
+                        pin.style.left = pinData.x;
+                        pin.style.top = pinData.y;
+                        pin.title = pinData.note;
+                        pin.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            alert(`📍 ${pinData.note}`);
+                        });
+                        mapContainer.appendChild(pin);
+                    });
+                }
+            };
+
+            chartImage.onerror = function() {
+                console.error('Chart resmi yüklenemedi:', chart.imageUrl);
+                alert('Chart resmi yüklenirken bir hata oluştu. Lütfen resim URL\'sini kontrol edin.');
+            };
+        }
+
+        function backToChartList() {
+            chartViewer.style.display = 'none';
+            if (currentChartList && currentChartList.length > 0) {
+                showChartList(currentAirportId, currentChartType);
+            } else {
+                showChartTypes(currentAirportId);
+            }
+        }
+
+        function backToChartMenu() {
+            chartViewer.style.display = 'none';
+            if (currentAirportId) {
+                showChartTypes(currentAirportId);
+            } else {
+                backToAirports();
+            }
+        }
+
+        function backToAirports() {
+            airportList.style.display = 'flex';
+            chartTypeList.style.display = 'none';
+            chartListView.style.display = 'none';
+            chartViewer.style.display = 'none';
+            chartLibrarySubtitle.innerText = 'Bir havalimanı seçiniz';
+            showAirports();
         }
     </script>
 </body>
