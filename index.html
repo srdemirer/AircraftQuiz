@@ -636,7 +636,7 @@
 
     <script>
         // ============================================================
-        // 1. GOOGLE SHEETS API URL
+        // 1. GOOGLE SHEETS API URL (KENDİ URL'İN İLE DEĞİŞTİR)
         // ============================================================
         const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwr8TECeTgLvNI_H2J9iXvSJxpvT0nPdXTTK3ZlHmTBZ7TC6Fzk0hxb3kzp3XjSAqZ1/exec";
 
@@ -704,25 +704,7 @@
         const chartViewerTitle = document.getElementById('chart-viewer-title');
 
         // ============================================================
-        // 3. SES FONKSİYONU
-        // ============================================================
-        function playBeep(freq, type, duration) {
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {}
-        }
-
-        // ============================================================
-        // 4. SAYFA YÜKLENME - VERİLERİ ÇEK
+        // 3. SAYFA YÜKLENME - VERİLERİ ÇEK
         // ============================================================
         window.onload = async function() {
             mainTitle.innerText = "Uçuş Hattı ✈️";
@@ -735,12 +717,15 @@
                 
                 console.log('Gelen veri:', data);
                 
+                // Veriyi güvenli şekilde ayır
                 if (Array.isArray(data)) {
+                    // Eğer doğrudan dizi gelirse (eski sistem)
                     allQuestions = data;
                     allCharts = [];
                 } else if (data && typeof data === 'object') {
-                    allQuestions = data.questions || [];
-                    allCharts = data.charts || [];
+                    // Yeni sistem: { questions: [...], charts: [...] }
+                    allQuestions = Array.isArray(data.questions) ? data.questions : [];
+                    allCharts = Array.isArray(data.charts) ? data.charts : [];
                 } else {
                     allQuestions = [];
                     allCharts = [];
@@ -770,7 +755,7 @@
         };
 
         // ============================================================
-        // 5. GİRİŞ / MENÜ FONKSİYONLARI
+        // 4. GİRİŞ / MENÜ FONKSİYONLARI
         // ============================================================
         function openTrollModal(title, text) {
             trollModalTitle.innerText = title;
@@ -846,15 +831,22 @@
 
             welcomeMsg.innerHTML = `Pilot: ${currentName} ${currentSurname} ${pilotEmoji}`;
 
-            const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi))];
+            // Uçak listesini oluştur - allQuestions'ın güncel olduğundan emin ol
+            console.log('Mevcut sorular:', allQuestions);
+            
+            const aircraftTypes = [...new Set(allQuestions.map(q => q.ucak_tipi).filter(Boolean))];
             const optionsDiv = document.getElementById('aircraft-options-container');
             optionsDiv.innerHTML = '';
             
             if (aircraftTypes.length === 0) {
-                optionsDiv.innerHTML = '<div class="alert alert-warning">Henüz soru eklenmemiş.</div>';
+                optionsDiv.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> Henüz soru eklenmemiş. Lütfen Google Sheets'te "Sorular" sayfasını kontrol edin.
+                        <br><small class="text-muted">Sayfa adı: "Sorular", Sütunlar: Ucak_Tipi, Kategori, Soru, Secenek_A, Secenek_B, Secenek_C, Secenek_D, Cevap, Aciklama</small>
+                    </div>
+                `;
             } else {
                 aircraftTypes.forEach(type => {
-                    if (!type) return;
                     const btn = document.createElement('button');
                     btn.className = 'btn btn-aircraft';
                     btn.innerText = type;
@@ -879,7 +871,7 @@
         }
 
         // ============================================================
-        // 6. SINAV FONKSİYONLARI
+        // 5. SINAV FONKSİYONLARI (Aynen korundu)
         // ============================================================
         function showSubCategories(aircraftName) {
             selectedAircraft = aircraftName;
@@ -895,14 +887,13 @@
             container.innerHTML = '';
 
             const aircraftQuestions = allQuestions.filter(q => q.ucak_tipi === selectedAircraft);
-            let categories = [...new Set(aircraftQuestions.map(q => q.cat))];
+            let categories = [...new Set(aircraftQuestions.map(q => q.cat).filter(Boolean))];
 
             if (categories.length === 0) {
                 container.innerHTML = `<div class="text-center text-danger fw-bold">Bu uçak tipi için henüz soru eklenmemiş.</div>`;
             }
 
             categories.forEach(cat => {
-                if(!cat) return;
                 const btn = document.createElement('button');
                 btn.className = 'btn btn-subcat';
                 btn.innerText = cat === 'Weight And Balance' ? 'Weight and Balance' : cat;
@@ -963,6 +954,11 @@
                 activeQuestions = allQuestions.filter(q => q.ucak_tipi === selectedAircraft);
             } else {
                 activeQuestions = allQuestions.filter(q => q.ucak_tipi === selectedAircraft && q.cat === categoryName);
+            }
+
+            if (activeQuestions.length === 0) {
+                alert('Bu kategori için henüz soru bulunmuyor.');
+                return;
             }
 
             questionStates = activeQuestions.map(() => ({ status: 'unanswered', userA: '' }));
@@ -1454,7 +1450,7 @@
         }
 
         // ============================================================
-        // 7. CHART KATEGORİ FONKSİYONLARI (DÜZELTİLMİŞ SON HAL)
+        // 6. CHART KATEGORİ FONKSİYONLARI
         // ============================================================
         function showChartCategory() {
             console.log('Chart verileri:', allCharts);
@@ -1469,7 +1465,7 @@
             chartListView.style.display = 'none';
             chartTypeList.style.display = 'block';
 
-            const types = [...new Set(allCharts.map(c => c.chartType))];
+            const types = [...new Set(allCharts.map(c => c.chartType).filter(Boolean))];
             
             if (types.length === 0) {
                 chartTypeList.innerHTML = `
